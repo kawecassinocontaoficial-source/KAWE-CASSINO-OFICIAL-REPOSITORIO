@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KAWE CASSINO</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  margin:0;
+  background:linear-gradient(135deg, #0a0f0a 0%, #0f1410 100%);
+  color:#fff;
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  min-height:100vh;
+}
+
+/* ===== HEADER ===== */
+header{
+  background:rgba(0,0,0,0.4);
+  backdrop-filter:blur(10px);
+  padding:12px 20px;
+  border-bottom:1px solid rgba(34,197,94,0.3);
+  position:relative;
+  box-shadow:0 4px 15px rgba(0,0,0,0.3);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+  flex-wrap:wrap;
+}
+
+.header-left{
+  display:flex;
+  align-items:center;
+  gap:15px;
+}
+
+.logo-container{
+  display:flex;
+  align-items:center;
+  height:50px;
+}
+
+.logo-container img{
+  height:100%;
+  width:auto;
+  max-width:150px;
+  object-fit:contain;
+  filter:drop-shadow(0 0 10px rgba(34,197,94,0.4));
+}
+
+header h1{
+  font-size:24px;
+  font-weight:700;
+  letter-spacing:2px;
+  background:linear-gradient(90deg, #4ade80, #22c55e, #16a34a);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+  margin:0;
+  white-space:nowrap;
+}
+
+.menu{
+  font-size:24px;
+  color:#22c55e;
+  cursor:pointer;
+  transition:all 0.3s;
+  width:40px;
+  height:40px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:8px;
+  flex-shrink:0;
+}
+
+.menu:hover{
+  background:rgba(34,197,94,0.1);
+  color:#4ade80;
+}
+
+.header-nav{
+  display:none;
+  gap:10px;
+  align-items:center;
+  flex-wrap:wrap;
+  order:3;
+  width:100%;
+}
+
+.header-nav.active{
+  display:flex;
+}
+
+.header-nav a{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:8px 12px;
+  color:#ccc;
+  text-decoration:none;
+  transition:all 0.2s;
+  font-size:13px;
+  border-radius:6px;
+  white-space:nowrap;
+}
+
+.header-nav a:hover{
+  background:rgba(34,197,94,0.15);
+  color:#4ade80;
+}
+
+.header-nav svg{
+  width:16px;
+  height:16px;
+  flex-shrink:0;
+}
+
+.header-right{
+  display:flex;
+  align-items:center;
+  gap:15px;
+}
+
+.auth-btn{
+  padding:10px 20px;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+  font-weight:600;
+  font-size:14px;
+  transition:all 0.3s;
+  white-space:nowrap;
+}
+
+.btn-login{
+  background:transparent;
+  color:#4ade80;
+  border:1px solid #4ade80;
+}
+
+.btn-login:hover{
+  background:rgba(74,222,128,0.1);
+  color:#fff;
+}
+
+.btn-signup{
+  background:linear-gradient(135deg, #22c55e, #16a34a);
+  color:#000;
+}
+
+.btn-signup:hover{
+  background:linear-gradient(135deg, #4ade80, #22c55e);
+  box-shadow:0 4px 15px rgba(34,197,94,0.4);
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar{
+  position:fixed;
+  left:-280px;
+  top:0;
+  width:270px;
+  height:100%;
+  background:rgba(17,17,17,0.95);
+  backdrop-filter:blur(10px);
+  overflow-y:auto;
+  transition:left 0.3s;
+  padding-top:60px;
+  z-index:100;
+  border-right:1px solid rgba(34,197,94,0.2);
+}
+
+.sidebar.active{left:0}
+
+.sidebar-close{
+  position:absolute;
+  top:15px;
+  right:15px;
+  font-size:28px;
+  color:#22c55e;
+  cursor:pointer;
+  width:40px;
+  height:40px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:8px;
+  transition:all 0.3s;
+}
+
+.sidebar-close:hover{
+  background:rgba(34,197,94,0.1);
+  color:#4ade80;
+}
+
+.sidebar a{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:14px 16px;
+  color:#ccc;
+  text-decoration:none;
+  border-bottom:1px solid rgba(34,197,94,0.1);
+  transition:all 0.2s;
+  font-size:14px;
+}
+
+.sidebar a:hover{
+  background:rgba(34,197,94,0.15);
+  color:#4ade80;
+  padding-left:20px;
+}
+
+.sidebar svg{
+  width:18px;
+  height:18px;
+  flex-shrink:0;
+}
+
+/* ===== OVERLAY INTROS ===== */
+#intro-overlay{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:#000;
+  z-index:9999;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+#intro-canvas{
+  display:block;
+  width:100%;
+  height:100%;
+}
+
+/* ===== TELA DE MAIORIDADE ===== */
+#age-screen{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:linear-gradient(135deg, #000 0%, #0a0f0a 50%, #000 100%);
+  z-index:9998;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  backdrop-filter:blur(5px);
+  padding:20px;
+}
+
+#age-screen.active{
+  display:flex;
+}
+
+.age-container{
+  text-align:center;
+  max-width:600px;
+  padding:40px 30px;
+  animation:slideUp 0.6s ease-out;
+  background:rgba(17,17,17,0.7);
+  backdrop-filter:blur(20px);
+  border:1px solid rgba(34,197,94,0.3);
+  border-radius:20px;
+  box-shadow:0 8px 32px rgba(34,197,94,0.2);
+}
+
+@keyframes slideUp{
+  from{opacity:0;transform:translateY(50px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+.age-title{
+  font-size:70px;
+  font-weight:900;
+  color:#fff;
+  text-shadow:0 0 30px rgba(34,197,94,0.5), 0 0 60px rgba(22,163,74,0.3);
+  margin-bottom:10px;
+  letter-spacing:2px;
+  animation:glow 2s ease-in-out infinite;
+}
+
+@keyframes glow{
+  0%,100%{text-shadow:0 0 30px rgba(34,197,94,0.5), 0 0 60px rgba(22,163,74,0.3)}
+  50%{text-shadow:0 0 50px rgba(34,197,94,0.8), 0 0 80px rgba(74,222,128,0.4)}
+}
+
+.age-subtitle{
+  font-size:32px;
+  color:#fff;
+  margin-bottom:25px;
+  text-shadow:0 0 20px rgba(34,197,94,0.6);
+  font-weight:900;
+  letter-spacing:1px;
+}
+
+.age-question{
+  font-size:22px;
+  color:#fff;
+  margin-bottom:30px;
+  line-height:1.8;
+  font-weight:600;
+  text-shadow:0 0 10px rgba(34,197,94,0.4);
+}
+
+.age-buttons{
+  display:flex;
+  gap:20px;
+  justify-content:center;
+  margin-bottom:30px;
+  flex-wrap:wrap;
+}
+
+.age-btn{
+  padding:12px 35px;
+  font-size:14px;
+  font-weight:600;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+  transition:all 0.3s;
+  text-transform:uppercase;
+  letter-spacing:1px;
+  box-shadow:0 4px 15px rgba(0,0,0,0.3);
+}
+
+.age-btn-agree{
+  background:linear-gradient(135deg, #22c55e, #16a34a);
+  color:#000;
+}
+
+.age-btn-agree:hover{
+  background:linear-gradient(135deg, #4ade80, #22c55e);
+  box-shadow:0 8px 25px rgba(34,197,94,0.5);
+  transform:translateY(-2px);
+}
+
+.age-btn-disagree{
+  background:linear-gradient(135deg, #dc2626, #991b1b);
+  color:#fff;
+}
+
+.age-btn-disagree:hover{
+  background:linear-gradient(135deg, #ef4444, #dc2626);
+  box-shadow:0 8px 25px rgba(220,38,38,0.5);
+  transform:translateY(-2px);
+}
+
+.age-footer{
+  font-size:16px;
+  color:#fff;
+  margin-top:25px;
+  border-top:2px solid rgba(34,197,94,0.4);
+  padding-top:20px;
+  font-weight:600;
+}
+
+.age-footer a{
+  color:#4ade80;
+  text-decoration:none;
+  margin:0 12px;
+  transition:all 0.3s;
+  font-weight:700;
+  font-size:16px;
+  text-shadow:0 0 10px rgba(34,197,94,0.3);
+}
+
+.age-footer a:hover{
+  color:#22c55e;
+  text-decoration:underline;
+  text-shadow:0 0 15px rgba(34,197,94,0.6);
+}
+
+/* ===== MODAIS DE LOGIN/CADASTRO ===== */
+.modal-overlay{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.7);
+  z-index:9997;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  backdrop-filter:blur(5px);
+  padding:20px;
+}
+
+.modal-overlay.active{
+  display:flex;
+}
+
+.modal{
+  background:rgba(17,17,17,0.95);
+  backdrop-filter:blur(20px);
+  border:1px solid rgba(34,197,94,0.3);
+  border-radius:16px;
+  padding:40px;
+  max-width:450px;
+  width:100%;
+  max-height:90vh;
+  overflow-y:auto;
+  animation:slideUp 0.3s ease-out;
+  position:relative;
+}
+
+.modal-close{
+  position:absolute;
+  top:15px;
+  right:15px;
+  font-size:28px;
+  color:#22c55e;
+  cursor:pointer;
+  width:40px;
+  height:40px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:8px;
+  transition:all 0.3s;
+}
+
+.modal-close:hover{
+  background:rgba(34,197,94,0.1);
+  color:#4ade80;
+}
+
+.modal h2{
+  font-size:28px;
+  margin-bottom:20px;
+  text-align:center;
+  padding:0;
+  color:#fff;
+}
+
+.form-group{
+  margin-bottom:16px;
+}
+
+.form-group label{
+  display:block;
+  margin-bottom:6px;
+  font-size:13px;
+  color:#4ade80;
+  font-weight:600;
+}
+
+.form-group input{
+  width:100%;
+  padding:12px;
+  border:1px solid rgba(34,197,94,0.3);
+  border-radius:8px;
+  background:rgba(0,0,0,0.3);
+  color:#fff;
+  font-size:14px;
+  transition:all 0.3s;
+}
+
+.form-group input:focus{
+  outline:none;
+  border-color:#22c55e;
+  background:rgba(34,197,94,0.1);
+  box-shadow:0 0 10px rgba(34,197,94,0.2);
+}
+
+.form-group input::placeholder{
+  color:#666;
+}
+
+.form-btn{
+  width:100%;
+  padding:12px;
+  background:linear-gradient(135deg, #22c55e, #16a34a);
+  border:none;
+  border-radius:8px;
+  color:#000;
+  font-weight:600;
+  font-size:14px;
+  transition:all 0.3s;
+  text-transform:uppercase;
+  letter-spacing:1px;
+  margin-bottom:16px;
+}
+
+.form-btn:hover{
+  background:linear-gradient(135deg, #4ade80, #22c55e);
+  box-shadow:0 4px 15px rgba(34,197,94,0.4);
+}
+
+.social-divider{
+  display:flex;
+  align-items:center;
+  margin:20px 0;
+  font-size:12px;
+  color:#666;
+}
+
+.social-divider::before,
+.social-divider::after{
+  content:'';
+  flex:1;
+  height:1px;
+  background:rgba(34,197,94,0.2);
+}
+
+.social-divider span{
+  margin:0 10px;
+}
+
+.social-buttons{
+  display:grid;
+  grid-template-columns:repeat(3, 1fr);
+  gap:10px;
+  margin-bottom:16px;
+}
+
+.social-btn{
+  padding:10px;
+  border:1px solid rgba(34,197,94,0.3);
+  background:rgba(0,0,0,0.3);
+  border-radius:8px;
+  cursor:pointer;
+  transition:all 0.3s;
+  font-size:18px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.social-btn:hover{
+  background:rgba(34,197,94,0.15);
+  border-color:#22c55e;
+}
+
+.toggle-form{
+  text-align:center;
+  font-size:13px;
+  color:#ccc;
+}
+
+.toggle-form a{
+  color:#4ade80;
+  cursor:pointer;
+  text-decoration:none;
+  font-weight:600;
+}
+
+.toggle-form a:hover{
+  color:#22c55e;
+}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar{width:8px}
+::-webkit-scrollbar-track{background:rgba(34,197,94,0.1)}
+::-webkit-scrollbar-thumb{background:rgba(34,197,94,0.4);border-radius:4px}
+::-webkit-scrollbar-thumb:hover{background:rgba(34,197,94,0.7)}
+
+@media(max-width:768px){
+  header{
+    flex-direction:column;
+    align-items:flex-start;
+  }
+  
+  .header-left{
+    width:100%;
+    justify-content:space-between;
+  }
+  
+  .header-right{
+    width:100%;
+    order:3;
+  }
+  
+  .header-nav{
+    order:3;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- TELA DE MAIORIDADE -->
+<div id="age-screen">
+  <div class="age-container">
+    <div class="age-title">⚠</div>
+    <div class="age-subtitle">VERIFICAÇÃO DE MAIORIDADE</div>
+    <p class="age-question">Este site é restrito para maiores de 18 anos.<br>Você tem 18 anos ou mais?</p>
+    <div class="age-buttons">
+      <button class="age-btn age-btn-agree" onclick="agreeAge()">Concordo</button>
+      <button class="age-btn age-btn-disagree" onclick="disagreeAge()">Discordo</button>
+    </div>
+    <div class="age-footer">
+      <a href="#" onclick="event.preventDefault();showTerms()">TERMOS</a>
+      |
+      <a href="#" onclick="event.preventDefault();showPolicy()">POLÍTICA</a>
+      |
+      <a href="#" onclick="event.preventDefault();showResponsible()">RESPONSÁVEL</a>
+    </div>
+  </div>
+</div>
+
+<!-- INTRO CANVAS -->
+<div id="intro-overlay">
+  <canvas id="intro-canvas"></canvas>
+</div>
+
+<!-- MODAL LOGIN -->
+<div id="login-modal" class="modal-overlay">
+  <div class="modal">
+    <div class="modal-close" onclick="closeLoginModal()">✕</div>
+    <h2>Login</h2>
+    <form onsubmit="handleLogin(event)">
+      <div class="form-group">
+        <label>Email ou Usuário</label>
+        <input type="text" placeholder="seu@email.com ou usuario" required>
+      </div>
+      <div class="form-group">
+        <label>Senha</label>
+        <input type="password" placeholder="Sua senha" required>
+      </div>
+      <button type="submit" class="form-btn">Entrar</button>
+    </form>
+    <div class="social-divider"><span>ou</span></div>
+    <div class="social-buttons">
+      <button class="social-btn" title="Google" onclick="socialLogin('google')">🔵</button>
+      <button class="social-btn" title="Facebook" onclick="socialLogin('facebook')">📘</button>
+      <button class="social-btn" title="Apple" onclick="socialLogin('apple')">🍎</button>
+      <button class="social-btn" title="Discord" onclick="socialLogin('discord')">💜</button>
+      <button class="social-btn" title="WeChat" onclick="socialLogin('wechat')">🟢</button>
+      <button class="social-btn" title="X" onclick="socialLogin('x')">✕</button>
+      <button class="social-btn" title="VK" onclick="socialLogin('vk')">🔷</button>
+    </div>
+    <div class="toggle-form">
+      Não tem conta? <a onclick="switchToSignup()">Cadastre-se</a>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CADASTRO -->
+<div id="signup-modal" class="modal-overlay">
+  <div class="modal">
+    <div class="modal-close" onclick="closeSignupModal()">✕</div>
+    <h2>Cadastro</h2>
+    <form onsubmit="handleSignup(event)">
+      <div class="form-group">
+        <label>Nome Completo</label>
+        <input type="text" placeholder="Seu nome completo" required>
+      </div>
+      <div class="form-group">
+        <label>Nome de Usuário</label>
+        <input type="text" placeholder="seu_usuario" required>
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" placeholder="seu@email.com" required>
+      </div>
+      <div class="form-group">
+        <label>Data de Nascimento</label>
+        <input type="date" required>
+      </div>
+      <div class="form-group">
+        <label>Senha</label>
+        <input type="password" placeholder="Crie uma senha forte" required>
+      </div>
+      <div class="form-group">
+        <label>Confirmar Senha</label>
+        <input type="password" placeholder="Confirme sua senha" required>
+      </div>
+      <button type="submit" class="form-btn">Criar Conta</button>
+    </form>
+    <div class="social-divider"><span>ou</span></div>
+    <div class="social-buttons">
+      <button class="social-btn" title="Google" onclick="socialSignup('google')">🔵</button>
+      <button class="social-btn" title="Facebook" onclick="socialSignup('facebook')">📘</button>
+      <button class="social-btn" title="Apple" onclick="socialSignup('apple')">🍎</button>
+      <button class="social-btn" title="Discord" onclick="socialSignup('discord')">💜</button>
+      <button class="social-btn" title="WeChat" onclick="socialSignup('wechat')">🟢</button>
+      <button class="social-btn" title="X" onclick="socialSignup('x')">✕</button>
+      <button class="social-btn" title="VK" onclick="socialSignup('vk')">🔷</button>
+    </div>
+    <div class="toggle-form">
+      Já tem conta? <a onclick="switchToLogin()">Faça login</a>
+    </div>
+  </div>
+</div>
+
+<!-- CONTEÚDO PRINCIPAL -->
+<header>
+  <div class="header-left">
+    <div class="menu" onclick="toggleMenu()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="3" y1="6" x2="21" y2="6"></line>
+        <line x1="3" y1="12" x2="21" y2="12"></line>
+        <line x1="3" y1="18" x2="21" y2="18"></line>
+      </svg>
+    </div>
+    <div class="logo-container">
+      <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 60'%3E%3Crect fill='%2322c55e' width='200' height='60' rx='8'/%3E%3Ctext x='50%25' y='50%25' font-size='32' font-weight='bold' fill='%23000' text-anchor='middle' dominant-baseline='middle' font-family='Arial'%3EKAWE%3C/text%3E%3C/svg%3E" alt="KAWE CASSINO">
+    </div>
+    <h1>KAWE</h1>
+  </div>
+
+  <!-- NAVEGAÇÃO DO CABEÇALHO (FUNÇÕES DO MENU) -->
+  <nav class="header-nav" id="header-nav">
+    <a href="#" onclick="event.preventDefault()">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+      <span>Início</span>
+    </a>
+    <a href="#" onclick="event.preventDefault()">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/></svg>
+      <span>Cassino</span>
+    </a>
+    <a href="#" onclick="event.preventDefault()">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2V17zm4 0h-2V7h2V17zm4 0h-2v-4h2V17z"/></svg>
+      <span>Roletas</span>
+    </a>
+    <a href="#" onclick="event.preventDefault()">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
+      <span>Cartas</span>
+    </a>
+    <a href="#" onclick="event.preventDefault()">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+      <span>Apostas</span>
+    </a>
+    <a href="#" onclick="event.preventDefault()">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      <span>VIP</span>
+    </a>
+    <a href="#" onclick="event.preventDefault()">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/></svg>
+      <span>Promoções</span>
+    </a>
+    <a href="#" onclick="event.preventDefault()">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+      <span>Bônus</span>
+    </a>
+    <a href="#" onclick="event.preventDefault()">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l-5.5 9h11z"/></svg>
+      <span>Ranking</span>
+    </a>
+  </nav>
+
+  <div class="header-right">
+    <button class="auth-btn btn-login" onclick="openLoginModal()">Login</button>
+    <button class="auth-btn btn-signup" onclick="openSignupModal()">Cadastro</button>
+  </div>
+</header>
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-close" onclick="toggleMenu()">✕</div>
+  <a href="#">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+    Início
+  </a>
+  <a href="#">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/></svg>
+    Cassino
+  </a>
+  <a href="#">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2V17zm4 0h-2V7h2V17zm4 0h-2v-4h2V17z"/></svg>
+    Roletas
+  </a>
+  <a href="#">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
+    Cartas
+  </a>
+  <a href="#">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+    Apostas
+  </a>
+  <a href="#">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+    VIP
+  </a>
+  <a href="#">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/></svg>
+    Promoções
+  </a>
+  <a href="#">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+    Bônus
+  </a>
+  <a href="#">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l-5.5 9h11z"/></svg>
+    Ranking
+  </a>
+  <a href="#">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+    Campeões
+  </a>
+  <a href="#">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2V17zm4 0h-2V7h2V17zm4 0h-2v-4h2V17z"/></svg>
+    Estatísticas
+  </a>
+  <a href="#">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/></svg>
+    Populares
+  </a>
+  <a href="#">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/></svg>
+    Novidades
+  </a>
+  <a href="#">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+    Favoritos
+  </a>
+  <a href="#">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2V17zm4 0h-2V7h2V17zm4 0h-2v-4h2V17z"/></svg>
+    Sorteios
+  </a>
+  <a href="#">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/></svg>
+    Carteira
+  </a>
+  <a href="#">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/></svg>
+    Saques
+  </a>
+  <a href="#">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/></svg>
+    Depósitos
+  </a>
+  <a href="#">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+    Minha Conta
+  </a>
+  <a href="#">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.62l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.48.1.62l2.03 1.58c-.05.3-.07.62-.07.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.62l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.48-.1-.62l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+    Configurações
+  </a>
+  <a href="#">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2V17zm4 0h-2V7h2V17zm4 0h-2v-4h2V17z"/></svg>
+    Notícias
+  </a>
+  <a href="#">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
+    Contato
+  </a>
+  <a href="#">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/></svg>
+    Ajuda
+  </a>
+  <a href="#">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/></svg>
+    Corridas
+  </a>
+</div>
+
+<h2 style="margin-top: 50px;">Bem-vindo ao KAWE Cassino</h2>
+
+<script>
+// Verificação de maioridade
+function checkAge(){
+  const ageVerified=localStorage.getItem('ageVerified');
+  if(!ageVerified){
+    document.getElementById('age-screen').classList.add('active');
+  }
+}
+
+function agreeAge(){
+  localStorage.setItem('ageVerified', 'true');
+  document.getElementById('age-screen').classList.remove('active');
+}
+
+function disagreeAge(){
+  alert('Você deve ter 18 anos ou mais para acessar este site.');
+  window.location.href='about:blank';
+}
+
+function showTerms(){
+  alert('TERMOS E CONDIÇÕES DO KAWE CASSINO\n\nEste é um documento importante que estabelece os termos e condições para uso do KAWE Cassino. Leia atentamente antes de prosseguir.');
+}
+
+function showPolicy(){
+  alert('POLÍTICA DE PRIVACIDADE DO KAWE CASSINO\n\nNós respeitamos sua privacidade e nos comprometemos a proteger seus dados pessoais de acordo com as leis aplicáveis.');
+}
+
+function showResponsible(){
+  alert('JOGO RESPONSÁVEL - INFORMAÇÕES SOBRE COMO JOGAR COM SEGURANÇA\n\nO jogo deve ser uma forma de entretenimento. Se você acha que pode ter um problema com jogo, procure ajuda profissional.');
+}
+
+// Menu toggle
+function toggleMenu(){
+  const sidebar=document.getElementById('sidebar');
+  const headerNav=document.getElementById('header-nav');
+  sidebar.classList.toggle('active');
+  headerNav.classList.toggle('active');
+}
+
+// Modal functions
+function openLoginModal(){
+  document.getElementById('login-modal').classList.add('active');
+}
+
+function closeLoginModal(){
+  document.getElementById('login-modal').classList.remove('active');
+}
+
+function openSignupModal(){
+  document.getElementById('signup-modal').classList.add('active');
+}
+
+function closeSignupModal(){
+  document.getElementById('signup-modal').classList.remove('active');
+}
+
+function switchToSignup(){
+  closeLoginModal();
+  openSignupModal();
+}
+
+function switchToLogin(){
+  closeSignupModal();
+  openLoginModal();
+}
+
+function handleLogin(e){
+  e.preventDefault();
+  alert('Login realizado com sucesso!');
+  closeLoginModal();
+}
+
+function handleSignup(e){
+  e.preventDefault();
+  alert('Cadastro realizado com sucesso!');
+  closeSignupModal();
+}
+
+function socialLogin(provider){
+  alert('Login com '+provider+' iniciado');
+}
+
+function socialSignup(provider){
+  alert('Cadastro com '+provider+' iniciado');
+}
+
+// Intro animation
+function initIntro(){
+  const canvas=document.getElementById('intro-canvas');
+  const ctx=canvas.getContext('2d');
+  
+  canvas.width=window.innerWidth;
+  canvas.height=window.innerHeight;
+  
+  let particles=[];
+  
+  class Particle{
+    constructor(){
+      this.x=Math.random()*canvas.width;
+      this.y=Math.random()*canvas.height;
+      this.size=Math.random()*5+2;
+      this.speedX=Math.random()*3-1.5;
+      this.speedY=Math.random()*3-1.5;
+      this.color='rgba(34, 197, 94, '+Math.random()*0.5+')';
+    }
+    
+    update(){
+      this.x+=this.speedX;
+      this.y+=this.speedY;
+      
+      if(this.x>canvas.width) this.x=0;
+      if(this.x<0) this.x=canvas.width;
+      if(this.y>canvas.height) this.y=0;
+      if(this.y<0) this.y=canvas.height;
+    }
+    
+    draw(){
+      ctx.fillStyle=this.color;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size, 0, Math.PI*2);
+      ctx.fill();
+    }
+  }
+  
+  for(let i=0; i<100; i++){
+    particles.push(new Particle());
+  }
+  
+  let animationFrames=0;
+  function animate(){
+    ctx.fillStyle='rgba(0, 0, 0, 0.1)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    particles.forEach(p=>{
+      p.update();
+      p.draw();
+    });
+    
+    animationFrames++;
+    if(animationFrames<300){
+      requestAnimationFrame(animate);
+    } else {
+      document.getElementById('intro-overlay').style.display='none';
+    }
+  }
+  
+  animate();
+}
+
+// Inicializar
+window.addEventListener('load', function(){
+  checkAge();
+  initIntro();
+});
+</script>
+
+</body>
+</html>
