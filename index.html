@@ -1,1015 +1,1429 @@
+
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KAWE CASSINO</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>KAWE CASSINO — Plataforma Premium</title>
+<meta name="description" content="KAWE Cassino: plataforma premium com dashboard financeiro, segurança avançada e experiência de nível internacional." />
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  tailwind.config = {
+    theme: { extend: {
+      colors: {
+        neon: '#00ff66', primary: '#00ff66', 'green-dark': '#0B8F3C', 'emerald-deep': '#065f46'
+      },
+      fontFamily: { display: ['Orbitron','sans-serif'], sans: ['Inter','sans-serif'] }
+    }}
+  }
+</script>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{
-  margin:0;
-  background:linear-gradient(135deg, #0a0f0a 0%, #0f1410 100%);
-  color:#fff;
-  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  min-height:100vh;
-}
-
-/* ===== HEADER ===== */
-header{
-  background:rgba(0,0,0,0.4);
-  backdrop-filter:blur(10px);
-  padding:12px 20px;
-  border-bottom:1px solid rgba(34,197,94,0.3);
-  position:relative;
-  box-shadow:0 4px 15px rgba(0,0,0,0.3);
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:20px;
-  flex-wrap:wrap;
-}
-
-.header-left{
-  display:flex;
-  align-items:center;
-  gap:15px;
-}
-
-.logo-container{
-  display:flex;
-  align-items:center;
-  height:50px;
-}
-
-.logo-container img{
-  height:100%;
-  width:auto;
-  max-width:150px;
-  object-fit:contain;
-  filter:drop-shadow(0 0 10px rgba(34,197,94,0.4));
-}
-
-header h1{
-  font-size:24px;
-  font-weight:700;
-  letter-spacing:2px;
-  background:linear-gradient(90deg, #4ade80, #22c55e, #16a34a);
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-  background-clip:text;
-  margin:0;
-  white-space:nowrap;
-}
-
-.menu{
-  font-size:24px;
-  color:#22c55e;
-  cursor:pointer;
-  transition:all 0.3s;
-  width:40px;
-  height:40px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  border-radius:8px;
-  flex-shrink:0;
-}
-
-.menu:hover{
-  background:rgba(34,197,94,0.1);
-  color:#4ade80;
-}
-
-.header-nav{
-  display:none;
-  gap:10px;
-  align-items:center;
-  flex-wrap:wrap;
-  order:3;
-  width:100%;
-}
-
-.header-nav.active{
-  display:flex;
-}
-
-.header-nav a{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  padding:8px 12px;
-  color:#ccc;
-  text-decoration:none;
-  transition:all 0.2s;
-  font-size:13px;
-  border-radius:6px;
-  white-space:nowrap;
-}
-
-.header-nav a:hover{
-  background:rgba(34,197,94,0.15);
-  color:#4ade80;
-}
-
-.header-nav svg{
-  width:16px;
-  height:16px;
-  flex-shrink:0;
-}
-
-.header-right{
-  display:flex;
-  align-items:center;
-  gap:15px;
-}
-
-.auth-btn{
-  padding:10px 20px;
-  border:none;
-  border-radius:8px;
-  cursor:pointer;
-  font-weight:600;
-  font-size:14px;
-  transition:all 0.3s;
-  white-space:nowrap;
-}
-
-.btn-login{
-  background:transparent;
-  color:#4ade80;
-  border:1px solid #4ade80;
-}
-
-.btn-login:hover{
-  background:rgba(74,222,128,0.1);
-  color:#fff;
-}
-
-.btn-signup{
-  background:linear-gradient(135deg, #22c55e, #16a34a);
-  color:#000;
-}
-
-.btn-signup:hover{
-  background:linear-gradient(135deg, #4ade80, #22c55e);
-  box-shadow:0 4px 15px rgba(34,197,94,0.4);
-}
-
-/* ===== SIDEBAR ===== */
-.sidebar{
-  position:fixed;
-  left:-280px;
-  top:0;
-  width:270px;
-  height:100%;
-  background:rgba(17,17,17,0.95);
-  backdrop-filter:blur(10px);
-  overflow-y:auto;
-  transition:left 0.3s;
-  padding-top:60px;
-  z-index:100;
-  border-right:1px solid rgba(34,197,94,0.2);
-}
-
-.sidebar.active{left:0}
-
-.sidebar-close{
-  position:absolute;
-  top:15px;
-  right:15px;
-  font-size:28px;
-  color:#22c55e;
-  cursor:pointer;
-  width:40px;
-  height:40px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  border-radius:8px;
-  transition:all 0.3s;
-}
-
-.sidebar-close:hover{
-  background:rgba(34,197,94,0.1);
-  color:#4ade80;
-}
-
-.sidebar a{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  padding:14px 16px;
-  color:#ccc;
-  text-decoration:none;
-  border-bottom:1px solid rgba(34,197,94,0.1);
-  transition:all 0.2s;
-  font-size:14px;
-}
-
-.sidebar a:hover{
-  background:rgba(34,197,94,0.15);
-  color:#4ade80;
-  padding-left:20px;
-}
-
-.sidebar svg{
-  width:18px;
-  height:18px;
-  flex-shrink:0;
-}
-
-/* ===== OVERLAY INTROS ===== */
-#intro-overlay{
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background:#000;
-  z-index:9999;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
-#intro-canvas{
-  display:block;
-  width:100%;
-  height:100%;
-}
-
-/* ===== TELA DE MAIORIDADE ===== */
-#age-screen{
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background:linear-gradient(135deg, #000 0%, #0a0f0a 50%, #000 100%);
-  z-index:9998;
-  display:none;
-  align-items:center;
-  justify-content:center;
-  flex-direction:column;
-  backdrop-filter:blur(5px);
-  padding:20px;
-}
-
-#age-screen.active{
-  display:flex;
-}
-
-.age-container{
-  text-align:center;
-  max-width:600px;
-  padding:40px 30px;
-  animation:slideUp 0.6s ease-out;
-  background:rgba(17,17,17,0.7);
-  backdrop-filter:blur(20px);
-  border:1px solid rgba(34,197,94,0.3);
-  border-radius:20px;
-  box-shadow:0 8px 32px rgba(34,197,94,0.2);
-}
-
-@keyframes slideUp{
-  from{opacity:0;transform:translateY(50px)}
-  to{opacity:1;transform:translateY(0)}
-}
-
-.age-title{
-  font-size:70px;
-  font-weight:900;
-  color:#fff;
-  text-shadow:0 0 30px rgba(34,197,94,0.5), 0 0 60px rgba(22,163,74,0.3);
-  margin-bottom:10px;
-  letter-spacing:2px;
-  animation:glow 2s ease-in-out infinite;
-}
-
-@keyframes glow{
-  0%,100%{text-shadow:0 0 30px rgba(34,197,94,0.5), 0 0 60px rgba(22,163,74,0.3)}
-  50%{text-shadow:0 0 50px rgba(34,197,94,0.8), 0 0 80px rgba(74,222,128,0.4)}
-}
-
-.age-subtitle{
-  font-size:32px;
-  color:#fff;
-  margin-bottom:25px;
-  text-shadow:0 0 20px rgba(34,197,94,0.6);
-  font-weight:900;
-  letter-spacing:1px;
-}
-
-.age-question{
-  font-size:22px;
-  color:#fff;
-  margin-bottom:30px;
-  line-height:1.8;
-  font-weight:600;
-  text-shadow:0 0 10px rgba(34,197,94,0.4);
-}
-
-.age-buttons{
-  display:flex;
-  gap:20px;
-  justify-content:center;
-  margin-bottom:30px;
-  flex-wrap:wrap;
-}
-
-.age-btn{
-  padding:12px 35px;
-  font-size:14px;
-  font-weight:600;
-  border:none;
-  border-radius:8px;
-  cursor:pointer;
-  transition:all 0.3s;
-  text-transform:uppercase;
-  letter-spacing:1px;
-  box-shadow:0 4px 15px rgba(0,0,0,0.3);
-}
-
-.age-btn-agree{
-  background:linear-gradient(135deg, #22c55e, #16a34a);
-  color:#000;
-}
-
-.age-btn-agree:hover{
-  background:linear-gradient(135deg, #4ade80, #22c55e);
-  box-shadow:0 8px 25px rgba(34,197,94,0.5);
-  transform:translateY(-2px);
-}
-
-.age-btn-disagree{
-  background:linear-gradient(135deg, #dc2626, #991b1b);
-  color:#fff;
-}
-
-.age-btn-disagree:hover{
-  background:linear-gradient(135deg, #ef4444, #dc2626);
-  box-shadow:0 8px 25px rgba(220,38,38,0.5);
-  transform:translateY(-2px);
-}
-
-.age-footer{
-  font-size:16px;
-  color:#fff;
-  margin-top:25px;
-  border-top:2px solid rgba(34,197,94,0.4);
-  padding-top:20px;
-  font-weight:600;
-}
-
-.age-footer a{
-  color:#4ade80;
-  text-decoration:none;
-  margin:0 12px;
-  transition:all 0.3s;
-  font-weight:700;
-  font-size:16px;
-  text-shadow:0 0 10px rgba(34,197,94,0.3);
-}
-
-.age-footer a:hover{
-  color:#22c55e;
-  text-decoration:underline;
-  text-shadow:0 0 15px rgba(34,197,94,0.6);
-}
-
-/* ===== MODAIS DE LOGIN/CADASTRO ===== */
-.modal-overlay{
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background:rgba(0,0,0,0.7);
-  z-index:9997;
-  display:none;
-  align-items:center;
-  justify-content:center;
-  backdrop-filter:blur(5px);
-  padding:20px;
-}
-
-.modal-overlay.active{
-  display:flex;
-}
-
-.modal{
-  background:rgba(17,17,17,0.95);
-  backdrop-filter:blur(20px);
-  border:1px solid rgba(34,197,94,0.3);
-  border-radius:16px;
-  padding:40px;
-  max-width:450px;
-  width:100%;
-  max-height:90vh;
-  overflow-y:auto;
-  animation:slideUp 0.3s ease-out;
-  position:relative;
-}
-
-.modal-close{
-  position:absolute;
-  top:15px;
-  right:15px;
-  font-size:28px;
-  color:#22c55e;
-  cursor:pointer;
-  width:40px;
-  height:40px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  border-radius:8px;
-  transition:all 0.3s;
-}
-
-.modal-close:hover{
-  background:rgba(34,197,94,0.1);
-  color:#4ade80;
-}
-
-.modal h2{
-  font-size:28px;
-  margin-bottom:20px;
-  text-align:center;
-  padding:0;
-  color:#fff;
-}
-
-.form-group{
-  margin-bottom:16px;
-}
-
-.form-group label{
-  display:block;
-  margin-bottom:6px;
-  font-size:13px;
-  color:#4ade80;
-  font-weight:600;
-}
-
-.form-group input{
-  width:100%;
-  padding:12px;
-  border:1px solid rgba(34,197,94,0.3);
-  border-radius:8px;
-  background:rgba(0,0,0,0.3);
-  color:#fff;
-  font-size:14px;
-  transition:all 0.3s;
-}
-
-.form-group input:focus{
-  outline:none;
-  border-color:#22c55e;
-  background:rgba(34,197,94,0.1);
-  box-shadow:0 0 10px rgba(34,197,94,0.2);
-}
-
-.form-group input::placeholder{
-  color:#666;
-}
-
-.form-btn{
-  width:100%;
-  padding:12px;
-  background:linear-gradient(135deg, #22c55e, #16a34a);
-  border:none;
-  border-radius:8px;
-  color:#000;
-  font-weight:600;
-  font-size:14px;
-  transition:all 0.3s;
-  text-transform:uppercase;
-  letter-spacing:1px;
-  margin-bottom:16px;
-}
-
-.form-btn:hover{
-  background:linear-gradient(135deg, #4ade80, #22c55e);
-  box-shadow:0 4px 15px rgba(34,197,94,0.4);
-}
-
-.social-divider{
-  display:flex;
-  align-items:center;
-  margin:20px 0;
-  font-size:12px;
-  color:#666;
-}
-
-.social-divider::before,
-.social-divider::after{
-  content:'';
-  flex:1;
-  height:1px;
-  background:rgba(34,197,94,0.2);
-}
-
-.social-divider span{
-  margin:0 10px;
-}
-
-.social-buttons{
-  display:grid;
-  grid-template-columns:repeat(3, 1fr);
-  gap:10px;
-  margin-bottom:16px;
-}
-
-.social-btn{
-  padding:10px;
-  border:1px solid rgba(34,197,94,0.3);
-  background:rgba(0,0,0,0.3);
-  border-radius:8px;
-  cursor:pointer;
-  transition:all 0.3s;
-  font-size:18px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
-.social-btn:hover{
-  background:rgba(34,197,94,0.15);
-  border-color:#22c55e;
-}
-
-.toggle-form{
-  text-align:center;
-  font-size:13px;
-  color:#ccc;
-}
-
-.toggle-form a{
-  color:#4ade80;
-  cursor:pointer;
-  text-decoration:none;
-  font-weight:600;
-}
-
-.toggle-form a:hover{
-  color:#22c55e;
-}
-
-/* ===== SCROLLBAR ===== */
-::-webkit-scrollbar{width:8px}
-::-webkit-scrollbar-track{background:rgba(34,197,94,0.1)}
-::-webkit-scrollbar-thumb{background:rgba(34,197,94,0.4);border-radius:4px}
-::-webkit-scrollbar-thumb:hover{background:rgba(34,197,94,0.7)}
-
-@media(max-width:768px){
-  header{
-    flex-direction:column;
-    align-items:flex-start;
+  html,body{background:#000;color:#e6ffe6;font-family:'Inter',sans-serif}
+  body{background:
+    radial-gradient(ellipse at top, rgba(0,255,102,.10), transparent 60%),
+    radial-gradient(ellipse at bottom, rgba(11,143,60,.10), transparent 60%),
+    #000;
   }
-  
-  .header-left{
-    width:100%;
-    justify-content:space-between;
-  }
-  
-  .header-right{
-    width:100%;
-    order:3;
-  }
-  
-  .header-nav{
-    order:3;
-  }
-}
+  h1,h2,h3,.font-display{font-family:'Orbitron',sans-serif;letter-spacing:.02em}
+  .neon-text{color:#00ff66;text-shadow:0 0 8px rgba(0,255,102,.8),0 0 24px rgba(0,255,102,.6),0 0 48px rgba(11,143,60,.4)}
+  .neon-border{border:1px solid rgba(0,255,102,.5);box-shadow:0 0 20px rgba(0,255,102,.3),inset 0 0 20px rgba(0,255,102,.05)}
+  .neon-glow{box-shadow:0 0 30px rgba(0,255,102,.5),0 0 80px rgba(11,143,60,.3)}
+  .glass{background:linear-gradient(135deg,rgba(20,40,25,.6),rgba(0,10,5,.4));backdrop-filter:blur(20px) saturate(160%);border:1px solid rgba(0,255,102,.15)}
+  .grid-bg{background-image:linear-gradient(rgba(0,255,102,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,102,.08) 1px,transparent 1px);background-size:40px 40px}
+  @keyframes glow-pulse{0%,100%{text-shadow:0 0 10px rgba(0,255,102,.8),0 0 30px rgba(0,255,102,.6)}50%{text-shadow:0 0 20px rgba(0,255,102,1),0 0 60px rgba(0,255,102,.8),0 0 100px rgba(11,143,60,.5)}}
+  .animate-glow-pulse{animation:glow-pulse 2s ease-in-out infinite}
+  @keyframes scan-line{0%{transform:translateY(-100%)}100%{transform:translateY(100vh)}}
+  .scan-line{animation:scan-line 3s linear infinite}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+  .fade-up{animation:fadeUp .8s cubic-bezier(.2,.8,.2,1) both}
+  @keyframes zoomIn{from{opacity:0;transform:scale(.4);filter:blur(20px)}to{opacity:1;transform:scale(1);filter:blur(0)}}
+  .zoom-in{animation:zoomIn 1.4s cubic-bezier(.2,.8,.2,1) both}
+  @keyframes ping{75%,100%{transform:scale(2);opacity:0}}
+  .animate-ping{animation:ping 1.5s cubic-bezier(0,0,.2,1) infinite}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-15px)}}
+  .float{animation:float 6s ease-in-out infinite}
+  .btn-hover{transition:all .3s}
+  .btn-hover:hover{transform:scale(1.05)}
+  ::-webkit-scrollbar{width:8px;height:8px}
+  ::-webkit-scrollbar-thumb{background:rgba(0,255,102,.4);border-radius:8px}
+  ::-webkit-scrollbar-track{background:#000}
+  .particle{position:absolute;width:4px;height:4px;border-radius:50%;background:#00ff66;box-shadow:0 0 8px #00ff66,0 0 20px #00ff66;pointer-events:none}
+  @keyframes slideIn{from{transform:translateX(-100%)}to{transform:translateX(0)}}
+  .slide-in{animation:slideIn .4s cubic-bezier(.2,.8,.2,1) both}
+  @keyframes slideDown{from{transform:translateY(-100%);opacity:0}to{transform:translateY(0);opacity:1}}
+  .slide-down{animation:slideDown .4s cubic-bezier(.2,.8,.2,1) both}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  .fade-in{animation:fadeIn .6s both}
+  .hidden{display:none!important}
+  .ico{display:inline-block;vertical-align:middle}
+  .pin-dot{width:14px;height:14px;border-radius:50%;border:2px solid rgba(0,255,102,.4);background:#000;transition:all .2s}
+  .pin-dot.filled{background:#00ff66;box-shadow:0 0 12px #00ff66,0 0 24px rgba(0,255,102,.6);border-color:#00ff66}
+  .pin-key{background:linear-gradient(135deg,rgba(0,255,102,.08),rgba(0,0,0,.6));border:1px solid rgba(0,255,102,.3);color:#00ff66;font-family:'Orbitron',sans-serif;font-weight:900;transition:all .15s}
+  .pin-key:hover{background:rgba(0,255,102,.15);box-shadow:0 0 20px rgba(0,255,102,.4)}
+  .pin-key:active{transform:scale(.95)}
+  @keyframes shake{10%,90%{transform:translateX(-2px)}20%,80%{transform:translateX(4px)}30%,50%,70%{transform:translateX(-8px)}40%,60%{transform:translateX(8px)}}
+  .shake{animation:shake .5s}
+  .admin-tab{padding:.6rem 1rem;border-radius:.5rem;font-family:'Orbitron',sans-serif;font-weight:700;font-size:.75rem;letter-spacing:.15em;color:rgba(230,255,230,.6);border:1px solid transparent;cursor:pointer;transition:all .2s}
+  .admin-tab:hover{color:#00ff66;background:rgba(0,255,102,.05)}
+  .admin-tab.active{color:#00ff66;background:rgba(0,255,102,.1);border-color:rgba(0,255,102,.3);box-shadow:0 0 20px rgba(0,255,102,.2)}
+  .adm-input{background:rgba(0,0,0,.5);border:1px solid rgba(0,255,102,.25);color:#e6ffe6;padding:.55rem .8rem;border-radius:.5rem;font-family:'Inter',sans-serif;width:100%;transition:all .2s}
+  .adm-input:focus{outline:none;border-color:#00ff66;box-shadow:0 0 15px rgba(0,255,102,.3)}
+  .adm-btn{background:linear-gradient(135deg,#00ff66,#0B8F3C);color:#000;padding:.6rem 1.2rem;border-radius:.5rem;font-family:'Orbitron',sans-serif;font-weight:900;letter-spacing:.15em;font-size:.75rem;cursor:pointer;transition:all .2s;box-shadow:0 0 20px rgba(0,255,102,.4)}
+  .adm-btn:hover{transform:translateY(-1px);box-shadow:0 0 30px rgba(0,255,102,.6)}
+  .adm-btn.ghost{background:transparent;color:#00ff66;border:1px solid rgba(0,255,102,.4);box-shadow:none}
+  .adm-btn.danger{background:linear-gradient(135deg,#ef4444,#7f1d1d);color:#fff;box-shadow:0 0 20px rgba(239,68,68,.4)}
+  .code-view{background:#000;border:1px solid rgba(0,255,102,.2);border-radius:.75rem;padding:1rem;font-family:'Courier New',monospace;font-size:.75rem;color:#00ff66;max-height:60vh;overflow:auto;white-space:pre-wrap;word-break:break-all}
 </style>
 </head>
-<body>
+<body class="min-h-screen">
 
-<!-- TELA DE MAIORIDADE -->
-<div id="age-screen">
-  <div class="age-container">
-    <div class="age-title">⚠</div>
-    <div class="age-subtitle">VERIFICAÇÃO DE MAIORIDADE</div>
-    <p class="age-question">Este site é restrito para maiores de 18 anos.<br>Você tem 18 anos ou mais?</p>
-    <div class="age-buttons">
-      <button class="age-btn age-btn-agree" onclick="agreeAge()">Concordo</button>
-      <button class="age-btn age-btn-disagree" onclick="disagreeAge()">Discordo</button>
+<!-- SVG icon sprite -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-home" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M3 12l9-9 9 9M5 10v10h14V10"/></symbol>
+    <symbol id="i-dash" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M3 3h8v10H3zM13 3h8v6h-8zM13 11h8v10h-8zM3 15h8v6H3z"/></symbol>
+    <symbol id="i-money" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 3v18M17 6H9.5a2.5 2.5 0 0 0 0 5h5a2.5 2.5 0 0 1 0 5H6"/></symbol>
+    <symbol id="i-card" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M2 6h20v12H2zM2 10h20"/></symbol>
+    <symbol id="i-up" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M3 17l6-6 4 4 8-8M14 7h7v7"/></symbol>
+    <symbol id="i-down" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M3 7l6 6 4-4 8 8M14 17h7v-7"/></symbol>
+    <symbol id="i-list" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-cog" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2"/><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1A1.7 1.7 0 0 0 9 19.4a1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.7 1.7 0 0 0 4.6 9a1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></symbol>
+    <symbol id="i-receipt" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M4 2h16v20l-3-2-3 2-3-2-3 2-3-2-1 2zM8 7h8M8 11h8M8 15h5"/></symbol>
+    <symbol id="i-folder" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></symbol>
+    <symbol id="i-box" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M21 8l-9-5-9 5v8l9 5 9-5zM3 8l9 5 9-5M12 13v10"/></symbol>
+    <symbol id="i-tool" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M14.7 6.3a4 4 0 1 1 5 5l-9 9-6 1 1-6z"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M23 21v-2a4 4 0 0 0-3-3.9M16 3.1A4 4 0 0 1 16 11"/><circle cx="9" cy="7" r="4" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-activity" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M22 12h-4l-3 9-6-18-3 9H2"/></symbol>
+    <symbol id="i-bar" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M12 20V10M18 20V4M6 20v-6"/></symbol>
+    <symbol id="i-cal" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M3 5h18v16H3zM3 9h18M8 3v4M16 3v4"/></symbol>
+    <symbol id="i-msg" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8-6.2-3.3-6.2 3.3 1.2-6.8-5-4.9 6.9-1z"/></symbol>
+    <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="6" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="2" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-crown" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M2 7l4 10h12l4-10-6 4-4-7-4 7z"/></symbol>
+    <symbol id="i-rocket" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M4.5 16.5c-1.5 1.3-2 5-2 5s3.7-.5 5-2c.7-.9.7-2.2-.1-3-.8-.8-2-.8-2.9-.1zM12 15l-3-3a15 15 0 0 1 8-11c3 0 6 3 6 6a15 15 0 0 1-11 8zM9 12H4l4-6h4M15 12v5l6-4v-4"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path fill="none" stroke="currentColor" stroke-width="2" d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+    <symbol id="i-log" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M8 13h8M8 17h5"/></symbol>
+    <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><path fill="none" stroke="currentColor" stroke-width="2" d="M2 12h20M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20"/></symbol>
+    <symbol id="i-wifi" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M5 12a10 10 0 0 1 14 0M8.5 15.5a5 5 0 0 1 7 0M2 8.8a15 15 0 0 1 20 0M12 20h.01"/></symbol>
+    <symbol id="i-upload" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></symbol>
+    <symbol id="i-out" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></symbol>
+    <symbol id="i-diamond" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M6 3h12l4 6-10 12L2 9z"/></symbol>
+    <symbol id="i-spark" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M12 2l2 7 7 2-7 2-2 7-2-7-7-2 7-2z"/></symbol>
+    <symbol id="i-code" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M18 6L6 18M6 6l12 12"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M12 2l9 4v6c0 5-4 9-9 10-5-1-9-5-9-10V6z"/></symbol>
+    <symbol id="i-game" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M6 12h4M8 10v4M15 13h.01M18 11h.01M17.32 5H6.68a4 4 0 0 0-3.978 3.59C2.604 9.416 2 14.456 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.414-1.414A2 2 0 0 1 9.828 16h4.344a2 2 0 0 1 1.414.586L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.545-.604-6.584-.685-7.258A4 4 0 0 0 17.32 5Z"/></symbol>
+    <symbol id="i-ball" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><path fill="none" stroke="currentColor" stroke-width="2" d="M4.93 4.93l14.14 14.14M19.07 4.93L4.93 19.07"/></symbol>
+  </defs>
+</svg>
+
+<!-- INTRO 1 -->
+<div id="intro1" class="fixed inset-0 z-[100] bg-black flex items-center justify-center overflow-hidden">
+  <canvas id="matrix1" class="absolute inset-0 w-full h-full opacity-60"></canvas>
+  <div class="pointer-events-none absolute inset-0 grid-bg opacity-30"></div>
+  <div class="pointer-events-none absolute inset-0" style="background:radial-gradient(ellipse at center,transparent,rgba(0,0,0,.6) 60%,#000)"></div>
+  <div class="pointer-events-none absolute left-0 right-0 h-24 opacity-30 scan-line" style="background:linear-gradient(to bottom,transparent,#00ff66,transparent)"></div>
+  <div id="particles1" class="absolute inset-0"></div>
+  <div class="relative z-10 text-center px-6">
+    <div class="zoom-in">
+      <h1 class="font-display text-5xl md:text-8xl font-black neon-text animate-glow-pulse tracking-widest">KAWE DESENVOLVEDOR</h1>
+      <p class="mt-6 text-xs md:text-base tracking-[0.5em] text-green-400/80 font-display fade-up" style="animation-delay:.8s">APRESENTA</p>
+      <div class="mx-auto mt-8 h-px bg-gradient-to-r from-transparent via-green-400 to-transparent" style="width:0;animation:grow 1.5s 1s forwards"></div>
     </div>
-    <div class="age-footer">
-      <a href="#" onclick="event.preventDefault();showTerms()">TERMOS</a>
-      |
-      <a href="#" onclick="event.preventDefault();showPolicy()">POLÍTICA</a>
-      |
-      <a href="#" onclick="event.preventDefault();showResponsible()">RESPONSÁVEL</a>
+  </div>
+  <style>@keyframes grow{to{width:100%}}</style>
+</div>
+
+<!-- INTRO 2 -->
+<div id="intro2" class="fixed inset-0 z-[100] bg-black flex items-center justify-center overflow-hidden hidden">
+  <canvas id="matrix2" class="absolute inset-0 w-full h-full opacity-60"></canvas>
+  <div class="pointer-events-none absolute inset-0 grid-bg opacity-30"></div>
+  <div class="pointer-events-none absolute inset-0" style="background:radial-gradient(ellipse at center,transparent,rgba(0,0,0,.6) 60%,#000)"></div>
+  <div class="pointer-events-none absolute left-0 right-0 h-24 opacity-30 scan-line" style="background:linear-gradient(to bottom,transparent,#00ff66,transparent)"></div>
+  <div id="particles2" class="absolute inset-0"></div>
+  <div class="relative z-10 text-center px-6">
+    <div class="zoom-in">
+      <h1 class="font-display text-5xl md:text-8xl font-black neon-text animate-glow-pulse tracking-widest">KAWE CASSINO</h1>
+      <p class="mt-6 text-xs md:text-base tracking-[0.5em] text-green-400/80 font-display fade-up" style="animation-delay:.8s">EXPERIÊNCIA PREMIUM</p>
+      <div class="mx-auto mt-8 h-px bg-gradient-to-r from-transparent via-green-400 to-transparent" style="width:0;animation:grow 1.5s 1s forwards"></div>
     </div>
   </div>
 </div>
 
-<!-- INTRO CANVAS -->
-<div id="intro-overlay">
-  <canvas id="intro-canvas"></canvas>
+<!-- AGE GATE -->
+<div id="gate" class="fixed inset-0 z-[90] bg-black overflow-y-auto hidden fade-in">
+  <div class="pointer-events-none fixed inset-0 grid-bg opacity-20"></div>
+  <div id="particles3" class="pointer-events-none fixed inset-0"></div>
+  <div class="pointer-events-none fixed inset-0" style="background:radial-gradient(ellipse at center,rgba(0,255,102,.05),transparent,#000)"></div>
+  <div class="relative mx-auto max-w-5xl px-4 py-16 md:py-24">
+    <div class="glass neon-border neon-glow rounded-3xl p-8 md:p-16 fade-up">
+      <div class="mb-6 flex justify-center">
+        <span class="rounded-full border border-green-400/50 bg-green-400/10 px-4 py-1.5 text-xs font-display tracking-[0.3em] text-green-400">+18 ANOS</span>
+      </div>
+      <h1 class="text-center font-display text-4xl md:text-7xl font-black neon-text mb-8">ATENÇÃO!</h1>
+      <div class="mx-auto max-w-3xl space-y-5 text-center text-base md:text-xl leading-relaxed text-white/90">
+        <p>Este site é destinado <span class="text-green-400 font-bold">exclusivamente para maiores de 18 anos</span>.</p>
+        <p>Ao continuar você confirma possuir idade igual ou superior a 18 anos e declara estar de acordo com nossos <span class="text-green-400">Termos de Uso</span>, <span class="text-green-400">Política de Privacidade</span>, <span class="text-green-400">Política de Cookies</span> e demais regras da plataforma.</p>
+        <p>Caso não possua a idade mínima exigida ou não concorde com as condições apresentadas, recomendamos que encerre imediatamente sua navegação.</p>
+        <p class="text-white/70">A utilização desta plataforma implica total aceitação das políticas estabelecidas.</p>
+      </div>
+      <div class="mt-12 flex flex-col sm:flex-row items-center justify-center gap-5">
+        <button onclick="enter()" class="w-full sm:w-64 rounded-xl bg-gradient-to-br from-green-400 to-green-600 px-8 py-5 font-display text-lg font-black tracking-[0.3em] text-black neon-glow btn-hover">ENTRAR</button>
+        <button onclick="location.href='https://www.google.com'" class="w-full sm:w-64 rounded-xl border border-red-500/50 bg-red-500/10 px-8 py-5 font-display text-lg font-black tracking-[0.3em] text-red-400 btn-hover" style="box-shadow:0 0 20px rgba(239,68,68,.4)">SAIR</button>
+      </div>
+    </div>
+
+    <div class="mt-16 grid gap-8 md:grid-cols-2">
+      <div class="glass rounded-2xl p-6 md:p-8 border border-green-400/20 fade-up">
+        <div class="mb-4 flex items-center gap-3">
+          <span class="h-2 w-2 rounded-full bg-green-400" style="box-shadow:0 0 10px #00ff66"></span>
+          <h2 class="font-display text-xl md:text-2xl font-black tracking-wider text-green-400">TERMOS DE USO</h2>
+        </div>
+        <div class="max-h-96 overflow-y-auto pr-3 text-sm leading-relaxed text-white/80 space-y-3">
+          <p>Bem-vindo à KAWE CASSINO. Estes Termos de Uso regulam o acesso e a utilização de nossa plataforma. Ao utilizar nossos serviços, você concorda integralmente com todas as cláusulas aqui descritas.</p>
+          <p>1. USO DO SISTEMA — O usuário compromete-se a utilizar a plataforma exclusivamente para finalidades legais, pessoais e não comerciais.</p>
+          <p>2. CADASTRO E CONTA — O cadastro exige informações verdadeiras, completas e atualizadas.</p>
+          <p>3. RESPONSABILIDADES — O usuário é integralmente responsável por qualquer conteúdo enviado.</p>
+          <p>4. PROIBIÇÕES — É expressamente vedado utilizar bots, burlar segurança ou praticar fraude.</p>
+          <p>5. SEGURANÇA — Adotamos padrões avançados: TLS, hash, XSS/CSRF/SQLi, rate limiting.</p>
+          <p>6. PRIVACIDADE E LGPD — Tratamos dados em conformidade com a LGPD.</p>
+          <p>7. DIREITOS AUTORAIS — Conteúdo e código são propriedade da KAWE CASSINO.</p>
+          <p>8. PENALIDADES — Descumprimento gera advertência, suspensão, bloqueio.</p>
+          <p>9. COOKIES — Usamos cookies para experiência, análise e segurança.</p>
+          <p>10. ALTERAÇÕES — Podemos modificar estes termos a qualquer momento.</p>
+        </div>
+      </div>
+      <div class="glass rounded-2xl p-6 md:p-8 border border-green-400/20 fade-up">
+        <div class="mb-4 flex items-center gap-3">
+          <span class="h-2 w-2 rounded-full bg-green-400" style="box-shadow:0 0 10px #00ff66"></span>
+          <h2 class="font-display text-xl md:text-2xl font-black tracking-wider text-green-400">POLÍTICA DE PRIVACIDADE</h2>
+        </div>
+        <div class="max-h-96 overflow-y-auto pr-3 text-sm leading-relaxed text-white/80 space-y-3">
+          <p>A KAWE CASSINO respeita e valoriza sua privacidade.</p>
+          <p>1. DADOS COLETADOS — nome, documento, e-mail, IP, dispositivo, comportamento.</p>
+          <p>2. COOKIES — essenciais, de desempenho, funcionais e analíticos.</p>
+          <p>3. ARMAZENAMENTO E SEGURANÇA — servidores criptografados.</p>
+          <p>4. COMPARTILHAMENTO — não vendemos seus dados.</p>
+          <p>5. RETENÇÃO — apenas pelo tempo necessário.</p>
+          <p>6. DIREITOS DO TITULAR — acessar, corrigir, portar, excluir.</p>
+          <p>7. EXCLUSÃO DE CONTA — a qualquer momento.</p>
+          <p>8. TRANSFERÊNCIA INTERNACIONAL — conforme LGPD.</p>
+          <p>9. INCIDENTES — comunicamos autoridade e titulares.</p>
+          <p>10. CONTATO — Encarregado de Dados (DPO).</p>
+        </div>
+      </div>
+    </div>
+    <p class="mt-12 text-center text-xs text-white/50">© 2026 KAWE CASSINO — Todos os direitos reservados</p>
+  </div>
 </div>
 
-<!-- MODAL LOGIN -->
-<div id="login-modal" class="modal-overlay">
-  <div class="modal">
-    <div class="modal-close" onclick="closeLoginModal()">✕</div>
-    <h2>Login</h2>
-    <form onsubmit="handleLogin(event)">
-      <div class="form-group">
-        <label>Email ou Usuário</label>
-        <input type="text" placeholder="seu@email.com ou usuario" required>
+<!-- MAIN APP -->
+<div id="app" class="hidden fade-in">
+  <header class="fixed top-0 left-0 right-0 z-50 glass border-b border-green-400/20">
+    <div class="mx-auto flex max-w-[1600px] items-center justify-between px-4 md:px-8 py-3">
+      <div class="flex items-center gap-3">
+        <button onclick="toggleSidebar(true)" class="grid h-10 w-10 place-items-center rounded-lg border border-green-400/30 bg-black/40 text-green-400">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <div class="flex items-center gap-2">
+          <div class="grid h-9 w-9 place-items-center rounded-lg bg-gradient-to-br from-green-400 to-green-700 neon-glow text-black font-black">K</div>
+          <span class="font-display font-black text-lg md:text-xl neon-text tracking-widest">KAWE<span class="text-white/70 ml-1">CASSINO</span></span>
+        </div>
       </div>
-      <div class="form-group">
-        <label>Senha</label>
-        <input type="password" placeholder="Sua senha" required>
+      <nav class="hidden lg:flex items-center gap-1 text-sm">
+        <a href="#" class="px-3 py-2 text-white/80 hover:text-green-400 transition">Início</a>
+        <a href="#" class="px-3 py-2 text-white/80 hover:text-green-400 transition">Sobre</a>
+        <a href="#" class="px-3 py-2 text-white/80 hover:text-green-400 transition">Cadastro</a>
+        <a href="#" class="px-3 py-2 text-white/80 hover:text-green-400 transition">Login</a>
+        <a href="#" class="px-3 py-2 text-white/80 hover:text-green-400 transition">Dashboard</a>
+        <a href="#" class="px-3 py-2 text-white/80 hover:text-green-400 transition">Finanças</a>
+        <a href="#" class="px-3 py-2 text-white/80 hover:text-green-400 transition">Estatísticas</a>
+        <a href="#" class="px-3 py-2 text-white/80 hover:text-green-400 transition">Suporte</a>
+      </nav>
+      <div class="flex items-center gap-2">
+        <button onclick="openAdminGate()" title="Administração" class="grid h-10 w-10 place-items-center rounded-lg border border-green-400/40 bg-black/40 text-green-400 hover:bg-green-400/10 transition">
+          <svg class="ico" width="18" height="18"><use href="#i-shield"/></svg>
+        </button>
+        <button class="rounded-lg bg-gradient-to-br from-green-400 to-green-600 px-4 py-2 text-sm font-bold text-black neon-glow btn-hover">Entrar</button>
       </div>
-      <button type="submit" class="form-btn">Entrar</button>
-    </form>
-    <div class="social-divider"><span>ou</span></div>
-    <div class="social-buttons">
-      <button class="social-btn" title="Google" onclick="socialLogin('google')">🔵</button>
-      <button class="social-btn" title="Facebook" onclick="socialLogin('facebook')">📘</button>
-      <button class="social-btn" title="Apple" onclick="socialLogin('apple')">🍎</button>
-      <button class="social-btn" title="Discord" onclick="socialLogin('discord')">💜</button>
-      <button class="social-btn" title="WeChat" onclick="socialLogin('wechat')">🟢</button>
-      <button class="social-btn" title="X" onclick="socialLogin('x')">✕</button>
-      <button class="social-btn" title="VK" onclick="socialLogin('vk')">🔷</button>
     </div>
-    <div class="toggle-form">
-      Não tem conta? <a onclick="switchToSignup()">Cadastre-se</a>
+  </header>
+
+  <div id="overlay" onclick="toggleSidebar(false)" class="fixed inset-0 z-[60] bg-black/70 backdrop-blur-sm hidden"></div>
+  <aside id="sidebar" class="fixed left-0 top-0 z-[70] h-full w-80 glass border-r border-green-400/30 overflow-y-auto hidden">
+    <div class="flex items-center justify-between p-5 border-b border-green-400/20">
+      <span class="font-display font-black neon-text tracking-widest">MENU</span>
+      <button onclick="toggleSidebar(false)" class="grid h-9 w-9 place-items-center rounded-lg border border-green-400/30 text-green-400">
+        <svg class="ico" width="16" height="16"><use href="#i-x"/></svg>
+      </button>
+    </div>
+    <nav id="side-nav" class="p-3"></nav>
+  </aside>
+
+  <section class="relative pt-28 pb-16 md:pt-40 md:pb-24 overflow-hidden">
+    <div class="pointer-events-none absolute inset-0 grid-bg opacity-20"></div>
+    <div id="particles-hero" class="pointer-events-none absolute inset-0"></div>
+    <div class="pointer-events-none absolute inset-0" style="background:radial-gradient(ellipse at center,rgba(0,255,102,.10),transparent)"></div>
+    <div class="relative mx-auto max-w-[1400px] px-6 text-center">
+      <div class="inline-flex items-center gap-2 rounded-full border border-green-400/40 bg-green-400/5 px-4 py-1.5 text-xs tracking-[0.3em] text-green-400 font-display fade-up">
+        <svg class="ico" width="12" height="12"><use href="#i-spark"/></svg> PLATAFORMA PREMIUM
+      </div>
+      <h1 class="mt-6 font-display text-5xl md:text-8xl font-black tracking-tight fade-up" style="animation-delay:.1s">
+        <span class="neon-text">KAWE</span>
+        <span class="bg-gradient-to-br from-white via-green-400 to-green-700 bg-clip-text text-transparent">CASSINO</span>
+      </h1>
+      <p class="mx-auto mt-6 max-w-2xl text-base md:text-lg text-white/70 fade-up" style="animation-delay:.2s">Experiência de nível internacional. Dashboard financeiro em tempo real, segurança de ponta e performance extrema em uma única plataforma.</p>
+      <div class="mt-8 flex flex-wrap justify-center gap-3 fade-up" style="animation-delay:.3s">
+        <button class="rounded-xl bg-gradient-to-br from-green-400 to-green-600 px-8 py-3.5 font-display font-bold tracking-widest text-black neon-glow btn-hover">COMEÇAR AGORA</button>
+        <button class="rounded-xl border border-green-400/40 bg-black/40 px-8 py-3.5 font-display font-bold tracking-widest text-green-400 backdrop-blur btn-hover">VER DASHBOARD</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="relative py-16 md:py-24">
+    <div class="mx-auto max-w-[1400px] px-4 md:px-8">
+      <div class="mb-10 flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p class="font-display text-xs tracking-[0.4em] text-green-400">DASHBOARD PREMIUM</p>
+          <h2 class="mt-2 font-display text-3xl md:text-5xl font-black">Painel <span class="neon-text">Financeiro</span></h2>
+        </div>
+        <div class="flex items-center gap-2 rounded-full glass px-4 py-2 text-xs">
+          <span class="relative flex h-2 w-2"><span class="absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75 animate-ping"></span><span class="relative inline-flex h-2 w-2 rounded-full bg-green-400"></span></span>
+          Ao vivo · atualizado agora
+        </div>
+      </div>
+      <div id="kpis" class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-5"></div>
+
+      <div class="mt-8 grid gap-5 lg:grid-cols-3">
+        <div class="glass rounded-2xl p-5 border border-green-400/15 lg:col-span-2">
+          <h3 class="mb-4 font-display text-sm tracking-widest text-green-400/90">Fluxo de Caixa Anual</h3>
+          <canvas id="chart1" height="120"></canvas>
+        </div>
+        <div class="glass rounded-2xl p-5 border border-green-400/15">
+          <h3 class="mb-4 font-display text-sm tracking-widest text-green-400/90">Distribuição de Receita</h3>
+          <canvas id="chart2" height="180"></canvas>
+        </div>
+        <div class="glass rounded-2xl p-5 border border-green-400/15">
+          <h3 class="mb-4 font-display text-sm tracking-widest text-green-400/90">Performance Semanal</h3>
+          <canvas id="chart3" height="150"></canvas>
+        </div>
+        <div class="glass rounded-2xl p-5 border border-green-400/15">
+          <h3 class="mb-4 font-display text-sm tracking-widest text-green-400/90">Indicadores</h3>
+          <canvas id="chart4" height="150"></canvas>
+        </div>
+        <div class="glass rounded-2xl p-5 border border-green-400/15">
+          <h3 class="mb-4 font-display text-sm tracking-widest text-green-400/90">Tendência</h3>
+          <canvas id="chart5" height="150"></canvas>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="relative py-16 md:py-24 border-t border-green-400/10">
+    <div class="mx-auto max-w-[1400px] px-4 md:px-8">
+      <div class="text-center mb-12">
+        <p class="font-display text-xs tracking-[0.4em] text-green-400">RECURSOS</p>
+        <h2 class="mt-2 font-display text-3xl md:text-5xl font-black">Tecnologia <span class="neon-text">de ponta</span></h2>
+      </div>
+      <div id="features" class="grid gap-5 md:grid-cols-2 lg:grid-cols-3"></div>
+    </div>
+  </section>
+
+  <footer class="relative mt-20 border-t border-green-400/20 glass">
+    <div class="mx-auto max-w-[1400px] px-4 md:px-8 py-12">
+      <div class="grid gap-10 md:grid-cols-5">
+        <div>
+          <div class="flex items-center gap-2">
+            <div class="grid h-10 w-10 place-items-center rounded-lg bg-gradient-to-br from-green-400 to-green-700 neon-glow text-black font-black">K</div>
+            <span class="font-display font-black text-lg neon-text tracking-widest">KAWE</span>
+          </div>
+          <p class="mt-4 text-sm text-white/60">Plataforma premium de nível internacional.</p>
+          <div class="mt-4 flex gap-2">
+            <a href="#" class="grid h-9 w-9 place-items-center rounded-lg border border-green-400/30 text-xs font-bold text-green-400">FB</a>
+            <a href="#" class="grid h-9 w-9 place-items-center rounded-lg border border-green-400/30 text-xs font-bold text-green-400">IG</a>
+            <a href="#" class="grid h-9 w-9 place-items-center rounded-lg border border-green-400/30 text-xs font-bold text-green-400">X</a>
+            <a href="#" class="grid h-9 w-9 place-items-center rounded-lg border border-green-400/30 text-xs font-bold text-green-400">YT</a>
+          </div>
+        </div>
+        <div><h4 class="font-display text-sm tracking-widest text-green-400 mb-4">Plataforma</h4><ul class="space-y-2 text-sm text-white/70"><li><a href="#">Início</a></li><li><a href="#">Dashboard</a></li><li><a href="#">Finanças</a></li><li><a href="#">Estatísticas</a></li><li><a href="#">Relatórios</a></li></ul></div>
+        <div><h4 class="font-display text-sm tracking-widest text-green-400 mb-4">Conta</h4><ul class="space-y-2 text-sm text-white/70"><li><a href="#">Login</a></li><li><a href="#">Cadastro</a></li><li><a href="#">Perfil</a></li><li><a href="#">Segurança</a></li><li><a href="#">Configurações</a></li></ul></div>
+        <div><h4 class="font-display text-sm tracking-widest text-green-400 mb-4">Suporte</h4><ul class="space-y-2 text-sm text-white/70"><li><a href="#">FAQ</a></li><li><a href="#">Contato</a></li><li><a href="#">Ajuda</a></li><li><a href="#">Status</a></li><li><a href="#">Documentação</a></li></ul></div>
+        <div><h4 class="font-display text-sm tracking-widest text-green-400 mb-4">Legal</h4><ul class="space-y-2 text-sm text-white/70"><li><a href="#">Termos</a></li><li><a href="#">Privacidade</a></li><li><a href="#">Cookies</a></li><li><a href="#">LGPD</a></li><li><a href="#">Licença</a></li></ul></div>
+      </div>
+      <div class="mt-12 pt-6 border-t border-green-400/10 flex flex-col md:flex-row justify-between items-center gap-3 text-xs text-white/50">
+        <span>© 2026 KAWE CASSINO. Todos os direitos reservados.</span>
+        <span>v1.0.0 · Feito com precisão</span>
+      </div>
+    </div>
+  </footer>
+</div>
+
+
+<!-- GAMES CATALOG MODAL -->
+<div id="gamesModal" class="fixed inset-0 z-[180] bg-black/90 backdrop-blur-md hidden items-center justify-center p-4 overflow-y-auto">
+  <div class="pointer-events-none absolute inset-0 grid-bg opacity-20"></div>
+  <div class="relative glass neon-border neon-glow rounded-3xl p-6 md:p-10 max-w-5xl w-full my-8 slide-down">
+    <button onclick="closeGames()" class="absolute top-4 right-4 grid h-9 w-9 place-items-center rounded-lg border border-green-400/30 text-green-400 hover:bg-green-400/10">
+      <svg class="ico" width="16" height="16"><use href="#i-x"/></svg>
+    </button>
+    <div class="flex items-center gap-3 mb-2">
+      <div class="grid h-12 w-12 place-items-center rounded-xl bg-gradient-to-br from-green-400/20 to-green-700/20 border border-green-400/40 text-green-400 neon-glow">
+        <svg class="ico" width="24" height="24"><use href="#i-game"/></svg>
+      </div>
+      <div>
+        <p class="text-[10px] font-display tracking-[0.4em] text-green-400">CATÁLOGO</p>
+        <h2 class="font-display text-2xl md:text-3xl font-black neon-text tracking-widest">JOGOS</h2>
+      </div>
+    </div>
+    <p class="text-sm text-white/60 mb-6">Escolha um jogo para começar a apostar. Novos títulos são adicionados constantemente.</p>
+    <div class="grid gap-5 md:grid-cols-3">
+      <button onclick="openBingo()" class="glass rounded-2xl p-6 border border-green-400/30 text-left hover:border-green-400 transition group">
+        <div class="grid h-16 w-16 place-items-center rounded-xl bg-gradient-to-br from-green-400 to-green-700 text-black neon-glow mb-4">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><text x="12" y="16" text-anchor="middle" font-size="10" font-weight="900" fill="currentColor" stroke="none">75</text></svg>
+        </div>
+        <h3 class="font-display text-xl font-black neon-text">BINGO 75</h3>
+        <p class="mt-2 text-sm text-white/70">Cartelas 5×5 · Sorteio ao vivo · Prêmios instantâneos</p>
+        <span class="mt-3 inline-block text-[10px] font-display tracking-widest text-green-400">▶ JOGAR AGORA</span>
+      </button>
+      <div class="glass rounded-2xl p-6 border border-green-400/10 opacity-50 cursor-not-allowed">
+        <div class="grid h-16 w-16 place-items-center rounded-xl bg-white/5 border border-green-400/20 text-green-400/50 mb-4"><svg class="ico" width="28" height="28"><use href="#i-diamond"/></svg></div>
+        <h3 class="font-display text-xl font-black">SLOTS</h3>
+        <p class="mt-2 text-sm text-white/50">Em breve</p>
+      </div>
+      <div class="glass rounded-2xl p-6 border border-green-400/10 opacity-50 cursor-not-allowed">
+        <div class="grid h-16 w-16 place-items-center rounded-xl bg-white/5 border border-green-400/20 text-green-400/50 mb-4"><svg class="ico" width="28" height="28"><use href="#i-crown"/></svg></div>
+        <h3 class="font-display text-xl font-black">ROULETTE</h3>
+        <p class="mt-2 text-sm text-white/50">Em breve</p>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- MODAL CADASTRO -->
-<div id="signup-modal" class="modal-overlay">
-  <div class="modal">
-    <div class="modal-close" onclick="closeSignupModal()">✕</div>
-    <h2>Cadastro</h2>
-    <form onsubmit="handleSignup(event)">
-      <div class="form-group">
-        <label>Nome Completo</label>
-        <input type="text" placeholder="Seu nome completo" required>
+<!-- BINGO GAME MODAL -->
+<div id="bingoModal" class="fixed inset-0 z-[185] bg-black overflow-y-auto hidden fade-in">
+  <div class="pointer-events-none fixed inset-0 grid-bg opacity-15"></div>
+  <div class="pointer-events-none fixed inset-0" style="background:radial-gradient(ellipse at top,rgba(0,255,102,.10),transparent 60%)"></div>
+
+  <header class="sticky top-0 z-10 glass border-b border-green-400/30">
+    <div class="mx-auto max-w-[1400px] px-4 md:px-8 py-4 flex items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-green-400 to-green-700 neon-glow text-black">
+          <svg class="ico" width="20" height="20"><use href="#i-game"/></svg>
+        </div>
+        <div>
+          <p class="text-[10px] font-display tracking-[0.4em] text-green-400">MINI GAME</p>
+          <h1 class="font-display font-black text-lg md:text-xl neon-text tracking-widest">BINGO 75</h1>
+        </div>
       </div>
-      <div class="form-group">
-        <label>Nome de Usuário</label>
-        <input type="text" placeholder="seu_usuario" required>
+      <div class="flex items-center gap-2">
+        <span class="hidden md:flex items-center gap-2 rounded-full glass px-3 py-1.5 text-xs font-display tracking-widest">
+          <svg class="ico text-green-400" width="14" height="14"><use href="#i-money"/></svg>
+          SALDO: <span id="bingo-balance" class="text-green-400 font-black">R$ 0,00</span>
+        </span>
+        <button onclick="closeBingo()" class="adm-btn ghost flex items-center gap-2">
+          <svg class="ico" width="14" height="14"><use href="#i-out"/></svg> SAIR
+        </button>
       </div>
-      <div class="form-group">
-        <label>Email</label>
-        <input type="email" placeholder="seu@email.com" required>
-      </div>
-      <div class="form-group">
-        <label>Data de Nascimento</label>
-        <input type="date" required>
-      </div>
-      <div class="form-group">
-        <label>Senha</label>
-        <input type="password" placeholder="Crie uma senha forte" required>
-      </div>
-      <div class="form-group">
-        <label>Confirmar Senha</label>
-        <input type="password" placeholder="Confirme sua senha" required>
-      </div>
-      <button type="submit" class="form-btn">Criar Conta</button>
-    </form>
-    <div class="social-divider"><span>ou</span></div>
-    <div class="social-buttons">
-      <button class="social-btn" title="Google" onclick="socialSignup('google')">🔵</button>
-      <button class="social-btn" title="Facebook" onclick="socialSignup('facebook')">📘</button>
-      <button class="social-btn" title="Apple" onclick="socialSignup('apple')">🍎</button>
-      <button class="social-btn" title="Discord" onclick="socialSignup('discord')">💜</button>
-      <button class="social-btn" title="WeChat" onclick="socialSignup('wechat')">🟢</button>
-      <button class="social-btn" title="X" onclick="socialSignup('x')">✕</button>
-      <button class="social-btn" title="VK" onclick="socialSignup('vk')">🔷</button>
     </div>
-    <div class="toggle-form">
-      Já tem conta? <a onclick="switchToLogin()">Faça login</a>
+  </header>
+
+  <main class="relative mx-auto max-w-[1400px] px-4 md:px-8 py-8">
+    <!-- SETUP PHASE -->
+    <div id="bingo-setup">
+      <div class="glass rounded-2xl p-6 border border-green-400/20 mb-6">
+        <h3 class="font-display text-sm tracking-[0.3em] text-green-400 mb-4">1 · DEFINA SUA APOSTA</h3>
+        <div class="grid md:grid-cols-[1fr_auto] gap-4 items-end">
+          <div>
+            <label class="text-[10px] tracking-widest text-green-400/70 font-display">VALOR DA APOSTA (R$)</label>
+            <input id="bingo-bet" type="number" min="1" step="1" value="10" class="adm-input">
+            <div class="flex gap-2 mt-2 flex-wrap">
+              <button class="adm-btn ghost" onclick="setBet(5)">R$ 5</button>
+              <button class="adm-btn ghost" onclick="setBet(10)">R$ 10</button>
+              <button class="adm-btn ghost" onclick="setBet(50)">R$ 50</button>
+              <button class="adm-btn ghost" onclick="setBet(100)">R$ 100</button>
+              <button class="adm-btn ghost" onclick="setBet(500)">R$ 500</button>
+            </div>
+          </div>
+          <div class="text-right">
+            <p class="text-xs text-white/60 tracking-widest font-display">PRÊMIO POTENCIAL</p>
+            <p id="bingo-prize" class="font-display text-3xl font-black neon-text">R$ 100,00</p>
+            <p class="text-[10px] text-white/50">Bingo completo paga 10× · Linha paga 3×</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="glass rounded-2xl p-6 border border-green-400/20 mb-6">
+        <div class="flex items-center justify-between mb-4 flex-wrap gap-3">
+          <h3 class="font-display text-sm tracking-[0.3em] text-green-400">2 · ESCOLHA SUA CARTELA</h3>
+          <button class="adm-btn ghost" onclick="rerollCards()">🔄 GERAR NOVAS</button>
+        </div>
+        <div id="bingo-choices" class="grid gap-4 md:grid-cols-3"></div>
+      </div>
+
+      <div class="flex justify-center">
+        <button id="bingo-start" onclick="startBingo()" disabled class="rounded-xl bg-gradient-to-br from-green-400 to-green-600 px-12 py-4 font-display font-black tracking-[0.3em] text-black neon-glow btn-hover disabled:opacity-40 disabled:cursor-not-allowed">▶ INICIAR SORTEIO</button>
+      </div>
+    </div>
+
+    <!-- PLAY PHASE -->
+    <div id="bingo-play" class="hidden">
+      <div class="grid gap-6 lg:grid-cols-[1fr_1fr]">
+        <div class="glass rounded-2xl p-6 border border-green-400/20 text-center">
+          <h3 class="font-display text-xs tracking-[0.3em] text-green-400 mb-4">GLOBO DE SORTEIO</h3>
+          <div id="bingo-globe" class="relative mx-auto rounded-full flex items-center justify-center" style="width:220px;height:220px;background:radial-gradient(circle at 30% 30%,rgba(0,255,102,.25),rgba(11,143,60,.1) 60%,#000 100%);border:3px solid rgba(0,255,102,.5);box-shadow:0 0 40px rgba(0,255,102,.4),inset 0 0 40px rgba(0,255,102,.2)">
+            <div id="globe-inner" class="absolute inset-4 rounded-full overflow-hidden" style="border:1px solid rgba(0,255,102,.3)"></div>
+            <div id="bingo-current" class="relative font-display text-6xl font-black neon-text animate-glow-pulse">—</div>
+          </div>
+          <p class="mt-4 text-xs text-white/60 tracking-widest font-display">ÚLTIMO NÚMERO SORTEADO</p>
+          <div class="mt-6 flex justify-center gap-2 flex-wrap">
+            <button id="bingo-draw" onclick="drawNumber()" class="adm-btn">🎱 SORTEAR NÚMERO</button>
+            <button id="bingo-auto" onclick="toggleAuto()" class="adm-btn ghost">▶ AUTO</button>
+            <button onclick="quitBingo()" class="adm-btn danger">DESISTIR</button>
+          </div>
+          <div class="mt-6">
+            <p class="text-[10px] tracking-widest text-green-400/70 font-display mb-2">NÚMEROS JÁ SORTEADOS (<span id="bingo-count">0</span>)</p>
+            <div id="bingo-drawn" class="flex flex-wrap gap-1 justify-center max-h-32 overflow-y-auto"></div>
+          </div>
+        </div>
+
+        <div class="glass rounded-2xl p-6 border border-green-400/20">
+          <h3 class="font-display text-xs tracking-[0.3em] text-green-400 mb-4">SUA CARTELA</h3>
+          <div id="bingo-active-card"></div>
+          <div id="bingo-status" class="mt-6 text-center text-sm text-white/70"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RESULT PHASE -->
+    <div id="bingo-result" class="hidden">
+      <div class="glass rounded-2xl p-10 border border-green-400/40 text-center max-w-2xl mx-auto neon-glow">
+        <div id="result-icon" class="mx-auto grid h-24 w-24 place-items-center rounded-full mb-6"></div>
+        <h2 id="result-title" class="font-display text-4xl font-black mb-3"></h2>
+        <p id="result-msg" class="text-white/80 mb-6"></p>
+        <p class="text-xs text-white/60 tracking-widest font-display">VALOR</p>
+        <p id="result-amount" class="font-display text-5xl font-black neon-text mb-8">R$ 0,00</p>
+        <div class="flex gap-3 justify-center flex-wrap">
+          <button onclick="resetBingo()" class="adm-btn">🔄 JOGAR NOVAMENTE</button>
+          <button onclick="closeBingo()" class="adm-btn ghost">SAIR</button>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<style>
+  .bingo-card{background:rgba(0,0,0,.5);border:1px solid rgba(0,255,102,.25);border-radius:.75rem;padding:.75rem;transition:all .2s}
+  .bingo-card.selected{border-color:#00ff66;box-shadow:0 0 25px rgba(0,255,102,.5);background:rgba(0,255,102,.05)}
+  .bingo-card.selectable{cursor:pointer}
+  .bingo-card.selectable:hover{border-color:rgba(0,255,102,.6)}
+  .bingo-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
+  .bingo-cell{aspect-ratio:1;display:grid;place-items:center;font-family:'Orbitron',sans-serif;font-weight:700;font-size:.9rem;background:rgba(0,20,10,.6);border:1px solid rgba(0,255,102,.2);border-radius:.35rem;color:#e6ffe6;transition:all .3s}
+  .bingo-cell.header{background:linear-gradient(135deg,#00ff66,#0B8F3C);color:#000;font-size:1.1rem;font-weight:900}
+  .bingo-cell.free{background:rgba(0,255,102,.3);color:#00ff66;font-size:.7rem}
+  .bingo-cell.marked{background:rgba(0,255,102,.5);color:#000;box-shadow:0 0 15px rgba(0,255,102,.7);transform:scale(1.05)}
+  .bingo-cell.winline{background:linear-gradient(135deg,#00ff66,#ffff00);color:#000;animation:glow-pulse 1s infinite}
+  .bingo-cell-lg{aspect-ratio:1;display:grid;place-items:center;font-family:'Orbitron',sans-serif;font-weight:900;font-size:1.4rem;background:rgba(0,20,10,.6);border:1px solid rgba(0,255,102,.25);border-radius:.5rem;color:#e6ffe6;transition:all .3s}
+  .bingo-cell-lg.header{background:linear-gradient(135deg,#00ff66,#0B8F3C);color:#000;font-size:1.6rem}
+  .bingo-cell-lg.free{background:rgba(0,255,102,.3);color:#00ff66;font-size:.85rem}
+  .bingo-cell-lg.marked{background:rgba(0,255,102,.55);color:#000;box-shadow:0 0 20px rgba(0,255,102,.7)}
+  .bingo-cell-lg.winline{background:linear-gradient(135deg,#00ff66,#ffff00);color:#000;animation:glow-pulse 1s infinite}
+  .drawn-chip{display:inline-grid;place-items:center;width:32px;height:32px;border-radius:50%;background:rgba(0,255,102,.15);border:1px solid rgba(0,255,102,.4);color:#00ff66;font-family:'Orbitron';font-weight:700;font-size:.75rem}
+  @keyframes ballSpin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+  .globe-spinning #globe-inner{animation:ballSpin 1s linear infinite}
+  .globe-spinning #bingo-current{animation:none;filter:blur(4px);opacity:.5}
+  .globe-ball{position:absolute;width:24px;height:24px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#fff,#00ff66);box-shadow:0 0 10px #00ff66;font-size:9px;color:#000;display:grid;place-items:center;font-weight:900;font-family:'Orbitron'}
+  .weight-cell{background:rgba(0,0,0,.5);border:1px solid rgba(0,255,102,.2);border-radius:.4rem;padding:.3rem;display:flex;flex-direction:column;align-items:center;gap:2px}
+  .weight-cell input{width:100%;background:transparent;border:none;color:#00ff66;text-align:center;font-family:'Orbitron';font-weight:700;font-size:.75rem;outline:none}
+  .weight-cell label{font-size:.6rem;color:rgba(0,255,102,.6);font-family:'Orbitron';letter-spacing:.1em}
+</style>
+
+<!-- ADMIN PIN GATE -->
+<div id="adminGate" class="fixed inset-0 z-[200] bg-black/90 backdrop-blur-md hidden items-center justify-center p-4">
+  <div class="pointer-events-none absolute inset-0 grid-bg opacity-30"></div>
+  <div class="pointer-events-none absolute inset-0" style="background:radial-gradient(ellipse at center,rgba(0,255,102,.15),transparent 70%)"></div>
+  <div id="adminGateCard" class="relative glass neon-border neon-glow rounded-3xl p-8 md:p-12 max-w-md w-full slide-down">
+    <button onclick="closeAdminGate()" class="absolute top-4 right-4 grid h-9 w-9 place-items-center rounded-lg border border-green-400/30 text-green-400 hover:bg-green-400/10">
+      <svg class="ico" width="16" height="16"><use href="#i-x"/></svg>
+    </button>
+    <div class="flex justify-center mb-6">
+      <div class="grid h-16 w-16 place-items-center rounded-2xl bg-gradient-to-br from-green-400/20 to-green-700/20 border border-green-400/40 text-green-400 neon-glow">
+        <svg class="ico" width="32" height="32"><use href="#i-lock"/></svg>
+      </div>
+    </div>
+    <h2 class="text-center font-display text-2xl md:text-3xl font-black neon-text tracking-widest">ACESSO ADMIN</h2>
+    <p class="text-center text-sm text-white/60 mt-2 tracking-widest font-display">DIGITE O PIN DE 4 DÍGITOS</p>
+
+    <div id="pinDots" class="flex justify-center gap-4 mt-8">
+      <span class="pin-dot"></span><span class="pin-dot"></span><span class="pin-dot"></span><span class="pin-dot"></span>
+    </div>
+    <p id="pinError" class="text-center text-xs text-red-400 font-display tracking-widest mt-4 h-4"></p>
+
+    <div class="grid grid-cols-3 gap-3 mt-6 max-w-xs mx-auto">
+      <button class="pin-key h-14 rounded-xl text-xl" onclick="pinPress('1')">1</button>
+      <button class="pin-key h-14 rounded-xl text-xl" onclick="pinPress('2')">2</button>
+      <button class="pin-key h-14 rounded-xl text-xl" onclick="pinPress('3')">3</button>
+      <button class="pin-key h-14 rounded-xl text-xl" onclick="pinPress('4')">4</button>
+      <button class="pin-key h-14 rounded-xl text-xl" onclick="pinPress('5')">5</button>
+      <button class="pin-key h-14 rounded-xl text-xl" onclick="pinPress('6')">6</button>
+      <button class="pin-key h-14 rounded-xl text-xl" onclick="pinPress('7')">7</button>
+      <button class="pin-key h-14 rounded-xl text-xl" onclick="pinPress('8')">8</button>
+      <button class="pin-key h-14 rounded-xl text-xl" onclick="pinPress('9')">9</button>
+      <button class="pin-key h-14 rounded-xl text-xs" onclick="pinClear()">LIMPAR</button>
+      <button class="pin-key h-14 rounded-xl text-xl" onclick="pinPress('0')">0</button>
+      <button class="pin-key h-14 rounded-xl" onclick="pinBack()" title="Apagar">
+        <svg class="ico" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline"><path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/><line x1="18" y1="9" x2="12" y2="15"/><line x1="12" y1="9" x2="18" y2="15"/></svg>
+      </button>
     </div>
   </div>
 </div>
 
-<!-- CONTEÚDO PRINCIPAL -->
-<header>
-  <div class="header-left">
-    <div class="menu" onclick="toggleMenu()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <line x1="3" y1="6" x2="21" y2="6"></line>
-        <line x1="3" y1="12" x2="21" y2="12"></line>
-        <line x1="3" y1="18" x2="21" y2="18"></line>
-      </svg>
+<!-- ADMIN PANEL -->
+<div id="adminPanel" class="fixed inset-0 z-[190] bg-black overflow-y-auto hidden fade-in">
+  <div class="pointer-events-none fixed inset-0 grid-bg opacity-15"></div>
+  <div class="pointer-events-none fixed inset-0" style="background:radial-gradient(ellipse at top,rgba(0,255,102,.08),transparent 60%)"></div>
+
+  <header class="sticky top-0 z-10 glass border-b border-green-400/30">
+    <div class="mx-auto max-w-[1400px] px-4 md:px-8 py-4 flex items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-green-400 to-green-700 neon-glow text-black">
+          <svg class="ico" width="20" height="20"><use href="#i-shield"/></svg>
+        </div>
+        <div>
+          <p class="text-[10px] font-display tracking-[0.4em] text-green-400">PAINEL DE CONTROLE</p>
+          <h1 class="font-display font-black text-lg md:text-xl neon-text tracking-widest">KAWE ADMIN</h1>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="hidden md:flex items-center gap-2 rounded-full glass px-3 py-1.5 text-[10px] font-display tracking-widest">
+          <span class="relative flex h-2 w-2"><span class="absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75 animate-ping"></span><span class="relative inline-flex h-2 w-2 rounded-full bg-green-400"></span></span>
+          SESSÃO SEGURA
+        </span>
+        <button onclick="closeAdmin()" class="adm-btn ghost flex items-center gap-2">
+          <svg class="ico" width="14" height="14"><use href="#i-out"/></svg> SAIR
+        </button>
+      </div>
     </div>
-    <div class="logo-container">
-      <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 60'%3E%3Crect fill='%2322c55e' width='200' height='60' rx='8'/%3E%3Ctext x='50%25' y='50%25' font-size='32' font-weight='bold' fill='%23000' text-anchor='middle' dominant-baseline='middle' font-family='Arial'%3EKAWE%3C/text%3E%3C/svg%3E" alt="KAWE CASSINO">
+    <div class="mx-auto max-w-[1400px] px-4 md:px-8 pb-3 flex gap-2 overflow-x-auto">
+      <button class="admin-tab active" data-tab="stats" onclick="switchTab('stats')">
+        <svg class="ico" width="12" height="12"><use href="#i-dash"/></svg> VISÃO
+      </button>
+      <button class="admin-tab" data-tab="data" onclick="switchTab('data')">
+        <svg class="ico" width="12" height="12"><use href="#i-bar"/></svg> DADOS
+      </button>
+      <button class="admin-tab" data-tab="features" onclick="switchTab('features')">
+        <svg class="ico" width="12" height="12"><use href="#i-spark"/></svg> RECURSOS
+      </button>
+      <button class="admin-tab" data-tab="games" onclick="switchTab('games')">
+        <svg class="ico" width="12" height="12"><use href="#i-game"/></svg> JOGOS
+      </button>
+      <button class="admin-tab" data-tab="users" onclick="switchTab('users')">
+        <svg class="ico" width="12" height="12"><use href="#i-users"/></svg> USUÁRIOS
+      </button>
+      <button class="admin-tab" data-tab="security" onclick="switchTab('security')">
+        <svg class="ico" width="12" height="12"><use href="#i-shield"/></svg> SEGURANÇA
+      </button>
+      <button class="admin-tab" data-tab="backup" onclick="switchTab('backup')">
+        <svg class="ico" width="12" height="12"><use href="#i-download"/></svg> BACKUP
+      </button>
+      <button class="admin-tab" data-tab="source" onclick="switchTab('source')">
+        <svg class="ico" width="12" height="12"><use href="#i-code"/></svg> CÓDIGO
+      </button>
+      <button class="admin-tab" data-tab="logs" onclick="switchTab('logs')">
+        <svg class="ico" width="12" height="12"><use href="#i-log"/></svg> LOGS
+      </button>
     </div>
-    <h1>KAWE</h1>
-  </div>
+  </header>
 
-  <!-- NAVEGAÇÃO DO CABEÇALHO (FUNÇÕES DO MENU) -->
-  <nav class="header-nav" id="header-nav">
-    <a href="#" onclick="event.preventDefault()">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-      <span>Início</span>
-    </a>
-    <a href="#" onclick="event.preventDefault()">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/></svg>
-      <span>Cassino</span>
-    </a>
-    <a href="#" onclick="event.preventDefault()">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2V17zm4 0h-2V7h2V17zm4 0h-2v-4h2V17z"/></svg>
-      <span>Roletas</span>
-    </a>
-    <a href="#" onclick="event.preventDefault()">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
-      <span>Cartas</span>
-    </a>
-    <a href="#" onclick="event.preventDefault()">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
-      <span>Apostas</span>
-    </a>
-    <a href="#" onclick="event.preventDefault()">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-      <span>VIP</span>
-    </a>
-    <a href="#" onclick="event.preventDefault()">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/></svg>
-      <span>Promoções</span>
-    </a>
-    <a href="#" onclick="event.preventDefault()">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-      <span>Bônus</span>
-    </a>
-    <a href="#" onclick="event.preventDefault()">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l-5.5 9h11z"/></svg>
-      <span>Ranking</span>
-    </a>
-  </nav>
+  <main class="relative mx-auto max-w-[1400px] px-4 md:px-8 py-8">
+    <!-- STATS TAB -->
+    <div id="tab-stats" class="admin-tab-panel">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div class="glass rounded-2xl p-5 border border-green-400/20">
+          <div class="flex items-center gap-3"><svg class="ico text-green-400" width="24" height="24"><use href="#i-users"/></svg><span class="text-xs text-white/60 tracking-widest font-display">USUÁRIOS</span></div>
+          <p class="mt-3 font-display text-3xl font-black neon-text" id="adm-users">—</p>
+        </div>
+        <div class="glass rounded-2xl p-5 border border-green-400/20">
+          <div class="flex items-center gap-3"><svg class="ico text-green-400" width="24" height="24"><use href="#i-money"/></svg><span class="text-xs text-white/60 tracking-widest font-display">SALDO</span></div>
+          <p class="mt-3 font-display text-2xl font-black neon-text" id="adm-balance">—</p>
+        </div>
+        <div class="glass rounded-2xl p-5 border border-green-400/20">
+          <div class="flex items-center gap-3"><svg class="ico text-green-400" width="24" height="24"><use href="#i-activity"/></svg><span class="text-xs text-white/60 tracking-widest font-display">ONLINE</span></div>
+          <p class="mt-3 font-display text-3xl font-black neon-text" id="adm-online">—</p>
+        </div>
+        <div class="glass rounded-2xl p-5 border border-green-400/20">
+          <div class="flex items-center gap-3"><svg class="ico text-green-400" width="24" height="24"><use href="#i-wifi"/></svg><span class="text-xs text-white/60 tracking-widest font-display">UPTIME</span></div>
+          <p class="mt-3 font-display text-3xl font-black neon-text" id="adm-uptime">—</p>
+        </div>
+      </div>
+      <div class="glass rounded-2xl p-6 border border-green-400/20">
+        <h3 class="font-display text-sm tracking-[0.3em] text-green-400 mb-4">INFORMAÇÕES DA SESSÃO</h3>
+        <div class="grid md:grid-cols-2 gap-3 text-sm">
+          <div><span class="text-white/50">Sessão iniciada:</span> <span id="adm-session" class="text-green-400"></span></div>
+          <div><span class="text-white/50">Navegador:</span> <span id="adm-ua" class="text-green-400"></span></div>
+          <div><span class="text-white/50">Idioma:</span> <span id="adm-lang" class="text-green-400"></span></div>
+          <div><span class="text-white/50">Resolução:</span> <span id="adm-res" class="text-green-400"></span></div>
+        </div>
+      </div>
+    </div>
 
-  <div class="header-right">
-    <button class="auth-btn btn-login" onclick="openLoginModal()">Login</button>
-    <button class="auth-btn btn-signup" onclick="openSignupModal()">Cadastro</button>
-  </div>
-</header>
+    <!-- DATA TAB -->
+    <div id="tab-data" class="admin-tab-panel hidden">
+      <div class="flex items-center justify-between mb-4 flex-wrap gap-3">
+        <h3 class="font-display text-sm tracking-[0.3em] text-green-400">EDITOR DE KPIS</h3>
+        <div class="flex gap-2">
+          <button class="adm-btn ghost" onclick="resetData()">RESETAR</button>
+          <button class="adm-btn" onclick="saveData()"><svg class="ico" width="12" height="12" style="display:inline;margin-right:4px"><use href="#i-download"/></svg>SALVAR</button>
+        </div>
+      </div>
+      <div id="adm-kpi-editor" class="grid gap-3"></div>
+    </div>
 
-<div class="sidebar" id="sidebar">
-  <div class="sidebar-close" onclick="toggleMenu()">✕</div>
-  <a href="#">
-    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-    Início
-  </a>
-  <a href="#">
-    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/></svg>
-    Cassino
-  </a>
-  <a href="#">
-    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2V17zm4 0h-2V7h2V17zm4 0h-2v-4h2V17z"/></svg>
-    Roletas
-  </a>
-  <a href="#">
-    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
-    Cartas
-  </a>
-  <a href="#">
-    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
-    Apostas
-  </a>
-  <a href="#">
-    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-    VIP
-  </a>
-  <a href="#">
-    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/></svg>
-    Promoções
-  </a>
-  <a href="#">
-    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-    Bônus
-  </a>
-  <a href="#">
-    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l-5.5 9h11z"/></svg>
-    Ranking
-  </a>
-  <a href="#">
-    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-    Campeões
-  </a>
-  <a href="#">
-    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2V17zm4 0h-2V7h2V17zm4 0h-2v-4h2V17z"/></svg>
-    Estatísticas
-  </a>
-  <a href="#">
-    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/></svg>
-    Populares
-  </a>
-  <a href="#">
-    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/></svg>
-    Novidades
-  </a>
-  <a href="#">
-    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-    Favoritos
-  </a>
-  <a href="#">
-    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2V17zm4 0h-2V7h2V17zm4 0h-2v-4h2V17z"/></svg>
-    Sorteios
-  </a>
-  <a href="#">
-    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/></svg>
-    Carteira
-  </a>
-  <a href="#">
-    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/></svg>
-    Saques
-  </a>
-  <a href="#">
-    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/></svg>
-    Depósitos
-  </a>
-  <a href="#">
-    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-    Minha Conta
-  </a>
-  <a href="#">
-    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.62l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.48.1.62l2.03 1.58c-.05.3-.07.62-.07.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.62l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.48-.1-.62l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
-    Configurações
-  </a>
-  <a href="#">
-    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2V17zm4 0h-2V7h2V17zm4 0h-2v-4h2V17z"/></svg>
-    Notícias
-  </a>
-  <a href="#">
-    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
-    Contato
-  </a>
-  <a href="#">
-    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/></svg>
-    Ajuda
-  </a>
-  <a href="#">
-    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/></svg>
-    Corridas
-  </a>
+    <!-- FEATURES TAB -->
+    <div id="tab-features" class="admin-tab-panel hidden">
+      <div class="flex items-center justify-between mb-4 flex-wrap gap-3">
+        <h3 class="font-display text-sm tracking-[0.3em] text-green-400">EDITOR DE RECURSOS</h3>
+        <div class="flex gap-2">
+          <button class="adm-btn ghost" onclick="addFeature()">+ ADICIONAR</button>
+          <button class="adm-btn" onclick="saveFeatures()">SALVAR</button>
+        </div>
+      </div>
+      <div id="adm-feat-editor" class="grid gap-3"></div>
+    </div>
+
+    <!-- GAMES TAB -->
+    <div id="tab-games" class="admin-tab-panel hidden">
+      <div class="glass rounded-2xl p-6 border border-green-400/20 mb-5">
+        <div class="flex items-center gap-3 mb-4">
+          <svg class="ico text-green-400" width="24" height="24"><use href="#i-game"/></svg>
+          <h3 class="font-display text-sm tracking-[0.3em] text-green-400">GERENCIAR JOGOS · BINGO</h3>
+        </div>
+        <p class="text-sm text-white/70 mb-5">Configure a probabilidade global de vitória/derrota do jogador e o peso individual de cada número (1–75). Números com peso maior têm mais chance de serem sorteados.</p>
+        <div class="grid md:grid-cols-3 gap-4 mb-6">
+          <div>
+            <label class="text-[10px] tracking-widest text-green-400/70 font-display">MODO DE SORTEIO</label>
+            <select id="bingo-mode" class="adm-input">
+              <option value="fair">JUSTO (aleatório real)</option>
+              <option value="win">FAVORECER JOGADOR (vitória)</option>
+              <option value="lose">DESFAVORECER (derrota)</option>
+              <option value="weighted">USAR PESOS PERSONALIZADOS</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-[10px] tracking-widest text-green-400/70 font-display">PROBABILIDADE DE VITÓRIA (%)</label>
+            <input id="bingo-winprob" type="number" min="0" max="100" step="1" class="adm-input" value="50">
+          </div>
+          <div>
+            <label class="text-[10px] tracking-widest text-green-400/70 font-display">INTENSIDADE DO VIÉS (0–100)</label>
+            <input id="bingo-bias" type="number" min="0" max="100" step="1" class="adm-input" value="70">
+          </div>
+        </div>
+        <div class="flex gap-2 mb-4 flex-wrap">
+          <button class="adm-btn" onclick="saveBingoCfg()">SALVAR CONFIGURAÇÃO</button>
+          <button class="adm-btn ghost" onclick="resetBingoWeights()">ZERAR PESOS</button>
+          <button class="adm-btn ghost" onclick="fillBingoWeights(10)">TODOS = 10</button>
+        </div>
+        <h4 class="font-display text-xs tracking-[0.3em] text-green-400/80 mb-2">PESOS INDIVIDUAIS (1–75)</h4>
+        <p class="text-xs text-white/50 mb-3">Ex: definir 17 no número 75 significa que ele terá peso 17 na roleta. O % efetivo depende dos demais pesos.</p>
+        <div id="bingo-weights" class="grid grid-cols-5 md:grid-cols-10 gap-2"></div>
+      </div>
+    </div>
+
+    <!-- USERS TAB -->
+    <div id="tab-users" class="admin-tab-panel hidden">
+      <div class="glass rounded-2xl p-6 border border-green-400/20">
+        <h3 class="font-display text-sm tracking-[0.3em] text-green-400 mb-4">USUÁRIOS ATIVOS</h3>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead><tr class="text-left text-green-400/80 font-display text-xs tracking-widest border-b border-green-400/20">
+              <th class="py-2">ID</th><th>NOME</th><th>SALDO</th><th>STATUS</th><th>ÚLTIMO ACESSO</th>
+            </tr></thead>
+            <tbody id="adm-users-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECURITY TAB -->
+    <div id="tab-security" class="admin-tab-panel hidden">
+      <div class="grid md:grid-cols-2 gap-5">
+        <div class="glass rounded-2xl p-6 border border-green-400/20">
+          <h3 class="font-display text-sm tracking-[0.3em] text-green-400 mb-4">CONFIGURAÇÕES DE SEGURANÇA</h3>
+          <div class="space-y-3 text-sm">
+            <label class="flex items-center justify-between"><span>Autenticação 2FA</span><input type="checkbox" checked class="accent-green-400"></label>
+            <label class="flex items-center justify-between"><span>Rate Limiting</span><input type="checkbox" checked class="accent-green-400"></label>
+            <label class="flex items-center justify-between"><span>Bloqueio automático após 5 tentativas</span><input type="checkbox" checked class="accent-green-400"></label>
+            <label class="flex items-center justify-between"><span>Logs de auditoria</span><input type="checkbox" checked class="accent-green-400"></label>
+            <label class="flex items-center justify-between"><span>Criptografia AES-256</span><input type="checkbox" checked class="accent-green-400"></label>
+          </div>
+        </div>
+        <div class="glass rounded-2xl p-6 border border-green-400/20">
+          <h3 class="font-display text-sm tracking-[0.3em] text-green-400 mb-4">STATUS DO SISTEMA</h3>
+          <div class="space-y-2 text-sm">
+            <div class="flex justify-between"><span class="text-white/60">SSL/TLS</span><span class="text-green-400">✓ ATIVO</span></div>
+            <div class="flex justify-between"><span class="text-white/60">Firewall</span><span class="text-green-400">✓ ATIVO</span></div>
+            <div class="flex justify-between"><span class="text-white/60">DDoS Protection</span><span class="text-green-400">✓ ATIVO</span></div>
+            <div class="flex justify-between"><span class="text-white/60">Backup automático</span><span class="text-green-400">✓ ATIVO</span></div>
+            <div class="flex justify-between"><span class="text-white/60">Última varredura</span><span class="text-green-400" id="sec-scan"></span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BACKUP TAB -->
+    <div id="tab-backup" class="admin-tab-panel hidden">
+      <div class="grid md:grid-cols-2 gap-5">
+        <div class="glass rounded-2xl p-6 border border-green-400/20">
+          <div class="flex items-center gap-3 mb-3"><svg class="ico text-green-400" width="24" height="24"><use href="#i-download"/></svg><h3 class="font-display text-sm tracking-[0.3em] text-green-400">BACKUP</h3></div>
+          <p class="text-sm text-white/70 mb-5">Exporte todos os dados da plataforma em um arquivo JSON criptografado localmente.</p>
+          <button class="adm-btn w-full" onclick="doBackup()">GERAR BACKUP AGORA</button>
+        </div>
+        <div class="glass rounded-2xl p-6 border border-green-400/20">
+          <div class="flex items-center gap-3 mb-3"><svg class="ico text-green-400" width="24" height="24"><use href="#i-upload"/></svg><h3 class="font-display text-sm tracking-[0.3em] text-green-400">RESTAURAR</h3></div>
+          <p class="text-sm text-white/70 mb-5">Carregue um backup anterior para restaurar KPIs e recursos.</p>
+          <input type="file" id="restoreFile" accept=".json" class="adm-input mb-3" />
+          <button class="adm-btn danger w-full" onclick="doRestore()">RESTAURAR AGORA</button>
+        </div>
+      </div>
+      <div class="mt-5 glass rounded-2xl p-6 border border-green-400/20">
+        <h3 class="font-display text-sm tracking-[0.3em] text-green-400 mb-3">HISTÓRICO DE BACKUPS</h3>
+        <div id="backup-log" class="text-xs text-white/60 font-mono space-y-1">Nenhum backup gerado nesta sessão.</div>
+      </div>
+    </div>
+
+    <!-- SOURCE TAB -->
+    <div id="tab-source" class="admin-tab-panel hidden">
+      <div class="flex items-center justify-between mb-4 flex-wrap gap-3">
+        <h3 class="font-display text-sm tracking-[0.3em] text-green-400">CÓDIGO FONTE</h3>
+        <div class="flex gap-2">
+          <button class="adm-btn ghost" onclick="copySource()">COPIAR</button>
+          <button class="adm-btn" onclick="downloadSource()">BAIXAR .HTML</button>
+        </div>
+      </div>
+      <pre id="source-view" class="code-view"></pre>
+    </div>
+
+    <!-- LOGS TAB -->
+    <div id="tab-logs" class="admin-tab-panel hidden">
+      <div class="glass rounded-2xl p-6 border border-green-400/20">
+        <h3 class="font-display text-sm tracking-[0.3em] text-green-400 mb-4">LOGS DO SISTEMA</h3>
+        <div id="log-view" class="code-view" style="max-height:65vh"></div>
+      </div>
+    </div>
+  </main>
 </div>
-
-<h2 style="margin-top: 50px;">Bem-vindo ao KAWE Cassino</h2>
 
 <script>
-// Verificação de maioridade
-function checkAge(){
-  const ageVerified=localStorage.getItem('ageVerified');
-  if(!ageVerified){
-    document.getElementById('age-screen').classList.add('active');
+// ================== MATRIX / PARTICLES ==================
+function matrixRain(canvas){
+  const ctx = canvas.getContext('2d');
+  const resize=()=>{canvas.width=innerWidth;canvas.height=innerHeight};
+  resize();addEventListener('resize',resize);
+  const chars='アイウエオカキクケコサシスセソ01KAWE'.split('');
+  const fs=16,cols=Math.floor(canvas.width/fs);
+  const drops=Array(cols).fill(0).map(()=>Math.random()*canvas.height);
+  function draw(){
+    ctx.fillStyle='rgba(0,0,0,0.08)';ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle='#00ff66';ctx.font=fs+'px monospace';ctx.shadowColor='#00ff66';ctx.shadowBlur=8;
+    for(let i=0;i<drops.length;i++){
+      const t=chars[Math.floor(Math.random()*chars.length)];
+      ctx.fillText(t,i*fs,drops[i]*fs);
+      if(drops[i]*fs>canvas.height&&Math.random()>.975)drops[i]=0;
+      drops[i]++;
+    }
+    requestAnimationFrame(draw);
+  }
+  draw();
+}
+function spawnParticles(el,n){
+  for(let i=0;i<n;i++){
+    const p=document.createElement('span');p.className='particle';
+    p.style.left=Math.random()*100+'%';p.style.top=Math.random()*100+'%';
+    const d=3+Math.random()*4,delay=Math.random()*3;
+    p.style.animation=`float ${d}s ease-in-out ${delay}s infinite, fadeIn 1s ${delay}s both`;
+    el.appendChild(p);
   }
 }
 
-function agreeAge(){
-  localStorage.setItem('ageVerified', 'true');
-  document.getElementById('age-screen').classList.remove('active');
+matrixRain(document.getElementById('matrix1'));
+spawnParticles(document.getElementById('particles1'),50);
+
+setTimeout(()=>{
+  document.getElementById('intro1').style.transition='opacity .8s';
+  document.getElementById('intro1').style.opacity='0';
+  setTimeout(()=>{
+    document.getElementById('intro1').classList.add('hidden');
+    const i2=document.getElementById('intro2');i2.classList.remove('hidden');
+    matrixRain(document.getElementById('matrix2'));
+    spawnParticles(document.getElementById('particles2'),50);
+    setTimeout(()=>{
+      i2.style.transition='opacity .8s';i2.style.opacity='0';
+      setTimeout(()=>{
+        i2.classList.add('hidden');
+        document.getElementById('gate').classList.remove('hidden');
+        spawnParticles(document.getElementById('particles3'),25);
+      },800);
+    },3600);
+  },800);
+},3200);
+
+function enter(){
+  document.getElementById('gate').classList.add('hidden');
+  document.getElementById('app').classList.remove('hidden');
+  spawnParticles(document.getElementById('particles-hero'),30);
+  initApp();
+}
+function toggleSidebar(open){
+  const s=document.getElementById('sidebar'),o=document.getElementById('overlay');
+  if(open){s.classList.remove('hidden');s.classList.add('slide-in');o.classList.remove('hidden')}
+  else{s.classList.add('hidden');o.classList.add('hidden')}
 }
 
-function disagreeAge(){
-  alert('Você deve ter 18 anos ou mais para acessar este site.');
-  window.location.href='about:blank';
+// ================== SIDE NAV (SVG icons) ==================
+const SIDE=[
+  {l:'Início',i:'i-home'},{l:'Dashboard',i:'i-dash'},{l:'Jogos',i:'i-game',game:true},{l:'Saldo',i:'i-money'},{l:'Carteira',i:'i-card'},
+  {l:'Finanças',i:'i-up'},{l:'Estatísticas',i:'i-down'},{l:'Histórico',i:'i-list'},{l:'Perfil',i:'i-user'},
+  {l:'Configurações',i:'i-cog'},{l:'Notificações',i:'i-bell'},{l:'Extrato',i:'i-receipt'},{l:'Arquivos',i:'i-folder'},
+  {l:'Recursos',i:'i-box'},{l:'Administração',i:'i-shield',admin:true},{l:'Usuários',i:'i-users'},{l:'Analytics',i:'i-activity'},
+  {l:'Gráficos',i:'i-bar'},{l:'Agenda',i:'i-cal'},{l:'Mensagens',i:'i-msg'},{l:'Favoritos',i:'i-star'},
+  {l:'Objetivos',i:'i-target'},{l:'Premium',i:'i-crown'},{l:'Performance',i:'i-rocket'},{l:'Segurança',i:'i-lock'},
+  {l:'Logs',i:'i-log'},{l:'API',i:'i-globe'},{l:'Integrações',i:'i-wifi'},{l:'Exportar',i:'i-upload'},
+  {l:'Importar',i:'i-download'},{l:'Sair',i:'i-out'}
+];
+
+// ================== DATA (persistente localStorage) ==================
+const DEFAULTS = {
+  kpis:[
+    {l:'Saldo Atual',v:284750.42,p:'R$ ',d:2,up:1,dt:'+12.4%'},
+    {l:'Receitas',v:128400,p:'R$ ',up:1,dt:'+8.2%'},
+    {l:'Despesas',v:42180,p:'R$ ',up:0,dt:'-3.1%'},
+    {l:'Lucro',v:86220,p:'R$ ',up:1,dt:'+21.7%'},
+    {l:'Movimentações',v:12483,up:1,dt:'+5.9%'},
+    {l:'Usuários',v:8942,up:1,dt:'+14.2%'},
+    {l:'Online',v:1284,up:1,dt:'+2.1%'},
+    {l:'Uptime',v:99.98,s:'%',d:2,up:1,dt:'+0.1%'},
+  ],
+  features:[
+    {t:'Segurança Militar',d:'XSS, CSRF, SQLi, JWT, HTTPS, hash bcrypt, rate limit.'},
+    {t:'Performance Extrema',d:'Lazy loading, code splitting, cache, SSR e SW.'},
+    {t:'Design Premium',d:'Glassmorphism, neon, partículas, animações fluidas.'},
+    {t:'Tempo Real',d:'Dashboards e notificações atualizadas instantaneamente.'},
+    {t:'Painel Admin',d:'Gestão completa de usuários, permissões, logs e API.'},
+    {t:'Nível Internacional',d:'Superior às maiores plataformas do mundo.'},
+  ],
+  bingo:{mode:'fair',winProb:50,bias:70,weights:Array(75).fill(1),balance:1000}
+};
+function loadStore(){
+  try{const s=JSON.parse(localStorage.getItem('kawe_store'));if(s&&s.kpis&&s.features){if(!s.bingo)s.bingo=JSON.parse(JSON.stringify(DEFAULTS.bingo));return s;}}catch(e){}
+  return JSON.parse(JSON.stringify(DEFAULTS));
+}
+let STORE = loadStore();
+function persist(){localStorage.setItem('kawe_store',JSON.stringify(STORE));logEvent('Store persistido em localStorage');}
+
+function fmt(n,d=0){return Number(n).toLocaleString('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d})}
+
+function initApp(){
+  document.getElementById('side-nav').innerHTML=SIDE.map((s,i)=>{
+    const click = s.admin ? 'onclick="toggleSidebar(false);openAdminGate();return false;"' : s.game ? 'onclick="toggleSidebar(false);openGames();return false;"' : '';
+    return `<a href="#" ${click} style="animation-delay:${i*20}ms" class="fade-up flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-white/80 hover:bg-green-400/10 hover:text-green-400 transition">
+      <svg class="ico" width="18" height="18"><use href="#${s.i}"/></svg>
+      <span>${s.l}</span>
+    </a>`;
+  }).join('');
+  renderKpis();
+  renderFeatures();
+  buildCharts();
+  logEvent('Aplicação inicializada');
 }
 
-function showTerms(){
-  alert('TERMOS E CONDIÇÕES DO KAWE CASSINO\n\nEste é um documento importante que estabelece os termos e condições para uso do KAWE Cassino. Leia atentamente antes de prosseguir.');
+function renderKpis(){
+  document.getElementById('kpis').innerHTML=STORE.kpis.map(k=>`
+    <div class="glass rounded-2xl p-5 border border-green-400/15 hover:border-green-400/50 transition relative overflow-hidden">
+      <div class="pointer-events-none absolute -right-6 -top-6 h-24 w-24 rounded-full bg-green-400/10 blur-2xl"></div>
+      <div class="flex items-center justify-between">
+        <div class="grid h-10 w-10 place-items-center rounded-xl bg-green-400/10 text-green-400 border border-green-400/20">
+          <svg class="ico" width="18" height="18"><use href="#i-diamond"/></svg>
+        </div>
+        <span class="text-xs font-bold ${k.up?'text-green-400':'text-red-400'}">${k.dt||''}</span>
+      </div>
+      <p class="mt-4 text-xs uppercase tracking-wider text-white/60">${k.l}</p>
+      <p class="mt-1 font-display text-xl md:text-2xl font-black">${k.p||''}${fmt(k.v,k.d||0)}${k.s||''}</p>
+    </div>`).join('');
+}
+function renderFeatures(){
+  document.getElementById('features').innerHTML=STORE.features.map(f=>`
+    <div class="glass rounded-2xl p-6 border border-green-400/15 hover:border-green-400/50 transition">
+      <div class="grid h-12 w-12 place-items-center rounded-xl bg-gradient-to-br from-green-400/20 to-green-700/20 border border-green-400/30 text-green-400">
+        <svg class="ico" width="22" height="22"><use href="#i-spark"/></svg>
+      </div>
+      <h3 class="mt-4 font-display text-lg font-bold">${f.t}</h3>
+      <p class="mt-2 text-sm text-white/70">${f.d}</p>
+    </div>`).join('');
 }
 
-function showPolicy(){
-  alert('POLÍTICA DE PRIVACIDADE DO KAWE CASSINO\n\nNós respeitamos sua privacidade e nos comprometemos a proteger seus dados pessoais de acordo com as leis aplicáveis.');
+let charts = {};
+function buildCharts(){
+  Object.values(charts).forEach(c=>c&&c.destroy());
+  const grid={color:'rgba(0,255,102,.1)'};const tick={color:'#88a',font:{size:10}};
+  Chart.defaults.color='#e6ffe6';Chart.defaults.font.family='Inter';
+  const months=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  const rec=months.map((_,i)=>12000+Math.sin(i/2)*4000+Math.random()*3000+i*800);
+  const des=months.map((_,i)=>6000+Math.cos(i/2)*2000+Math.random()*1500+i*300);
+  charts.c1=new Chart('chart1',{type:'line',data:{labels:months,datasets:[
+    {label:'Receita',data:rec,borderColor:'#00ff66',backgroundColor:'rgba(0,255,102,.2)',fill:true,tension:.4,borderWidth:2},
+    {label:'Despesa',data:des,borderColor:'#ef4444',backgroundColor:'rgba(239,68,68,.15)',fill:true,tension:.4,borderWidth:2}
+  ]},options:{plugins:{legend:{labels:{color:'#ccc'}}},scales:{x:{grid,ticks:tick},y:{grid,ticks:tick}}}});
+  charts.c2=new Chart('chart2',{type:'doughnut',data:{labels:['Cassino','Slots','Live','Sports'],datasets:[{data:[42,28,18,12],backgroundColor:['#00ff66','#22c55e','#0B8F3C','#065f46'],borderColor:'#000',borderWidth:2}]},options:{cutout:'60%',plugins:{legend:{position:'bottom',labels:{color:'#ccc',font:{size:11}}}}}});
+  charts.c3=new Chart('chart3',{type:'bar',data:{labels:['S','T','Q','Q','S','S','D'],datasets:[{data:Array.from({length:7}).map(()=>20+Math.random()*80),backgroundColor:'#00ff66',borderRadius:6}]},options:{plugins:{legend:{display:false}},scales:{x:{grid,ticks:tick},y:{grid,ticks:tick}}}});
+  charts.c4=new Chart('chart4',{type:'radar',data:{labels:['Perf','Seg','UX','Uptime','Sup','Rap'],datasets:[{data:[92,98,88,99,90,95],borderColor:'#00ff66',backgroundColor:'rgba(0,255,102,.35)'}]},options:{plugins:{legend:{display:false}},scales:{r:{grid:{color:'rgba(0,255,102,.2)'},pointLabels:{color:'#ccc',font:{size:10}},ticks:{display:false}}}}});
+  charts.c5=new Chart('chart5',{type:'line',data:{labels:months,datasets:[{data:rec,borderColor:'#00ff66',backgroundColor:'rgba(0,255,102,.1)',tension:.4,borderWidth:2.5,pointBackgroundColor:'#00ff66'}]},options:{plugins:{legend:{display:false}},scales:{x:{grid,ticks:tick},y:{grid,ticks:tick}}}});
 }
 
-function showResponsible(){
-  alert('JOGO RESPONSÁVEL - INFORMAÇÕES SOBRE COMO JOGAR COM SEGURANÇA\n\nO jogo deve ser uma forma de entretenimento. Se você acha que pode ter um problema com jogo, procure ajuda profissional.');
+// ================== ADMIN GATE (PIN) ==================
+const ADMIN_PIN='2011';
+let pinBuf='';
+function openAdminGate(){
+  pinBuf='';updatePinDots();document.getElementById('pinError').textContent='';
+  const g=document.getElementById('adminGate');
+  g.classList.remove('hidden');g.style.display='flex';
+  logEvent('Solicitação de acesso ao painel admin');
+}
+function closeAdminGate(){
+  const g=document.getElementById('adminGate');g.classList.add('hidden');g.style.display='';
+}
+function pinPress(n){
+  if(pinBuf.length>=4)return;
+  pinBuf+=n;updatePinDots();
+  if(pinBuf.length===4)setTimeout(checkPin,150);
+}
+function pinBack(){pinBuf=pinBuf.slice(0,-1);updatePinDots()}
+function pinClear(){pinBuf='';updatePinDots();document.getElementById('pinError').textContent=''}
+function updatePinDots(){
+  document.querySelectorAll('#pinDots .pin-dot').forEach((d,i)=>{
+    d.classList.toggle('filled',i<pinBuf.length);
+  });
+}
+function checkPin(){
+  if(pinBuf===ADMIN_PIN){
+    logEvent('✓ Acesso admin autorizado');
+    closeAdminGate();
+    openAdmin();
+  } else {
+    const card=document.getElementById('adminGateCard');
+    card.classList.add('shake');
+    document.getElementById('pinError').textContent='PIN INCORRETO';
+    logEvent('✗ Tentativa de acesso admin negada');
+    setTimeout(()=>{card.classList.remove('shake');pinClear()},600);
+  }
 }
 
-// Menu toggle
-function toggleMenu(){
-  const sidebar=document.getElementById('sidebar');
-  const headerNav=document.getElementById('header-nav');
-  sidebar.classList.toggle('active');
-  headerNav.classList.toggle('active');
+// ================== ADMIN PANEL ==================
+function openAdmin(){
+  document.getElementById('adminPanel').classList.remove('hidden');
+  document.body.style.overflow='hidden';
+  fillStats();
+  renderKpiEditor();
+  renderFeatEditor();
+  loadSource();
+  renderLogs();
+}
+function closeAdmin(){
+  document.getElementById('adminPanel').classList.add('hidden');
+  document.body.style.overflow='';
+}
+function switchTab(t){
+  document.querySelectorAll('.admin-tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===t));
+  document.querySelectorAll('.admin-tab-panel').forEach(p=>p.classList.add('hidden'));
+  document.getElementById('tab-'+t).classList.remove('hidden');
 }
 
-// Modal functions
-function openLoginModal(){
-  document.getElementById('login-modal').classList.add('active');
+function fillStats(){
+  const users=STORE.kpis.find(k=>k.l==='Usuários');
+  const bal=STORE.kpis.find(k=>k.l==='Saldo Atual');
+  const on=STORE.kpis.find(k=>k.l==='Online');
+  const up=STORE.kpis.find(k=>k.l==='Uptime');
+  document.getElementById('adm-users').textContent=users?fmt(users.v):'—';
+  document.getElementById('adm-balance').textContent=bal?'R$ '+fmt(bal.v,2):'—';
+  document.getElementById('adm-online').textContent=on?fmt(on.v):'—';
+  document.getElementById('adm-uptime').textContent=up?fmt(up.v,2)+'%':'—';
+  document.getElementById('adm-session').textContent=new Date().toLocaleString('pt-BR');
+  document.getElementById('adm-ua').textContent=navigator.userAgent.split(') ')[0].split('(')[1]||navigator.userAgent.slice(0,40);
+  document.getElementById('adm-lang').textContent=navigator.language;
+  document.getElementById('adm-res').textContent=screen.width+' × '+screen.height;
 }
 
-function closeLoginModal(){
-  document.getElementById('login-modal').classList.remove('active');
+function renderKpiEditor(){
+  document.getElementById('adm-kpi-editor').innerHTML=STORE.kpis.map((k,i)=>`
+    <div class="glass rounded-xl p-4 border border-green-400/15 grid gap-3 md:grid-cols-[1.5fr_1fr_1fr_.5fr_1fr]">
+      <div><label class="text-[10px] tracking-widest text-green-400/70 font-display">RÓTULO</label><input class="adm-input" value="${k.l}" oninput="STORE.kpis[${i}].l=this.value"></div>
+      <div><label class="text-[10px] tracking-widest text-green-400/70 font-display">VALOR</label><input type="number" step="0.01" class="adm-input" value="${k.v}" oninput="STORE.kpis[${i}].v=parseFloat(this.value)||0"></div>
+      <div><label class="text-[10px] tracking-widest text-green-400/70 font-display">VARIAÇÃO</label><input class="adm-input" value="${k.dt||''}" oninput="STORE.kpis[${i}].dt=this.value"></div>
+      <div><label class="text-[10px] tracking-widest text-green-400/70 font-display">TENDÊNCIA</label>
+        <select class="adm-input" onchange="STORE.kpis[${i}].up=parseInt(this.value)">
+          <option value="1" ${k.up?'selected':''}>▲ Alta</option>
+          <option value="0" ${!k.up?'selected':''}>▼ Baixa</option>
+        </select>
+      </div>
+      <div class="flex items-end"><button class="adm-btn danger w-full" onclick="STORE.kpis.splice(${i},1);renderKpiEditor()">REMOVER</button></div>
+    </div>`).join('') + `
+    <button class="adm-btn ghost mt-2" onclick="STORE.kpis.push({l:'Novo KPI',v:0,up:1,dt:'+0%'});renderKpiEditor()">+ ADICIONAR KPI</button>`;
+}
+function saveData(){persist();renderKpis();fillStats();alert('KPIs salvos!');logEvent('KPIs atualizados via admin')}
+function resetData(){if(confirm('Restaurar padrões?')){STORE=JSON.parse(JSON.stringify(DEFAULTS));persist();renderKpiEditor();renderFeatEditor();renderKpis();renderFeatures();fillStats();logEvent('Dados resetados aos padrões')}}
+
+function renderFeatEditor(){
+  document.getElementById('adm-feat-editor').innerHTML=STORE.features.map((f,i)=>`
+    <div class="glass rounded-xl p-4 border border-green-400/15 grid gap-3 md:grid-cols-[1fr_2fr_.5fr]">
+      <div><label class="text-[10px] tracking-widest text-green-400/70 font-display">TÍTULO</label><input class="adm-input" value="${f.t}" oninput="STORE.features[${i}].t=this.value"></div>
+      <div><label class="text-[10px] tracking-widest text-green-400/70 font-display">DESCRIÇÃO</label><input class="adm-input" value="${f.d}" oninput="STORE.features[${i}].d=this.value"></div>
+      <div class="flex items-end"><button class="adm-btn danger w-full" onclick="STORE.features.splice(${i},1);renderFeatEditor()">REMOVER</button></div>
+    </div>`).join('');
+}
+function addFeature(){STORE.features.push({t:'Novo Recurso',d:'Descrição...'});renderFeatEditor()}
+function saveFeatures(){persist();renderFeatures();alert('Recursos salvos!');logEvent('Recursos atualizados via admin')}
+
+// BACKUP
+function doBackup(){
+  const data={version:1,ts:new Date().toISOString(),store:STORE};
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download='kawe-backup-'+Date.now()+'.json';a.click();
+  URL.revokeObjectURL(url);
+  const log=document.getElementById('backup-log');
+  if(log.textContent.startsWith('Nenhum'))log.textContent='';
+  const line=document.createElement('div');line.textContent='['+new Date().toLocaleTimeString('pt-BR')+'] Backup gerado — '+a.download;
+  log.prepend(line);logEvent('Backup exportado');
+}
+function doRestore(){
+  const f=document.getElementById('restoreFile').files[0];
+  if(!f)return alert('Selecione um arquivo .json');
+  const r=new FileReader();
+  r.onload=e=>{
+    try{
+      const d=JSON.parse(e.target.result);
+      if(!d.store||!d.store.kpis||!d.store.features)throw 0;
+      STORE=d.store;persist();renderKpis();renderFeatures();renderKpiEditor();renderFeatEditor();fillStats();
+      alert('Backup restaurado com sucesso!');logEvent('Backup restaurado: '+f.name);
+    }catch(err){alert('Arquivo inválido')}
+  };
+  r.readAsText(f);
 }
 
-function openSignupModal(){
-  document.getElementById('signup-modal').classList.add('active');
+// SOURCE
+async function loadSource(){
+  try{
+    const res=await fetch(location.href);const txt=await res.text();
+    document.getElementById('source-view').textContent=txt;
+    window.__source=txt;
+  }catch(e){document.getElementById('source-view').textContent='Erro ao carregar código fonte: '+e}
+}
+function copySource(){navigator.clipboard.writeText(window.__source||'').then(()=>alert('Código copiado!'))}
+function downloadSource(){
+  const blob=new Blob([window.__source||''],{type:'text/html'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='kawe-source.html';a.click();
+  logEvent('Código fonte baixado');
 }
 
-function closeSignupModal(){
-  document.getElementById('signup-modal').classList.remove('active');
+// LOGS
+const LOGS=[];
+function logEvent(msg){
+  const line='['+new Date().toLocaleTimeString('pt-BR')+'] '+msg;
+  LOGS.unshift(line);if(LOGS.length>200)LOGS.pop();
+  const v=document.getElementById('log-view');if(v)v.textContent=LOGS.join('\n');
 }
+function renderLogs(){document.getElementById('log-view').textContent=LOGS.join('\n')||'Sem eventos registrados.'}
 
-function switchToSignup(){
-  closeLoginModal();
-  openSignupModal();
+
+// ================== GAMES CATALOG ==================
+function openGames(){document.getElementById('gamesModal').classList.remove('hidden');document.getElementById('gamesModal').style.display='flex';logEvent('Catálogo de jogos aberto');}
+function closeGames(){const g=document.getElementById('gamesModal');g.classList.add('hidden');g.style.display='';}
+
+// ================== BINGO GAME ==================
+const BINGO_LETTERS=['B','I','N','G','O'];
+const BINGO_RANGES=[[1,15],[16,30],[31,45],[46,60],[61,75]];
+let bingoState={bet:10,cards:[],selectedCard:null,drawn:[],active:false,auto:false,autoTimer:null,winLines:[]};
+
+function openBingo(){
+  closeGames();
+  document.getElementById('bingoModal').classList.remove('hidden');
+  document.body.style.overflow='hidden';
+  resetBingo();
+  logEvent('Bingo iniciado');
 }
-
-function switchToLogin(){
-  closeSignupModal();
-  openLoginModal();
+function closeBingo(){
+  stopAuto();
+  document.getElementById('bingoModal').classList.add('hidden');
+  document.body.style.overflow='';
 }
-
-function handleLogin(e){
-  e.preventDefault();
-  alert('Login realizado com sucesso!');
-  closeLoginModal();
+function updateBingoBalance(){document.getElementById('bingo-balance').textContent='R$ '+fmt(STORE.bingo.balance,2)}
+function setBet(v){document.getElementById('bingo-bet').value=v;updatePrize()}
+function updatePrize(){
+  const b=parseFloat(document.getElementById('bingo-bet').value)||0;
+  document.getElementById('bingo-prize').textContent='R$ '+fmt(b*10,2);
+  bingoState.bet=b;
+  document.getElementById('bingo-start').disabled=!(bingoState.selectedCard!==null && b>0 && b<=STORE.bingo.balance);
 }
-
-function handleSignup(e){
-  e.preventDefault();
-  alert('Cadastro realizado com sucesso!');
-  closeSignupModal();
+function genCard(){
+  const card={cols:[],flat:new Set(),marks:new Set(),freeIdx:12};
+  for(let c=0;c<5;c++){
+    const [lo,hi]=BINGO_RANGES[c];
+    const pool=[];for(let n=lo;n<=hi;n++)pool.push(n);
+    for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]]}
+    card.cols.push(pool.slice(0,5));
+    pool.slice(0,5).forEach(n=>card.flat.add(n));
+  }
+  card.cols[2][2]=0; // free space
+  return card;
 }
-
-function socialLogin(provider){
-  alert('Login com '+provider+' iniciado');
+function rerollCards(){
+  bingoState.cards=[genCard(),genCard(),genCard()];
+  bingoState.selectedCard=null;
+  renderCardChoices();
+  updatePrize();
 }
-
-function socialSignup(provider){
-  alert('Cadastro com '+provider+' iniciado');
+function renderCardChoices(){
+  document.getElementById('bingo-choices').innerHTML=bingoState.cards.map((c,i)=>`
+    <div class="bingo-card selectable ${bingoState.selectedCard===i?'selected':''}" onclick="pickCard(${i})">
+      <div class="text-center text-[10px] tracking-widest font-display text-green-400 mb-2">CARTELA #${i+1}</div>
+      ${renderCardGrid(c,'bingo-cell')}
+    </div>`).join('');
 }
-
-// Intro animation
-function initIntro(){
-  const canvas=document.getElementById('intro-canvas');
-  const ctx=canvas.getContext('2d');
-  
-  canvas.width=window.innerWidth;
-  canvas.height=window.innerHeight;
-  
-  let particles=[];
-  
-  class Particle{
-    constructor(){
-      this.x=Math.random()*canvas.width;
-      this.y=Math.random()*canvas.height;
-      this.size=Math.random()*5+2;
-      this.speedX=Math.random()*3-1.5;
-      this.speedY=Math.random()*3-1.5;
-      this.color='rgba(34, 197, 94, '+Math.random()*0.5+')';
-    }
-    
-    update(){
-      this.x+=this.speedX;
-      this.y+=this.speedY;
-      
-      if(this.x>canvas.width) this.x=0;
-      if(this.x<0) this.x=canvas.width;
-      if(this.y>canvas.height) this.y=0;
-      if(this.y<0) this.y=canvas.height;
-    }
-    
-    draw(){
-      ctx.fillStyle=this.color;
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.size, 0, Math.PI*2);
-      ctx.fill();
+function renderCardGrid(card,cellClass){
+  let html=`<div class="bingo-grid">`;
+  for(let c=0;c<5;c++)html+=`<div class="${cellClass} header">${BINGO_LETTERS[c]}</div>`;
+  for(let r=0;r<5;r++){
+    for(let c=0;c<5;c++){
+      const n=card.cols[c][r];
+      if(n===0)html+=`<div class="${cellClass} free">FREE</div>`;
+      else{
+        const marked=card.marks.has(n);
+        const win=card.winCells&&card.winCells.has(c+','+r);
+        html+=`<div class="${cellClass} ${marked?'marked':''} ${win?'winline':''}">${n}</div>`;
+      }
     }
   }
-  
-  for(let i=0; i<100; i++){
-    particles.push(new Particle());
+  return html+'</div>';
+}
+function pickCard(i){bingoState.selectedCard=i;renderCardChoices();updatePrize()}
+
+function startBingo(){
+  const bet=bingoState.bet;
+  if(bet>STORE.bingo.balance)return alert('Saldo insuficiente');
+  STORE.bingo.balance-=bet;persist();updateBingoBalance();
+  bingoState.active=true;bingoState.drawn=[];bingoState.winLines=[];
+  const c=bingoState.cards[bingoState.selectedCard];c.marks=new Set();delete c.winCells;
+  // free space auto-marked (represented by marking value 0 not needed; the FREE cell is always shown)
+  document.getElementById('bingo-setup').classList.add('hidden');
+  document.getElementById('bingo-play').classList.remove('hidden');
+  document.getElementById('bingo-result').classList.add('hidden');
+  renderActiveCard();
+  renderDrawn();
+  document.getElementById('bingo-current').textContent='—';
+  document.getElementById('bingo-status').textContent='Sorteie os números e complete uma linha, coluna, diagonal ou a cartela inteira!';
+  logEvent('Aposta iniciada: R$ '+fmt(bet,2));
+}
+function renderActiveCard(){
+  const c=bingoState.cards[bingoState.selectedCard];
+  document.getElementById('bingo-active-card').innerHTML=renderCardGrid(c,'bingo-cell-lg');
+}
+function renderDrawn(){
+  document.getElementById('bingo-count').textContent=bingoState.drawn.length;
+  document.getElementById('bingo-drawn').innerHTML=bingoState.drawn.map(n=>{
+    const letter=BINGO_LETTERS[Math.floor((n-1)/15)];
+    return `<span class="drawn-chip" title="${letter}-${n}">${n}</span>`;
+  }).join('');
+}
+function pickNextNumber(){
+  const avail=[];for(let i=1;i<=75;i++)if(!bingoState.drawn.includes(i))avail.push(i);
+  if(!avail.length)return null;
+  const cfg=STORE.bingo;
+  const card=bingoState.cards[bingoState.selectedCard];
+  const needed=avail.filter(n=>card.flat.has(n)&&!card.marks.has(n));
+  const others=avail.filter(n=>!needed.includes(n));
+  const bias=Math.max(0,Math.min(100,cfg.bias))/100;
+
+  if(cfg.mode==='fair'){
+    return avail[Math.floor(Math.random()*avail.length)];
   }
-  
-  let animationFrames=0;
-  function animate(){
-    ctx.fillStyle='rgba(0, 0, 0, 0.1)';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    
-    particles.forEach(p=>{
-      p.update();
-      p.draw();
-    });
-    
-    animationFrames++;
-    if(animationFrames<300){
-      requestAnimationFrame(animate);
-    } else {
-      document.getElementById('intro-overlay').style.display='none';
-    }
+  if(cfg.mode==='weighted'){
+    let total=0;const w=avail.map(n=>{const x=Math.max(0,cfg.weights[n-1]||0);total+=x;return x});
+    if(total<=0)return avail[Math.floor(Math.random()*avail.length)];
+    let r=Math.random()*total;
+    for(let i=0;i<avail.length;i++){r-=w[i];if(r<=0)return avail[i]}
+    return avail[avail.length-1];
   }
-  
-  animate();
+  // win/lose: soft bias — with probability = bias, prefer needed (win) or others (lose)
+  const winRoll=Math.random()*100 < (cfg.winProb||50);
+  const wantNeeded = (cfg.mode==='win') ? winRoll : !winRoll;
+  const useBias = Math.random() < bias;
+  if(useBias){
+    if(wantNeeded && needed.length) return needed[Math.floor(Math.random()*needed.length)];
+    if(!wantNeeded && others.length) return others[Math.floor(Math.random()*others.length)];
+  }
+  return avail[Math.floor(Math.random()*avail.length)];
+}
+function drawNumber(){
+  if(!bingoState.active)return;
+  if(bingoState.drawn.length>=75){finalize(false);return}
+  const globe=document.getElementById('bingo-globe');
+  globe.classList.add('globe-spinning');
+  document.getElementById('bingo-draw').disabled=true;
+  const inner=document.getElementById('globe-inner');
+  inner.innerHTML='';
+  for(let i=0;i<8;i++){
+    const b=document.createElement('div');b.className='globe-ball';
+    const a=(i/8)*Math.PI*2;
+    b.style.left=(50+40*Math.cos(a))+'%';b.style.top=(50+40*Math.sin(a))+'%';
+    b.textContent=Math.floor(Math.random()*75)+1;
+    inner.appendChild(b);
+  }
+  setTimeout(()=>{
+    const n=pickNextNumber();
+    if(n===null){globe.classList.remove('globe-spinning');return}
+    bingoState.drawn.push(n);
+    const card=bingoState.cards[bingoState.selectedCard];
+    if(card.flat.has(n))card.marks.add(n);
+    globe.classList.remove('globe-spinning');
+    inner.innerHTML='';
+    const letter=BINGO_LETTERS[Math.floor((n-1)/15)];
+    document.getElementById('bingo-current').textContent=letter+'-'+n;
+    renderActiveCard();renderDrawn();
+    document.getElementById('bingo-draw').disabled=false;
+    checkWin();
+  },900);
+}
+function checkWin(){
+  const c=bingoState.cards[bingoState.selectedCard];
+  const isMark=(col,row)=>{const v=c.cols[col][row];return v===0||c.marks.has(v)};
+  const winCells=new Set();
+  let anyLine=false, full=true;
+  // rows
+  for(let r=0;r<5;r++){let ok=true;for(let cc=0;cc<5;cc++)if(!isMark(cc,r)){ok=false;break}
+    if(ok){anyLine=true;for(let cc=0;cc<5;cc++)winCells.add(cc+','+r)}
+  }
+  // cols
+  for(let cc=0;cc<5;cc++){let ok=true;for(let r=0;r<5;r++)if(!isMark(cc,r)){ok=false;break}
+    if(ok){anyLine=true;for(let r=0;r<5;r++)winCells.add(cc+','+r)}
+  }
+  // diagonals
+  let d1=true,d2=true;for(let i=0;i<5;i++){if(!isMark(i,i))d1=false;if(!isMark(i,4-i))d2=false}
+  if(d1){anyLine=true;for(let i=0;i<5;i++)winCells.add(i+','+i)}
+  if(d2){anyLine=true;for(let i=0;i<5;i++)winCells.add(i+','+(4-i))}
+  // full card
+  for(let r=0;r<5;r++)for(let cc=0;cc<5;cc++)if(!isMark(cc,r))full=false;
+  c.winCells=winCells;
+  renderActiveCard();
+  if(full){finalize(true,'bingo')}
+  else if(anyLine && !bingoState.lineAwarded){bingoState.lineAwarded=true;document.getElementById('bingo-status').innerHTML='<span class="text-green-400 font-bold">LINHA COMPLETA! +3× · Continue jogando para completar a cartela e ganhar 10×</span>'}
+}
+function finalize(win,type){
+  stopAuto();bingoState.active=false;
+  const bet=bingoState.bet;
+  let payout=0,title,msg,color;
+  if(win){
+    payout = type==='bingo' ? bet*10 : bet*3;
+    STORE.bingo.balance+=payout;persist();updateBingoBalance();
+    title = type==='bingo' ? '🎉 BINGO COMPLETO!' : '✓ VITÓRIA';
+    msg = type==='bingo' ? 'Você completou a cartela inteira! Prêmio máximo pago.' : 'Você completou uma linha!';
+    color='#00ff66';
+    logEvent('Bingo VITÓRIA: R$ '+fmt(payout,2));
+  } else {
+    title='✗ SEM SORTE';msg='Nenhuma linha foi completada. Boa sorte na próxima!';color='#ef4444';
+    logEvent('Bingo DERROTA: -R$ '+fmt(bet,2));
+  }
+  const ic=document.getElementById('result-icon');
+  ic.style.background=`radial-gradient(circle,${color}55,${color}11)`;
+  ic.style.border=`2px solid ${color}`;
+  ic.innerHTML=`<span style="font-size:2.5rem">${win?'🏆':'💔'}</span>`;
+  document.getElementById('result-title').textContent=title;
+  document.getElementById('result-title').style.color=color;
+  document.getElementById('result-msg').textContent=msg;
+  document.getElementById('result-amount').textContent=(win?'+ ':'- ')+'R$ '+fmt(win?payout:bet,2);
+  document.getElementById('bingo-play').classList.add('hidden');
+  document.getElementById('bingo-result').classList.remove('hidden');
+}
+function quitBingo(){
+  if(!confirm('Desistir da rodada? A aposta será perdida.'))return;
+  finalize(false);
+}
+function resetBingo(){
+  stopAuto();
+  bingoState={bet:parseFloat(document.getElementById('bingo-bet')?.value)||10,cards:[],selectedCard:null,drawn:[],active:false,auto:false,autoTimer:null,winLines:[],lineAwarded:false};
+  updateBingoBalance();
+  document.getElementById('bingo-play').classList.add('hidden');
+  document.getElementById('bingo-result').classList.add('hidden');
+  document.getElementById('bingo-setup').classList.remove('hidden');
+  rerollCards();
+}
+function toggleAuto(){
+  if(bingoState.auto){stopAuto();document.getElementById('bingo-auto').textContent='▶ AUTO';return}
+  bingoState.auto=true;document.getElementById('bingo-auto').textContent='⏸ PARAR';
+  const loop=()=>{if(!bingoState.auto||!bingoState.active)return;drawNumber();bingoState.autoTimer=setTimeout(loop,1400)};
+  loop();
+}
+function stopAuto(){bingoState.auto=false;if(bingoState.autoTimer){clearTimeout(bingoState.autoTimer);bingoState.autoTimer=null}
+  const b=document.getElementById('bingo-auto');if(b)b.textContent='▶ AUTO'}
+
+document.addEventListener('input',e=>{if(e.target&&e.target.id==='bingo-bet')updatePrize()});
+
+// ================== ADMIN · BINGO CONFIG ==================
+function renderBingoAdmin(){
+  const cfg=STORE.bingo;
+  document.getElementById('bingo-mode').value=cfg.mode;
+  document.getElementById('bingo-winprob').value=cfg.winProb;
+  document.getElementById('bingo-bias').value=cfg.bias;
+  const wrap=document.getElementById('bingo-weights');
+  wrap.innerHTML='';
+  for(let i=1;i<=75;i++){
+    const div=document.createElement('div');div.className='weight-cell';
+    div.innerHTML=`<label>N° ${i}</label><input type="number" min="0" step="1" value="${cfg.weights[i-1]}" data-n="${i}">`;
+    wrap.appendChild(div);
+  }
+  wrap.oninput=(e)=>{const n=parseInt(e.target.dataset.n);if(n)STORE.bingo.weights[n-1]=parseFloat(e.target.value)||0};
+}
+function saveBingoCfg(){
+  STORE.bingo.mode=document.getElementById('bingo-mode').value;
+  STORE.bingo.winProb=parseFloat(document.getElementById('bingo-winprob').value)||50;
+  STORE.bingo.bias=parseFloat(document.getElementById('bingo-bias').value)||70;
+  persist();alert('Configuração do Bingo salva!');logEvent('Config Bingo atualizada: '+STORE.bingo.mode);
+}
+function resetBingoWeights(){STORE.bingo.weights=Array(75).fill(0);renderBingoAdmin();logEvent('Pesos do Bingo zerados')}
+function fillBingoWeights(v){STORE.bingo.weights=Array(75).fill(v);renderBingoAdmin();logEvent('Pesos do Bingo definidos = '+v)}
+
+function renderUsersAdmin(){
+  const fake=[
+    {id:'U001',n:'João Silva',s:12480.55,st:'✓ Online'},
+    {id:'U002',n:'Maria Santos',s:8320.10,st:'✓ Online'},
+    {id:'U003',n:'Pedro Costa',s:45600.00,st:'○ Offline'},
+    {id:'U004',n:'Ana Souza',s:2100.75,st:'✓ Online'},
+    {id:'U005',n:'Carlos Lima',s:0.00,st:'⚠ Bloqueado'},
+  ];
+  document.getElementById('adm-users-tbody').innerHTML=fake.map(u=>`
+    <tr class="border-b border-green-400/10 hover:bg-green-400/5">
+      <td class="py-2 font-mono text-green-400">${u.id}</td>
+      <td>${u.n}</td>
+      <td>R$ ${fmt(u.s,2)}</td>
+      <td>${u.st}</td>
+      <td class="text-white/60">${new Date().toLocaleString('pt-BR')}</td>
+    </tr>`).join('');
 }
 
-// Inicializar
-window.addEventListener('load', function(){
-  checkAge();
-  initIntro();
+// Hook admin panel opening to init new tabs
+const _openAdmin=openAdmin;
+openAdmin=function(){_openAdmin();renderBingoAdmin();renderUsersAdmin();const sc=document.getElementById('sec-scan');if(sc)sc.textContent=new Date().toLocaleString('pt-BR')};
+
+// keyboard shortcut: Ctrl+Shift+A
+addEventListener('keydown',e=>{
+  if(e.ctrlKey&&e.shiftKey&&e.key.toLowerCase()==='a'){e.preventDefault();openAdminGate()}
+  if(e.key==='Escape'){closeAdminGate();}
 });
 </script>
-
 </body>
 </html>
