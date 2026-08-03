@@ -316,6 +316,7 @@
           <div class="grid h-9 w-9 place-items-center rounded-lg bg-gradient-to-br from-green-400 to-green-700 neon-glow text-black font-black">K</div>
           <span class="font-display font-black text-lg md:text-xl neon-text tracking-widest">KAWE<span class="text-white/70 ml-1">CASSINO</span></span>
         </div>
+        <div id="kvHeadCats" class="items-center gap-1.5 flex-wrap ml-2" style="display:none"></div>
       </div>
       <nav class="hidden lg:flex items-center gap-1 text-sm">
         <a href="#" class="px-3 py-2 text-white/80 hover:text-green-400 transition">Início</a>
@@ -337,6 +338,7 @@
     </div>
   </header>
 
+  <div id="kvHeadCatsMobile" class="md:hidden fixed top-[60px] left-0 right-0 z-40 flex gap-1.5 overflow-x-auto px-3 py-2" style="background:rgba(0,0,0,.8);backdrop-filter:blur(8px)"></div>
   <div id="overlay" onclick="toggleSidebar(false)" class="fixed inset-0 z-[60] bg-black/70 backdrop-blur-sm hidden"></div>
   <aside id="sidebar" class="fixed left-0 top-0 z-[70] h-full w-80 glass border-r border-green-400/30 overflow-y-auto hidden">
     <div class="flex items-center justify-between p-5 border-b border-green-400/20">
@@ -1021,14 +1023,15 @@ function toggleSidebar(open){
 // ================== SIDE NAV (SVG icons) ==================
 const SIDE=[
   {l:'Entrar',i:'i-user',auth:'login'},{l:'Cadastrar',i:'i-users',auth:'signup'},
-  {l:'Início',i:'i-home'},{l:'Dashboard',i:'i-dash'},{l:'Jogos',i:'i-game',game:true},{l:'Saldo',i:'i-money'},{l:'Carteira',i:'i-card'},
-  {l:'Finanças',i:'i-up'},{l:'Estatísticas',i:'i-down'},{l:'Histórico',i:'i-list'},{l:'Perfil',i:'i-user'},
-  {l:'Configurações',i:'i-cog'},{l:'Notificações',i:'i-bell'},{l:'Extrato',i:'i-receipt'},{l:'Arquivos',i:'i-folder'},
-  {l:'Recursos',i:'i-box'},{l:'Administração',i:'i-shield',admin:true},{l:'Usuários',i:'i-users'},{l:'Analytics',i:'i-activity'},
-  {l:'Gráficos',i:'i-bar'},{l:'Agenda',i:'i-cal'},{l:'Mensagens',i:'i-msg'},{l:'Favoritos',i:'i-star'},
-  {l:'Objetivos',i:'i-target'},{l:'Premium',i:'i-crown'},{l:'Performance',i:'i-rocket'},{l:'Segurança',i:'i-lock'},
-  {l:'Logs',i:'i-log'},{l:'API',i:'i-globe'},{l:'Integrações',i:'i-wifi'},{l:'Exportar',i:'i-upload'},
-  {l:'Importar',i:'i-download'},{l:'Sair',i:'i-out'}
+  {l:'Início',i:'i-home',v:'inicio'},{l:'Dashboard',i:'i-dash',v:'dashboard'},{l:'Jogos',i:'i-game',game:true},
+  {l:'Eventos',i:'i-spark',v:'eventos',blue:true},
+  {l:'Saldo',i:'i-money',v:'saldo'},{l:'Carteira',i:'i-card',v:'carteira'},
+  {l:'Finanças',i:'i-up',v:'financas'},{l:'Estatísticas',i:'i-down',v:'estatisticas'},{l:'Histórico',i:'i-list',v:'historico'},{l:'Perfil',i:'i-user',v:'perfil'},
+  {l:'Configurações',i:'i-cog',v:'configuracoes'},{l:'Notificações',i:'i-bell',v:'notificacoes'},{l:'Extrato',i:'i-receipt',v:'extrato'},
+  {l:'Recursos',i:'i-box',v:'recursos'},{l:'Administração',i:'i-shield',admin:true},{l:'Usuários',i:'i-users',v:'usuarios'},{l:'Analytics',i:'i-activity',v:'analytics'},
+  {l:'Gráficos',i:'i-bar',v:'graficos'},{l:'Agenda',i:'i-cal',v:'agenda'},{l:'Mensagens',i:'i-msg',v:'mensagens'},{l:'Favoritos',i:'i-star',v:'favoritos'},
+  {l:'Objetivos',i:'i-target',v:'objetivos'},{l:'Premium',i:'i-crown',v:'premium'},{l:'Performance',i:'i-rocket',v:'performance'},{l:'Segurança',i:'i-lock',v:'seguranca'},
+  {l:'Sair',i:'i-out',out:true}
 ];
 
 // ================== DATA (persistente localStorage) ==================
@@ -1064,10 +1067,16 @@ function fmt(n,d=0){return Number(n).toLocaleString('pt-BR',{minimumFractionDigi
 
 function initApp(){
   document.getElementById('side-nav').innerHTML=SIDE.map((s,i)=>{
-    const click = s.admin ? 'onclick="toggleSidebar(false);openAdminGate();return false;"' : s.game ? 'onclick="toggleSidebar(false);openGames();return false;"' : s.auth==='login' ? 'onclick="toggleSidebar(false);openLogin();return false;"' : s.auth==='signup' ? 'onclick="toggleSidebar(false);openSignup();return false;"' : '';
+    const click = s.admin ? 'onclick="toggleSidebar(false);openAdminGate();return false;"'
+      : s.game ? 'onclick="toggleSidebar(false);openGames();return false;"'
+      : s.out ? 'onclick="toggleSidebar(false);kvLogoutAsk();return false;"'
+      : s.v ? `onclick="toggleSidebar(false);kvOpen('${s.v}'${s.blue?",{c:'#3b82f6',c2:'#1d4ed8'}":''});return false;"`
+      : s.auth==='login' ? 'onclick="toggleSidebar(false);openLogin();return false;"'
+      : s.auth==='signup' ? 'onclick="toggleSidebar(false);openSignup();return false;"' : '';
+    const extra = s.blue ? 'style="color:#60a5fa"' : '';
     return `<a href="#" ${click} style="animation-delay:${i*20}ms" class="fade-up flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-white/80 hover:bg-green-400/10 hover:text-green-400 transition">
-      <svg class="ico" width="18" height="18"><use href="#${s.i}"/></svg>
-      <span>${s.l}</span>
+      <svg class="ico" width="18" height="18" ${extra}><use href="#${s.i}"/></svg>
+      <span ${extra} data-kv-label="${s.l}">${s.l}</span>
     </a>`;
   }).join('');
   renderKpis();
@@ -1788,5 +1797,1177 @@ function insistSubmitSignup(){
 function insistContinueAsGuest(){closeInsist();try{enterAsGuest()}catch(e){}}
 
 </script>
+<!-- ================== KAWE V2 · MEGA MÓDULO ================== -->
+<style>
+  .kv-ov{position:fixed;inset:0;z-index:200;background:#000;overflow-y:auto;display:none}
+  .kv-ov.on{display:block}
+  .kv-wrap{max-width:1400px;margin:0 auto;padding:20px 16px 80px}
+  .kv-card{background:linear-gradient(135deg,rgba(20,40,25,.6),rgba(0,10,5,.4));border:1px solid var(--kv-a,rgba(0,255,102,.25));border-radius:18px;padding:18px}
+  .kv-h{position:sticky;top:0;z-index:5;background:rgba(0,0,0,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--kv-a,rgba(0,255,102,.25));padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .kv-t{font-family:'Orbitron',sans-serif;font-weight:900;letter-spacing:.15em;color:var(--kv-c,#00ff66);text-shadow:0 0 14px var(--kv-g,rgba(0,255,102,.6))}
+  .kv-btn{font-family:'Orbitron',sans-serif;font-size:11px;letter-spacing:.12em;font-weight:700;padding:9px 14px;border-radius:10px;border:1px solid var(--kv-a,rgba(0,255,102,.5));color:var(--kv-c,#00ff66);background:rgba(0,0,0,.5);cursor:pointer;transition:.2s}
+  .kv-btn:hover{background:var(--kv-h2,rgba(0,255,102,.12));transform:translateY(-1px)}
+  .kv-btn.solid{background:linear-gradient(135deg,var(--kv-c,#00ff66),var(--kv-c2,#0B8F3C));color:#000;border:none}
+  .kv-in{width:100%;background:rgba(0,0,0,.6);border:1px solid rgba(0,255,102,.25);border-radius:10px;padding:9px 11px;color:#e6ffe6;font-size:13px;outline:none}
+  .kv-in:focus{border-color:var(--kv-c,#00ff66)}
+  .kv-lb{font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:.2em;color:rgba(0,255,102,.7)}
+  .kv-grid{display:grid;gap:14px}
+  .kv-tag{font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:.2em;padding:4px 9px;border-radius:999px;border:1px solid rgba(0,255,102,.4);color:#00ff66}
+  #kvToasts{position:fixed;right:14px;top:76px;z-index:9999;display:flex;flex-direction:column;gap:10px;max-width:340px;pointer-events:none}
+  .kv-toast{background:linear-gradient(135deg,#001a08,#000);border:1px solid rgba(0,255,102,.55);border-left:4px solid #00ff66;border-radius:12px;padding:11px 14px;box-shadow:0 0 26px rgba(0,255,102,.3);animation:kvIn .35s cubic-bezier(.2,.9,.2,1)}
+  @keyframes kvIn{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:none}}
+  .kv-toast b{display:block;font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:.2em;color:#00ff66}
+  .kv-toast span{font-size:12.5px;color:#d8ffe4}
+  .kv-cat{font-family:'Orbitron',sans-serif;font-size:10px;font-weight:900;letter-spacing:.14em;padding:7px 11px;border-radius:10px;cursor:pointer;border:1px solid;transition:.2s}
+  .kv-cat:hover{transform:translateY(-2px)}
+  .kv-tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px}
+  table.kv-tb{width:100%;font-size:12.5px;border-collapse:collapse}
+  table.kv-tb th{text-align:left;font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:.16em;color:rgba(0,255,102,.7);padding:8px 6px;border-bottom:1px solid rgba(0,255,102,.2)}
+  table.kv-tb td{padding:8px 6px;border-bottom:1px solid rgba(0,255,102,.08)}
+</style>
+
+<div id="kvToasts"></div>
+<div id="kvView" class="kv-ov"><div id="kvViewHead"></div><div class="kv-wrap" id="kvViewBody"></div></div>
+<div id="kvModalHost"></div>
+
+<script>
+/* ============ KAWE V2 CORE ============ */
+const KV_PIN='2011';
+const KV_CATS={
+  bronze:{n:'BRONZE',c:'#b06a2c',c2:'#7a3f12',price:'R$ 29,90'},
+  prata:{n:'PRATA',c:'#e9edf2',c2:'#9aa4ad',price:'R$ 59,90'},
+  platina:{n:'PLATINA',c:'#a855f7',c2:'#6d28d9',price:'R$ 99,90'},
+  ouro:{n:'OURO',c:'#facc15',c2:'#b58900',price:'R$ 199,90'},
+  diamante:{n:'DIAMANTE',c:'#38bdf8',c2:'#0369a1',price:'R$ 349,90'},
+  premium:{n:'PREMIUM',c:'#d4af37',c2:'#8a6d1a',price:'R$ 499,90'}
+};
+const KV_FEATURES=[
+  ['dashboard','Dashboard','i-dash'],['saldo','Saldo','i-money'],['carteira','Carteira','i-card'],
+  ['financas','Finanças','i-up'],['estatisticas','Estatísticas','i-down'],['historico','Histórico','i-list'],
+  ['perfil','Perfil','i-user'],['configuracoes','Configurações','i-cog'],['notificacoes','Notificações','i-bell'],
+  ['extrato','Extrato','i-receipt'],['recursos','Recursos','i-box'],['usuarios','Usuários','i-users'],
+  ['analytics','Analytics','i-activity'],['graficos','Gráficos','i-bar'],['agenda','Agenda','i-cal'],
+  ['mensagens','Mensagens','i-msg'],['favoritos','Favoritos','i-star'],['objetivos','Objetivos','i-target'],
+  ['premium','Premium','i-crown'],['performance','Performance','i-rocket'],['seguranca','Segurança','i-lock'],
+  ['eventos','Eventos','i-spark']
+];
+const KV_DEF={
+  acts:[],notifs:[],
+  events:[
+    {t:'Torneio Relâmpago',d:'Prêmio de R$ 10.000 no Bingo — participe às 20h.',k:'evento',dt:''},
+    {t:'Promoção 200% no 1º depósito',d:'Dobre seu saldo inicial até R$ 500.',k:'promocao',dt:''},
+    {t:'Dica do dia',d:'Defina stop-loss de 20% da banca antes de jogar.',k:'dica',dt:''}
+  ],
+  cat:{bronze:[{t:'Sala Bronze',d:'Jogos com RTP elevado e cashback 3%.'}],prata:[{t:'Sala Prata',d:'Cashback 5% + mentoria semanal.'}],platina:[{t:'Sala Platina',d:'Sinais ao vivo e limites ampliados.'}],ouro:[{t:'Sala Ouro',d:'Gerente de conta e saques prioritários.'}],diamante:[{t:'Sala Diamante',d:'Mesas VIP exclusivas e cashback 10%.'}],premium:[{t:'Sala Premium',d:'Acesso total: IA de apostas, mentor e eventos privados.'}]},
+  files:[],cal:[],goals:[],favs:[],chats:[{n:'Suporte KAWE',m:[{f:'Suporte',t:'Olá! Como podemos ajudar?',dt:''}]}],
+  tx:[],bets:[],
+  settings:{color:'#00ff66',lang:'pt-BR',toasts:true},
+  profile:{name:'',cpf:'',cep:'',phone:'',email:'',city:'',bio:'',avatar:'',banner:''},
+  wallet:{pix:'',bank:'',method:'PIX'},
+  sec:{f2a:false,email:'',phone:''},
+  cfg:{}
+};
+function kvLoad(){try{const s=JSON.parse(localStorage.getItem('kawe_v2'));if(s)return Object.assign(JSON.parse(JSON.stringify(KV_DEF)),s)}catch(e){}return JSON.parse(JSON.stringify(KV_DEF))}
+let KV=kvLoad();
+function kvSave(){try{localStorage.setItem('kawe_v2',JSON.stringify(KV))}catch(e){}}
+function kvNow(){return new Date().toLocaleString('pt-BR')}
+function kvMoney(n){return 'R$ '+Number(n||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}
+function kvUser(){return window.KAWE_CURRENT_USER||{id:'GUEST',name:'Visitante',guest:true}}
+
+/* ---- SEED demo (apostas e transações) ---- */
+(function(){
+  if(KV.bets.length) return;
+  const games=['Bingo','Slots Neon','Roleta Live','Crash','Sports'];
+  for(let i=0;i<28;i++){
+    const win=Math.random()>.48, bet=[5,10,20,50,100][Math.floor(Math.random()*5)];
+    const d=new Date(Date.now()-i*7.2e6);
+    KV.bets.push({id:'B'+(1000+i),g:games[i%5],bet,res:win?'GANHOU':'PERDEU',val:win?bet*(1+Math.random()*2.4):-bet,dt:d.toLocaleString('pt-BR'),ts:d.getTime()});
+  }
+  for(let i=0;i<16;i++){
+    const dep=Math.random()>.5, d=new Date(Date.now()-i*1.3e7);
+    KV.tx.push({id:'T'+(500+i),k:dep?'DEPÓSITO':'SAQUE',val:dep?(50+Math.round(Math.random()*450)):-(30+Math.round(Math.random()*300)),m:['PIX','Cartão','TED'][i%3],dt:d.toLocaleString('pt-BR'),ts:d.getTime()});
+  }
+  kvSave();
+})();
+
+/* ---- ATIVIDADE + NOTIFICAÇÕES ---- */
+function kvAct(label,kind){
+  const u=kvUser();
+  KV.acts.unshift({u:u.name||'—',uid:u.id||'—',a:label,k:kind||'clique',dt:kvNow(),ts:Date.now()});
+  if(KV.acts.length>600)KV.acts.pop();
+  kvSave();
+  if(typeof logEvent==='function')try{logEvent('['+(u.name||'—')+'] '+label)}catch(e){}
+  const p=document.getElementById('kv-adm-acts'); if(p&&!p.closest('.hidden'))kvRenderActs();
+}
+function kvToast(msg,title){
+  if(!KV.settings.toasts)return;
+  const host=document.getElementById('kvToasts');
+  const el=document.createElement('div');el.className='kv-toast';
+  el.innerHTML='<b>'+(title||'KAWE CASSINO')+'</b><span>'+msg+'</span>';
+  host.appendChild(el);
+  KV.notifs.unshift({t:title||'KAWE',m:msg,dt:kvNow()}); if(KV.notifs.length>400)KV.notifs.pop(); kvSave();
+  setTimeout(()=>{el.style.transition='.3s';el.style.opacity=0;el.style.transform='translateX(40px)';setTimeout(()=>el.remove(),320)},3400);
+  const b=document.getElementById('kv-notif-list'); if(b)kvRenderNotifs();
+}
+let kvLastClick=0,kvLastLabel='';
+document.addEventListener('click',e=>{
+  const t=e.target.closest('button,a,[role="button"]'); if(!t)return;
+  if(t.closest('#kvToasts'))return;
+  let label=(t.getAttribute('data-kv-label')||t.getAttribute('title')||t.innerText||t.getAttribute('aria-label')||'Ação').trim().split('\n')[0].slice(0,48);
+  if(!label)label='Ação';
+  const now=Date.now();
+  if(label===kvLastLabel&&now-kvLastClick<500)return;
+  kvLastClick=now;kvLastLabel=label;
+  kvAct(label,'clique');
+  kvToast('Você acessou: '+label.toUpperCase(),'AÇÃO REGISTRADA · '+new Date().toLocaleTimeString('pt-BR'));
+},true);
+
+/* ---- PALETA DE CORES (tema) ---- */
+function kvApplyColor(hex){
+  KV.settings.color=hex;kvSave();
+  const r=document.documentElement;
+  r.style.setProperty('--kv-c',hex);r.style.setProperty('--kv-a',hex+'88');r.style.setProperty('--kv-g',hex+'99');r.style.setProperty('--kv-h2',hex+'22');
+  let s=document.getElementById('kvThemeStyle');
+  if(!s){s=document.createElement('style');s.id='kvThemeStyle';document.head.appendChild(s)}
+  s.textContent=`.text-green-400,.neon-text{color:${hex}!important}
+  .bg-green-400,.from-green-400{--tw-gradient-from:${hex}!important}
+  .border-green-400,.border-green-400\\/30,.border-green-400\\/40,.border-green-400\\/50,.border-green-400\\/60,.border-green-400\\/70{border-color:${hex}aa!important}
+  .kv-toast{border-color:${hex}88;border-left-color:${hex}}.kv-toast b{color:${hex}}`;
+}
+kvApplyColor(KV.settings.color||'#00ff66');
+
+/* ---- VIEW SHELL ---- */
+let KV_THEME=null;
+function kvSetTheme(c){
+  const v=document.getElementById('kvView');
+  v.style.setProperty('--kv-c',c?c.c:KV.settings.color);
+  v.style.setProperty('--kv-c2',c?c.c2:'#0B8F3C');
+  v.style.setProperty('--kv-a',(c?c.c:KV.settings.color)+'80');
+  v.style.setProperty('--kv-g',(c?c.c:KV.settings.color)+'99');
+  v.style.setProperty('--kv-h2',(c?c.c:KV.settings.color)+'22');
+}
+function kvOpen(key,theme){
+  const V=KV_VIEWS[key]; if(!V){kvToast('Função em construção.','AVISO');return;}
+  kvSetTheme(theme||null);
+  document.getElementById('kvViewHead').innerHTML=
+    `<div class="kv-h"><div><p class="kv-lb">KAWE CASSINO · MÓDULO</p><h2 class="kv-t" style="font-size:20px">${V.t}</h2></div>
+     <button class="kv-btn" onclick="kvClose()" data-kv-label="Fechar ${V.t}">✕ FECHAR</button></div>`;
+  document.getElementById('kvViewBody').innerHTML=V.h();
+  document.getElementById('kvView').classList.add('on');
+  document.body.style.overflow='hidden';
+  if(V.after)setTimeout(V.after,60);
+  kvAct('Abriu módulo '+V.t,'navegacao');
+}
+function kvClose(){document.getElementById('kvView').classList.remove('on');document.body.style.overflow='';}
+function kvModal(html){document.getElementById('kvModalHost').innerHTML=`<div id="kvMod" class="fixed inset-0 z-[300] grid place-items-center p-4" style="background:rgba(0,0,0,.85);backdrop-filter:blur(8px)" onclick="if(event.target===this)kvCloseModal()">${html}</div>`}
+function kvCloseModal(){document.getElementById('kvModalHost').innerHTML=''}
+
+/* ---- CATEGORIAS EXCLUSIVAS (PIN 2011) ---- */
+let kvPinCat=null,kvPinBuf='';
+function kvOpenCat(k){
+  kvPinCat=k;kvPinBuf='';
+  const c=KV_CATS[k];
+  kvModal(`<div class="w-full max-w-sm rounded-2xl p-6 text-center" style="background:linear-gradient(160deg,${c.c2}33,#000 70%);border:2px solid ${c.c};box-shadow:0 0 50px ${c.c}66">
+    <div class="flex items-center justify-between mb-4"><span style="font-family:Orbitron;font-size:10px;letter-spacing:.25em;color:${c.c}">ÁREA EXCLUSIVA</span>
+    <button onclick="kvCloseModal()" style="color:${c.c}" data-kv-label="Fechar senha">✕</button></div>
+    <div class="mx-auto mb-3 grid h-16 w-16 place-items-center rounded-full" style="background:${c.c}22;border:1px solid ${c.c}"><svg width="30" height="30" style="color:${c.c}"><use href="#i-lock"/></svg></div>
+    <h3 style="font-family:Orbitron;font-weight:900;letter-spacing:.2em;font-size:22px;color:${c.c};text-shadow:0 0 18px ${c.c}88">${c.n}</h3>
+    <p class="mt-2 text-sm" style="color:#ddd">Digite a senha de 4 dígitos para acessar o conteúdo exclusivo.</p>
+    <div id="kvPinDots" class="flex justify-center gap-3 my-5"></div>
+    <div class="grid grid-cols-3 gap-2">${[1,2,3,4,5,6,7,8,9].map(n=>`<button onclick="kvPin('${n}')" data-kv-label="Senha ${c.n}" style="padding:12px;border-radius:12px;border:1px solid ${c.c}66;color:${c.c};font-family:Orbitron;font-weight:700;background:rgba(0,0,0,.5)">${n}</button>`).join('')}
+      <button onclick="kvPinDel()" data-kv-label="Apagar dígito" style="padding:12px;border-radius:12px;border:1px solid ${c.c}44;color:${c.c}">⌫</button>
+      <button onclick="kvPin('0')" data-kv-label="Senha ${c.n}" style="padding:12px;border-radius:12px;border:1px solid ${c.c}66;color:${c.c};font-family:Orbitron;font-weight:700;background:rgba(0,0,0,.5)">0</button>
+      <button onclick="kvPinDel(1)" data-kv-label="Limpar senha" style="padding:12px;border-radius:12px;border:1px solid ${c.c}44;color:${c.c}">C</button></div>
+    <p id="kvPinErr" class="mt-3 text-xs" style="color:#ff6b6b;min-height:16px"></p></div>`);
+  kvPinDots();
+}
+function kvPinDots(){
+  const c=KV_CATS[kvPinCat];
+  document.getElementById('kvPinDots').innerHTML=[0,1,2,3].map(i=>`<span style="width:14px;height:14px;border-radius:50%;border:1px solid ${c.c};background:${i<kvPinBuf.length?c.c:'transparent'};box-shadow:${i<kvPinBuf.length?'0 0 12px '+c.c:'none'}"></span>`).join('');
+}
+function kvPinDel(all){kvPinBuf=all?'':kvPinBuf.slice(0,-1);kvPinDots()}
+function kvPin(n){
+  if(kvPinBuf.length>=4)return;
+  kvPinBuf+=n;kvPinDots();
+  if(kvPinBuf.length===4){
+    if(kvPinBuf===KV_PIN){const k=kvPinCat;kvCloseModal();kvToast('Acesso liberado à categoria '+KV_CATS[k].n,'SENHA CORRETA');kvAct('Acessou categoria exclusiva '+KV_CATS[k].n,'categoria');kvCatView(k);}
+    else{document.getElementById('kvPinErr').textContent='Senha incorreta. Tente novamente.';kvPinBuf='';kvPinDots();kvAct('Senha incorreta na categoria '+KV_CATS[kvPinCat].n,'seguranca')}
+  }
+}
+function kvCatView(k){
+  const c=KV_CATS[k];
+  KV_VIEWS._cat={t:'CATEGORIA '+c.n,h:()=>`
+    <div class="kv-card" style="--kv-a:${c.c}66;background:linear-gradient(140deg,${c.c2}22,rgba(0,0,0,.6))">
+      <span class="kv-tag" style="border-color:${c.c};color:${c.c}">CONTEÚDO EXCLUSIVO</span>
+      <h3 class="kv-t mt-3" style="font-size:26px;--kv-c:${c.c};--kv-g:${c.c}88">${c.n}</h3>
+      <p class="mt-2 text-sm text-white/70">Assinatura ${c.price}/mês · liberada com senha de 4 dígitos.</p>
+    </div>
+    <div class="kv-grid mt-4" style="grid-template-columns:repeat(auto-fill,minmax(260px,1fr))">
+      ${(KV.cat[k]||[]).map(i=>`<div class="kv-card" style="--kv-a:${c.c}55"><h4 style="font-family:Orbitron;font-weight:800;color:${c.c}">${i.t}</h4><p class="mt-2 text-sm text-white/70">${i.d}</p></div>`).join('')||'<p class="text-white/60">Nenhum conteúdo publicado ainda.</p>'}
+    </div>`};
+  kvOpen('_cat',c);
+}
+
+/* ---- HELPERS DE CÁLCULO ---- */
+function kvTotals(){
+  const g=KV.bets.filter(b=>b.val>0).reduce((s,b)=>s+b.val,0);
+  const p=Math.abs(KV.bets.filter(b=>b.val<0).reduce((s,b)=>s+b.val,0));
+  const dep=KV.tx.filter(t=>t.val>0).reduce((s,t)=>s+t.val,0);
+  const saq=Math.abs(KV.tx.filter(t=>t.val<0).reduce((s,t)=>s+t.val,0));
+  const bal=Number(kvUser().balance||0)+dep-saq+g-p;
+  return {g,p,dep,saq,bal,liq:g-p,n:KV.bets.length,wr:KV.bets.length?(KV.bets.filter(b=>b.val>0).length/KV.bets.length*100):0};
+}
+function kvKpi(l,v,c){return `<div class="kv-card"><p class="kv-lb">${l}</p><p class="kv-t mt-2" style="font-size:22px;${c?'--kv-c:'+c+';--kv-g:'+c+'88':''}">${v}</p></div>`}
+function kvChart(id,h){return `<div class="kv-card"><p class="kv-lb mb-2">${h}</p><canvas id="${id}" height="150"></canvas></div>`}
+function kvMakeChart(id,type,data,opts){
+  const el=document.getElementById(id); if(!el||typeof Chart==='undefined')return;
+  const grid={color:'rgba(0,255,102,.1)'},tick={color:'#8a9',font:{size:9}};
+  new Chart(el,{type,data,options:Object.assign({responsive:true,plugins:{legend:{labels:{color:'#cfc',font:{size:10}}}},scales:type==='doughnut'||type==='radar'?{}:{x:{grid,ticks:tick},y:{grid,ticks:tick}}},opts||{})});
+}
+</script>
+<script>
+/* ============ VIEWS DO MENU ============ */
+const KV_VIEWS={};
+const K=(k,t,h,after)=>KV_VIEWS[k]={t,h,after};
+
+K('inicio','INÍCIO',()=>`<div class="kv-card"><h3 class="kv-t" style="font-size:22px">BEM-VINDO À KAWE CASSINO</h3><p class="mt-2 text-white/70">Use o menu de três barras para navegar por todos os módulos da plataforma.</p></div>`);
+
+/* DASHBOARD FINANCEIRO */
+K('dashboard','DASHBOARD FINANCEIRO',()=>{const t=kvTotals();return `
+  <div class="kv-grid" style="grid-template-columns:repeat(auto-fill,minmax(190px,1fr))">
+    ${kvKpi('SALDO ATUAL',kvMoney(t.bal))}${kvKpi('TOTAL GANHO',kvMoney(t.g))}
+    ${kvKpi('TOTAL PERDIDO',kvMoney(t.p),'#ff6b6b')}${kvKpi('DEPOSITADO',kvMoney(t.dep))}
+    ${kvKpi('SACADO',kvMoney(t.saq),'#ffd166')}${kvKpi('RESULTADO LÍQUIDO',kvMoney(t.liq),t.liq>=0?null:'#ff6b6b')}
+    ${kvKpi('APOSTAS',t.n)}${kvKpi('TAXA DE VITÓRIA',t.wr.toFixed(1)+'%')}
+  </div>
+  <div class="kv-grid mt-4" style="grid-template-columns:repeat(auto-fit,minmax(320px,1fr))">
+    ${kvChart('kvD1','EVOLUÇÃO DO RESULTADO')}${kvChart('kvD2','ENTRADAS x SAÍDAS')}
+  </div>
+  <div class="kv-card mt-4"><p class="kv-lb mb-2">ÚLTIMAS MOVIMENTAÇÕES</p>
+   <table class="kv-tb"><tr><th>ID</th><th>TIPO</th><th>VALOR</th><th>MÉTODO</th><th>DATA/HORA</th></tr>
+   ${KV.tx.slice(0,10).map(x=>`<tr><td style="font-family:monospace">${x.id}</td><td>${x.k}</td><td style="color:${x.val>0?'#00ff66':'#ff6b6b'}">${kvMoney(x.val)}</td><td>${x.m}</td><td>${x.dt}</td></tr>`).join('')}</table></div>`;
+},()=>{
+  const b=[...KV.bets].sort((a,c)=>a.ts-c.ts);let acc=0;const s=b.map(x=>acc+=x.val);
+  kvMakeChart('kvD1','line',{labels:b.map(x=>x.dt.slice(0,5)),datasets:[{label:'Acumulado',data:s,borderColor:KV.settings.color,backgroundColor:KV.settings.color+'33',fill:true,tension:.35,borderWidth:2,pointRadius:0}]});
+  const t=kvTotals();
+  kvMakeChart('kvD2','bar',{labels:['Depósitos','Saques','Ganhos','Perdas'],datasets:[{data:[t.dep,t.saq,t.g,t.p],backgroundColor:[KV.settings.color,'#ffd166','#22c55e','#ef4444'],borderRadius:8}]},{plugins:{legend:{display:false}}});
+});
+
+/* SALDO */
+K('saldo','SALDO DA CONTA',()=>{const t=kvTotals();return `
+  <div class="kv-card" style="text-align:center"><p class="kv-lb">SALDO DISPONÍVEL</p>
+    <p class="kv-t" style="font-size:44px;margin-top:8px">${kvMoney(t.bal)}</p>
+    <p class="text-white/60 text-sm mt-1">Titular: ${kvUser().name} · ${kvNow()}</p>
+    <div class="flex justify-center gap-2 mt-4"><button class="kv-btn solid" onclick="kvOpen('carteira')" data-kv-label="Depositar">DEPOSITAR</button>
+    <button class="kv-btn" onclick="kvOpen('carteira')" data-kv-label="Sacar">SACAR</button></div></div>
+  <div class="kv-grid mt-4" style="grid-template-columns:repeat(auto-fill,minmax(190px,1fr))">
+    ${kvKpi('SALDO BLOQUEADO',kvMoney(0))}${kvKpi('BÔNUS',kvMoney(t.dep*0.05))}
+    ${kvKpi('EM APOSTAS ABERTAS',kvMoney(0))}${kvKpi('DISPONÍVEL P/ SAQUE',kvMoney(Math.max(0,t.bal)))}
+  </div>
+  ${kvChart('kvS1','SALDO AO LONGO DO TEMPO')}`;
+},()=>{
+  const tx=[...KV.tx].sort((a,b)=>a.ts-b.ts);let a=0;const s=tx.map(x=>a+=x.val);
+  kvMakeChart('kvS1','line',{labels:tx.map(x=>x.dt.slice(0,5)),datasets:[{label:'Saldo',data:s,borderColor:KV.settings.color,backgroundColor:KV.settings.color+'22',fill:true,tension:.4,borderWidth:2}]});
+});
+
+/* CARTEIRA */
+K('carteira','CARTEIRA',()=>`
+  <div class="kv-grid" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr))">
+    <div class="kv-card"><p class="kv-lb mb-2">MÉTODO DE SAQUE/DEPÓSITO</p>
+      <label class="kv-lb">MÉTODO</label>
+      <select class="kv-in mb-2" id="kvWm">${['PIX','Cartão','TED','Cripto'].map(m=>`<option ${KV.wallet.method===m?'selected':''}>${m}</option>`).join('')}</select>
+      <label class="kv-lb">CHAVE PIX</label><input class="kv-in mb-2" id="kvWpix" value="${KV.wallet.pix}">
+      <label class="kv-lb">BANCO / CONTA</label><input class="kv-in mb-3" id="kvWbank" value="${KV.wallet.bank}">
+      <button class="kv-btn solid" onclick="kvSaveWallet()" data-kv-label="Salvar carteira">SALVAR MÉTODO</button></div>
+    <div class="kv-card"><p class="kv-lb mb-2">MOVIMENTAR</p>
+      <label class="kv-lb">VALOR (R$)</label><input class="kv-in mb-3" id="kvWval" type="number" value="100">
+      <div class="flex gap-2"><button class="kv-btn solid" onclick="kvTx(1)" data-kv-label="Confirmar depósito">DEPOSITAR</button>
+      <button class="kv-btn" onclick="kvTx(-1)" data-kv-label="Confirmar saque">SACAR</button></div>
+      <p class="mt-4 kv-lb">SALDO: <span style="color:${KV.settings.color}">${kvMoney(kvTotals().bal)}</span></p></div>
+  </div>
+  <div class="kv-card mt-4"><p class="kv-lb mb-2">HISTÓRICO DA CARTEIRA</p>
+    <table class="kv-tb"><tr><th>ID</th><th>TIPO</th><th>VALOR</th><th>MÉTODO</th><th>DATA/HORA</th></tr>
+    ${KV.tx.map(x=>`<tr><td style="font-family:monospace">${x.id}</td><td>${x.k}</td><td style="color:${x.val>0?'#00ff66':'#ff6b6b'}">${kvMoney(x.val)}</td><td>${x.m}</td><td>${x.dt}</td></tr>`).join('')}</table></div>`);
+function kvSaveWallet(){KV.wallet={method:kvVal('kvWm'),pix:kvVal('kvWpix'),bank:kvVal('kvWbank')};kvSave();kvToast('Método de pagamento salvo.','CARTEIRA')}
+function kvVal(id){const e=document.getElementById(id);return e?e.value:''}
+function kvTx(sign){
+  const v=Math.abs(parseFloat(kvVal('kvWval'))||0); if(!v)return kvToast('Informe um valor.','ATENÇÃO');
+  KV.tx.unshift({id:'T'+Date.now().toString().slice(-6),k:sign>0?'DEPÓSITO':'SAQUE',val:sign*v,m:KV.wallet.method||'PIX',dt:kvNow(),ts:Date.now()});
+  kvSave();kvAct((sign>0?'Depósito de ':'Saque de ')+kvMoney(v),'financeiro');
+  kvToast((sign>0?'Depósito':'Saque')+' de '+kvMoney(v)+' registrado.','CARTEIRA');kvOpen('carteira');
+}
+
+/* FINANÇAS (gráficos) */
+K('financas','FINANÇAS · GRÁFICOS',()=>`
+  <div class="kv-grid" style="grid-template-columns:repeat(auto-fit,minmax(320px,1fr))">
+    ${kvChart('kvF1','GANHOS x PERDAS POR HORA')}${kvChart('kvF2','RESULTADO POR DIA')}
+    ${kvChart('kvF3','RESULTADO POR MÊS')}${kvChart('kvF4','DISTRIBUIÇÃO POR JOGO')}
+    ${kvChart('kvF5','EVOLUÇÃO ANUAL')}${kvChart('kvF6','DEPÓSITOS x SAQUES')}
+  </div>`,()=>{
+  const c=KV.settings.color;
+  const hrs=Array.from({length:24},(_,i)=>i+'h');
+  kvMakeChart('kvF1','bar',{labels:hrs,datasets:[
+    {label:'Ganhos',data:hrs.map(()=>Math.random()*500),backgroundColor:c},
+    {label:'Perdas',data:hrs.map(()=>-Math.random()*400),backgroundColor:'#ef4444'}]});
+  const dias=['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'];
+  kvMakeChart('kvF2','line',{labels:dias,datasets:[{label:'Líquido',data:dias.map(()=>-300+Math.random()*900),borderColor:c,backgroundColor:c+'33',fill:true,tension:.4}]});
+  const m=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  kvMakeChart('kvF3','bar',{labels:m,datasets:[{label:'Resultado',data:m.map(()=>-800+Math.random()*2600),backgroundColor:c,borderRadius:6}]});
+  const g={};KV.bets.forEach(b=>g[b.g]=(g[b.g]||0)+Math.abs(b.val));
+  kvMakeChart('kvF4','doughnut',{labels:Object.keys(g),datasets:[{data:Object.values(g),backgroundColor:[c,'#22c55e','#0B8F3C','#065f46','#ffd166'],borderColor:'#000'}]},{cutout:'60%'});
+  kvMakeChart('kvF5','line',{labels:['2022','2023','2024','2025','2026'],datasets:[{label:'Lucro',data:[1200,2400,-800,5200,7400],borderColor:c,tension:.35,borderWidth:3}]});
+  const t=kvTotals();
+  kvMakeChart('kvF6','doughnut',{labels:['Depósitos','Saques'],datasets:[{data:[t.dep,t.saq],backgroundColor:[c,'#ffd166'],borderColor:'#000'}]},{cutout:'55%'});
+});
+
+/* ESTATÍSTICAS / RECURSOS DE CÁLCULO */
+K('estatisticas','ESTATÍSTICAS & CALCULADORAS',()=>{const t=kvTotals();return `
+  <div class="kv-grid" style="grid-template-columns:repeat(auto-fill,minmax(190px,1fr))">
+    ${kvKpi('TAXA DE VITÓRIA',t.wr.toFixed(1)+'%')}${kvKpi('PROB. DE PERDA',(100-t.wr).toFixed(1)+'%','#ff6b6b')}
+    ${kvKpi('TICKET MÉDIO',kvMoney(KV.bets.reduce((s,b)=>s+b.bet,0)/(KV.bets.length||1)))}${kvKpi('ROI',((t.liq/(t.p||1))*100).toFixed(1)+'%')}
+  </div>
+  <div class="kv-grid mt-4" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr))">
+    <div class="kv-card"><p class="kv-lb mb-2">CALCULADORA DE PROBABILIDADE</p>
+      <label class="kv-lb">CASOS FAVORÁVEIS</label><input id="kvP1" class="kv-in mb-2" type="number" value="1">
+      <label class="kv-lb">CASOS POSSÍVEIS</label><input id="kvP2" class="kv-in mb-2" type="number" value="37">
+      <label class="kv-lb">TENTATIVAS</label><input id="kvP3" class="kv-in mb-3" type="number" value="10">
+      <button class="kv-btn solid" onclick="kvCalcProb()" data-kv-label="Calcular probabilidade">CALCULAR</button>
+      <p id="kvPout" class="mt-3 text-sm text-white/80"></p></div>
+    <div class="kv-card"><p class="kv-lb mb-2">CALCULADORA DE TAXAS</p>
+      <label class="kv-lb">VALOR (R$)</label><input id="kvT1" class="kv-in mb-2" type="number" value="1000">
+      <label class="kv-lb">TAXA (%)</label><input id="kvT2" class="kv-in mb-2" type="number" value="4.5">
+      <label class="kv-lb">PERÍODOS</label><input id="kvT3" class="kv-in mb-3" type="number" value="12">
+      <button class="kv-btn solid" onclick="kvCalcTax()" data-kv-label="Calcular taxas">CALCULAR</button>
+      <p id="kvTout" class="mt-3 text-sm text-white/80"></p></div>
+    <div class="kv-card"><p class="kv-lb mb-2">CALCULADORA DE APOSTA (KELLY)</p>
+      <label class="kv-lb">BANCA (R$)</label><input id="kvK1" class="kv-in mb-2" type="number" value="1000">
+      <label class="kv-lb">ODD</label><input id="kvK2" class="kv-in mb-2" type="number" step="0.01" value="2.10">
+      <label class="kv-lb">PROBABILIDADE (%)</label><input id="kvK3" class="kv-in mb-3" type="number" value="55">
+      <button class="kv-btn solid" onclick="kvCalcKelly()" data-kv-label="Calcular Kelly">CALCULAR</button>
+      <p id="kvKout" class="mt-3 text-sm text-white/80"></p></div>
+    <div class="kv-card"><p class="kv-lb mb-2">DICAS DE APOSTA</p>
+      <ul class="text-sm text-white/75 space-y-2 mt-2">
+        <li>• Nunca aposte mais de 2% da banca por rodada.</li>
+        <li>• Defina stop-win (+30%) e stop-loss (−20%).</li>
+        <li>• Odds acima de 3.0 exigem probabilidade real &gt; 33%.</li>
+        <li>• Registre todas as apostas: seu histórico é seu melhor analista.</li>
+        <li>• Evite recuperar perdas dobrando o valor (martingale).</li>
+      </ul></div>
+  </div>`});
+function kvCalcProb(){
+  const f=+kvVal('kvP1'),p=+kvVal('kvP2'),n=+kvVal('kvP3');
+  const pr=p?f/p:0, ao=1-Math.pow(1-pr,n||1);
+  document.getElementById('kvPout').innerHTML=`Probabilidade por tentativa: <b style="color:${KV.settings.color}">${(pr*100).toFixed(2)}%</b><br>Chance em ${n} tentativas: <b style="color:${KV.settings.color}">${(ao*100).toFixed(2)}%</b><br>Odd justa: <b>${pr?(1/pr).toFixed(2):'—'}</b>`;
+}
+function kvCalcTax(){
+  const v=+kvVal('kvT1'),t=+kvVal('kvT2')/100,n=+kvVal('kvT3');
+  const fin=v*Math.pow(1+t,n);
+  document.getElementById('kvTout').innerHTML=`Taxa simples: <b>${kvMoney(v*t*n)}</b><br>Montante composto: <b style="color:${KV.settings.color}">${kvMoney(fin)}</b><br>Lucro: <b>${kvMoney(fin-v)}</b>`;
+}
+function kvCalcKelly(){
+  const b=+kvVal('kvK1'),o=+kvVal('kvK2'),p=+kvVal('kvK3')/100;
+  const f=((o-1)*p-(1-p))/(o-1);
+  document.getElementById('kvKout').innerHTML=f>0?`Aposte <b style="color:${KV.settings.color}">${(f*100).toFixed(2)}%</b> da banca = <b>${kvMoney(b*f)}</b><br>EV: <b>${kvMoney(b*f*((o*p)-1))}</b>`:'<b style="color:#ff6b6b">Sem valor esperado positivo — não aposte.</b>';
+}
+
+/* HISTÓRICO */
+K('historico','HISTÓRICO DE APOSTAS',()=>`
+  <div class="kv-card"><table class="kv-tb">
+  <tr><th>ID</th><th>JOGO</th><th>APOSTA</th><th>RESULTADO</th><th>VALOR</th><th>DATA/HORA</th></tr>
+  ${KV.bets.map(b=>`<tr><td style="font-family:monospace">${b.id}</td><td>${b.g}</td><td>${kvMoney(b.bet)}</td>
+  <td style="color:${b.val>0?'#00ff66':'#ff6b6b'};font-weight:700">${b.res}</td><td style="color:${b.val>0?'#00ff66':'#ff6b6b'}">${kvMoney(b.val)}</td><td>${b.dt}</td></tr>`).join('')}
+  </table></div>`);
+
+/* PERFIL COMPLETO */
+K('perfil','PERFIL COMPLETO',()=>{const p=KV.profile;return `
+  <div class="kv-card" style="padding:0;overflow:hidden">
+    <div style="height:150px;background:${p.banner?`url(${p.banner}) center/cover`:`linear-gradient(120deg,${KV.settings.color}44,#000)`}"></div>
+    <div style="padding:18px;display:flex;gap:16px;align-items:center;flex-wrap:wrap">
+      <div style="width:76px;height:76px;border-radius:50%;margin-top:-48px;border:2px solid ${KV.settings.color};background:${p.avatar?`url(${p.avatar}) center/cover`:'#062'};display:grid;place-items:center;font-family:Orbitron;font-size:26px;color:#000;background-color:${KV.settings.color}">${(p.name||kvUser().name||'K')[0].toUpperCase()}</div>
+      <div><h3 class="kv-t" style="font-size:20px">${p.name||kvUser().name}</h3><p class="text-white/60 text-xs">${p.bio||'Sem biografia.'}</p></div>
+    </div></div>
+  <div class="kv-grid mt-4" style="grid-template-columns:repeat(auto-fit,minmax(280px,1fr))">
+    <div class="kv-card"><p class="kv-lb mb-2">DADOS PESSOAIS</p>
+      ${[['name','NOME COMPLETO'],['cpf','CPF'],['email','E-MAIL'],['phone','TELEFONE'],['cep','CEP'],['city','CIDADE']].map(([k,l])=>`<label class="kv-lb">${l}</label><input class="kv-in mb-2" id="kvPf_${k}" value="${p[k]||''}">`).join('')}
+      <label class="kv-lb">BIO</label><textarea class="kv-in mb-3" id="kvPf_bio">${p.bio||''}</textarea>
+      <button class="kv-btn solid" onclick="kvSaveProfile()" data-kv-label="Salvar perfil">SALVAR PERFIL</button></div>
+    <div class="kv-card"><p class="kv-lb mb-2">IMAGENS</p>
+      <label class="kv-lb">URL DA FOTO DE PERFIL</label><input class="kv-in mb-2" id="kvPf_avatar" value="${p.avatar||''}">
+      <label class="kv-lb">URL DO BANNER</label><input class="kv-in mb-3" id="kvPf_banner" value="${p.banner||''}">
+      <button class="kv-btn" onclick="kvSaveProfile()" data-kv-label="Salvar imagens">APLICAR IMAGENS</button>
+      <p class="kv-lb mt-4">CONTA</p><p class="text-sm text-white/70 mt-1">ID ${kvUser().id} · Saldo ${kvMoney(kvTotals().bal)}</p></div>
+  </div>`});
+function kvSaveProfile(){
+  ['name','cpf','email','phone','cep','city','bio','avatar','banner'].forEach(k=>{const e=document.getElementById('kvPf_'+k);if(e)KV.profile[k]=e.value});
+  kvSave();kvToast('Perfil atualizado com sucesso.','PERFIL');kvOpen('perfil');
+}
+
+/* CONFIGURAÇÕES */
+const KV_PALETTE=['#00ff66','#00e5ff','#ff2d95','#ffd166','#a855f7','#ff6b35','#ffffff','#38bdf8','#22c55e','#f43f5e','#8b5cf6','#facc15'];
+K('configuracoes','CONFIGURAÇÕES',()=>`
+  <div class="kv-grid" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr))">
+    <div class="kv-card"><p class="kv-lb mb-3">PALETA DE CORES DOS BOTÕES</p>
+      <div style="display:flex;flex-wrap:wrap;gap:10px">${KV_PALETTE.map(c=>`<button onclick="kvApplyColor('${c}');kvToast('Cor do tema alterada.','CONFIGURAÇÕES');kvOpen('configuracoes')" data-kv-label="Cor ${c}" style="width:38px;height:38px;border-radius:10px;background:${c};border:2px solid ${KV.settings.color===c?'#fff':'transparent'}"></button>`).join('')}</div>
+      <label class="kv-lb mt-4" style="display:block">COR PERSONALIZADA</label>
+      <input type="color" class="kv-in" value="${KV.settings.color}" onchange="kvApplyColor(this.value);kvToast('Cor personalizada aplicada.','CONFIGURAÇÕES')"></div>
+    <div class="kv-card"><p class="kv-lb mb-2">IDIOMA</p>
+      <select class="kv-in" onchange="KV.settings.lang=this.value;kvSave();kvToast('Idioma alterado para '+this.value,'CONFIGURAÇÕES')">
+      ${['pt-BR','en-US','es-ES','fr-FR','it-IT','de-DE','ja-JP'].map(l=>`<option ${KV.settings.lang===l?'selected':''}>${l}</option>`).join('')}</select>
+      <p class="kv-lb mt-4 mb-2">NOTIFICAÇÕES POP-UP</p>
+      <button class="kv-btn ${KV.settings.toasts?'solid':''}" onclick="KV.settings.toasts=!KV.settings.toasts;kvSave();kvOpen('configuracoes')" data-kv-label="Alternar notificações">${KV.settings.toasts?'ATIVADAS':'DESATIVADAS'}</button></div>
+  </div>`);
+
+/* NOTIFICAÇÕES */
+K('notificacoes','NOTIFICAÇÕES & AÇÕES',()=>`
+  <div class="flex gap-2 mb-3"><button class="kv-btn" onclick="KV.notifs=[];KV.acts=[];kvSave();kvOpen('notificacoes')" data-kv-label="Limpar notificações">LIMPAR TUDO</button></div>
+  <div class="kv-grid" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr))">
+    <div class="kv-card"><p class="kv-lb mb-2">NOTIFICAÇÕES</p><div id="kv-notif-list">${KV.notifs.slice(0,80).map(n=>`<div style="border-bottom:1px solid rgba(0,255,102,.1);padding:8px 0"><b style="font-family:Orbitron;font-size:10px;color:${KV.settings.color}">${n.t}</b><div class="text-sm text-white/80">${n.m}</div><div class="text-[10px] text-white/40">${n.dt}</div></div>`).join('')||'<p class="text-white/50">Nenhuma notificação.</p>'}</div></div>
+    <div class="kv-card"><p class="kv-lb mb-2">MINHAS AÇÕES</p><table class="kv-tb"><tr><th>AÇÃO</th><th>TIPO</th><th>DATA/HORA</th></tr>
+    ${KV.acts.slice(0,80).map(a=>`<tr><td>${a.a}</td><td>${a.k}</td><td>${a.dt}</td></tr>`).join('')}</table></div>
+  </div>`);
+function kvRenderNotifs(){const e=document.getElementById('kv-notif-list');if(e)e.innerHTML=KV.notifs.slice(0,80).map(n=>`<div style="border-bottom:1px solid rgba(0,255,102,.1);padding:8px 0"><b style="font-family:Orbitron;font-size:10px;color:${KV.settings.color}">${n.t}</b><div class="text-sm text-white/80">${n.m}</div><div class="text-[10px] text-white/40">${n.dt}</div></div>`).join('')}
+
+/* EXTRATO */
+K('extrato','EXTRATO',()=>{let acc=0;const rows=[...KV.tx,...KV.bets.map(b=>({id:b.id,k:'APOSTA · '+b.g,val:b.val,m:b.res,dt:b.dt,ts:b.ts}))].sort((a,b)=>a.ts-b.ts);
+ return `<div class="kv-card"><table class="kv-tb"><tr><th>ID</th><th>DESCRIÇÃO</th><th>VALOR</th><th>DETALHE</th><th>SALDO APÓS</th><th>DATA/HORA</th></tr>
+ ${rows.map(r=>{acc+=r.val;return `<tr><td style="font-family:monospace">${r.id}</td><td>${r.k}</td><td style="color:${r.val>0?'#00ff66':'#ff6b6b'}">${kvMoney(r.val)}</td><td>${r.m}</td><td>${kvMoney(acc)}</td><td>${r.dt}</td></tr>`}).reverse().join('')}
+ </table></div>`});
+
+/* RECURSOS (biblioteca) */
+const KV_LIB={
+ 'FINANCEIRO':[['dashboard','Dashboard Financeiro'],['saldo','Saldo'],['carteira','Carteira'],['extrato','Extrato'],['financas','Gráficos Financeiros']],
+ 'ANÁLISE':[['estatisticas','Calculadoras & Probabilidade'],['analytics','Analytics'],['graficos','Biblioteca de Gráficos'],['performance','Performance']],
+ 'CONTA':[['perfil','Perfil'],['seguranca','Segurança'],['configuracoes','Configurações'],['notificacoes','Notificações']],
+ 'SOCIAL':[['usuarios','Usuários'],['mensagens','Mensagens'],['favoritos','Favoritos'],['objetivos','Objetivos'],['agenda','Agenda']],
+ 'EXCLUSIVO':[['premium','Premium & Assinaturas'],['eventos','Eventos, Promoções e Dicas']]
+};
+K('recursos','BIBLIOTECA DE RECURSOS',()=>`
+  ${Object.entries(KV_LIB).map(([cat,items])=>`<div class="kv-card mb-4"><p class="kv-lb mb-3">${cat}</p>
+    <div class="kv-grid" style="grid-template-columns:repeat(auto-fill,minmax(210px,1fr))">
+    ${items.map(([k,l])=>`<button class="kv-btn" onclick="kvOpen('${k}')" data-kv-label="${l}">${l.toUpperCase()}</button>`).join('')}</div></div>`).join('')}
+  <div class="kv-card"><p class="kv-lb mb-3">FERRAMENTAS DO USUÁRIO</p>
+    <div class="kv-grid" style="grid-template-columns:repeat(auto-fill,minmax(210px,1fr))">
+    ${[['Suporte 24h','Abrir chamado com a equipe.'],['Agente de IA','Assistente inteligente de apostas.'],['Mentores','Sessões com mentores certificados.'],['Moderadores','Fale com a moderação da plataforma.'],['Chat ao vivo','Converse com a comunidade.']].map(([t,d])=>`<div class="kv-card" style="padding:14px"><b style="font-family:Orbitron;font-size:12px;color:${KV.settings.color}">${t}</b><p class="text-xs text-white/65 mt-1">${d}</p><button class="kv-btn mt-2" onclick="kvOpen('mensagens')" data-kv-label="${t}">ABRIR</button></div>`).join('')}</div></div>`);
+
+/* USUÁRIOS (social) */
+K('usuarios','USUÁRIOS · REDE SOCIAL',()=>{
+  const list=(typeof loadUsersDB==='function'?loadUsersDB():[]);
+  return `<div class="kv-grid" style="grid-template-columns:repeat(auto-fill,minmax(260px,1fr))">
+   ${list.length?list.map(u=>`<div class="kv-card"><div class="flex items-center gap-3">
+     <div style="width:44px;height:44px;border-radius:50%;background:${KV.settings.color};display:grid;place-items:center;color:#000;font-family:Orbitron;font-weight:900">${(u.name||'?')[0].toUpperCase()}</div>
+     <div><b>${u.name}</b><div class="text-[10px] text-white/50">ID ${u.id} · desde ${new Date(u.createdAt).toLocaleDateString('pt-BR')}</div></div></div>
+     <div class="flex flex-wrap gap-2 mt-3">
+      <button class="kv-btn" onclick="kvToast('Você seguiu ${u.name}.','SOCIAL')" data-kv-label="Seguir ${u.name}">SEGUIR</button>
+      <button class="kv-btn" onclick="kvOpen('mensagens')" data-kv-label="Mensagem ${u.name}">MENSAGEM</button>
+      <button class="kv-btn" onclick="kvToast('Denúncia enviada à moderação.','DENÚNCIA')" data-kv-label="Denunciar ${u.name}">DENUNCIAR</button>
+      <button class="kv-btn" onclick="kvToast('${u.name} foi bloqueado.','BLOQUEIO')" data-kv-label="Bloquear ${u.name}">BLOQUEAR</button></div>
+     <p class="kv-lb mt-3">ÚLTIMAS AÇÕES</p>
+     <div class="text-xs text-white/60">${KV.acts.filter(a=>a.uid===u.id).slice(0,3).map(a=>a.dt+' — '+a.a).join('<br>')||'Sem atividade registrada.'}</div>
+   </div>`).join(''):'<p class="text-white/60">Nenhum usuário cadastrado ainda.</p>'}</div>`});
+
+/* ANALYTICS */
+K('analytics','ANALYTICS DO SISTEMA',()=>{const t=kvTotals();return `
+  <div class="kv-grid" style="grid-template-columns:repeat(auto-fill,minmax(190px,1fr))">
+   ${kvKpi('TAXA DE GANHO',t.wr.toFixed(1)+'%')}${kvKpi('TAXA DE PERDA',(100-t.wr).toFixed(1)+'%','#ff6b6b')}
+   ${kvKpi('VOLUME APOSTADO',kvMoney(KV.bets.reduce((s,b)=>s+b.bet,0)))}${kvKpi('MARGEM DA CASA','4,8%')}</div>
+  <div class="kv-grid mt-4" style="grid-template-columns:repeat(auto-fit,minmax(320px,1fr))">
+   ${kvChart('kvA1','GANHOS x PERDAS DO SISTEMA')}${kvChart('kvA2','APOSTAS POR JOGO')}${kvChart('kvA3','RETENÇÃO DE USUÁRIOS')}${kvChart('kvA4','SAÚDE DA PLATAFORMA')}</div>`},()=>{
+  const c=KV.settings.color;
+  kvMakeChart('kvA1','line',{labels:['S1','S2','S3','S4','S5','S6'],datasets:[{label:'Ganhos',data:[12,18,15,22,19,26].map(x=>x*100),borderColor:c,tension:.4},{label:'Perdas',data:[9,14,17,13,20,18].map(x=>x*100),borderColor:'#ef4444',tension:.4}]});
+  const g={};KV.bets.forEach(b=>g[b.g]=(g[b.g]||0)+1);
+  kvMakeChart('kvA2','bar',{labels:Object.keys(g),datasets:[{data:Object.values(g),backgroundColor:c,borderRadius:6}]},{plugins:{legend:{display:false}}});
+  kvMakeChart('kvA3','line',{labels:['D1','D7','D14','D30','D60','D90'],datasets:[{data:[100,72,58,44,36,31],borderColor:c,backgroundColor:c+'22',fill:true,tension:.4}]},{plugins:{legend:{display:false}}});
+  kvMakeChart('kvA4','radar',{labels:['Perf','Seg','UX','Uptime','Suporte','Latência'],datasets:[{data:[94,98,90,99,92,88],borderColor:c,backgroundColor:c+'44'}]},{plugins:{legend:{display:false}}});
+});
+
+/* GRÁFICOS */
+K('graficos','BIBLIOTECA DE GRÁFICOS',()=>`
+  <div class="kv-grid" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr))">
+   ${['LINHA','BARRAS','PIZZA','ÁREA','RADAR','POLAR','ROSCA','MISTO'].map((n,i)=>kvChart('kvG'+i,n)).join('')}</div>`,()=>{
+  const c=KV.settings.color,l=['A','B','C','D','E','F'],d=()=>l.map(()=>Math.round(20+Math.random()*80));
+  kvMakeChart('kvG0','line',{labels:l,datasets:[{data:d(),borderColor:c,tension:.4}]},{plugins:{legend:{display:false}}});
+  kvMakeChart('kvG1','bar',{labels:l,datasets:[{data:d(),backgroundColor:c,borderRadius:6}]},{plugins:{legend:{display:false}}});
+  kvMakeChart('kvG2','pie',{labels:l.slice(0,4),datasets:[{data:d().slice(0,4),backgroundColor:[c,'#22c55e','#0B8F3C','#065f46'],borderColor:'#000'}]});
+  kvMakeChart('kvG3','line',{labels:l,datasets:[{data:d(),borderColor:c,backgroundColor:c+'44',fill:true,tension:.4}]},{plugins:{legend:{display:false}}});
+  kvMakeChart('kvG4','radar',{labels:l,datasets:[{data:d(),borderColor:c,backgroundColor:c+'44'}]},{plugins:{legend:{display:false}}});
+  kvMakeChart('kvG5','polarArea',{labels:l.slice(0,4),datasets:[{data:d().slice(0,4),backgroundColor:[c+'cc','#22c55ecc','#0B8F3Ccc','#065f46cc']}]});
+  kvMakeChart('kvG6','doughnut',{labels:l.slice(0,3),datasets:[{data:d().slice(0,3),backgroundColor:[c,'#22c55e','#065f46'],borderColor:'#000'}]},{cutout:'62%'});
+  kvMakeChart('kvG7','bar',{labels:l,datasets:[{type:'bar',label:'Volume',data:d(),backgroundColor:c+'88',borderRadius:6},{type:'line',label:'Tendência',data:d(),borderColor:'#ffd166'}]});
+});
+
+/* AGENDA */
+K('agenda','AGENDA · CALENDÁRIO',()=>kvCalHtml(new Date().getFullYear(),new Date().getMonth()));
+let kvCalY=new Date().getFullYear(),kvCalM=new Date().getMonth();
+function kvCalHtml(y,m){
+  kvCalY=y;kvCalM=m;
+  const first=new Date(y,m,1).getDay(),days=new Date(y,m+1,0).getDate();
+  const meses=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  let cells='';
+  for(let i=0;i<first;i++)cells+='<div></div>';
+  for(let d=1;d<=days;d++){
+    const key=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const ev=KV.cal.filter(e=>e.d===key);
+    cells+=`<div onclick="kvAddCal('${key}')" data-kv-label="Dia ${d}" style="cursor:pointer;min-height:78px;border:1px solid rgba(0,255,102,.15);border-radius:10px;padding:6px;background:rgba(0,0,0,.4)">
+      <b style="font-family:Orbitron;font-size:11px;color:${KV.settings.color}">${d}</b>
+      ${ev.map(e=>`<div style="font-size:10px;margin-top:3px;padding:2px 4px;border-radius:5px;background:${KV.settings.color}22;color:#dfe">${e.t}</div>`).join('')}</div>`;
+  }
+  return `<div class="kv-card"><div class="flex items-center justify-between mb-3">
+    <button class="kv-btn" onclick="kvNavCal(-1)" data-kv-label="Mês anterior">◀</button>
+    <h3 class="kv-t" style="font-size:18px">${meses[m]} ${y}</h3>
+    <button class="kv-btn" onclick="kvNavCal(1)" data-kv-label="Próximo mês">▶</button></div>
+    <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:6px">
+    ${['DOM','SEG','TER','QUA','QUI','SEX','SÁB'].map(d=>`<div class="kv-lb" style="text-align:center">${d}</div>`).join('')}${cells}</div>
+    <p class="text-xs text-white/50 mt-3">Clique em um dia para adicionar um compromisso.</p></div>`;
+}
+function kvNavCal(n){let m=kvCalM+n,y=kvCalY;if(m<0){m=11;y--}if(m>11){m=0;y++}document.getElementById('kvViewBody').innerHTML=kvCalHtml(y,m)}
+function kvAddCal(d){const t=prompt('Compromisso para '+d+':');if(!t)return;KV.cal.push({d,t,dt:kvNow()});kvSave();kvToast('Compromisso adicionado em '+d,'AGENDA');document.getElementById('kvViewBody').innerHTML=kvCalHtml(kvCalY,kvCalM)}
+
+/* MENSAGENS */
+let kvChatI=0;
+K('mensagens','MENSAGENS',()=>kvChatHtml());
+function kvChatHtml(){
+  const ch=KV.chats[kvChatI]||{n:'—',m:[]};
+  return `<div class="kv-grid" style="grid-template-columns:260px 1fr">
+    <div class="kv-card"><p class="kv-lb mb-2">CONVERSAS</p>
+      ${KV.chats.map((c,i)=>`<button class="kv-btn ${i===kvChatI?'solid':''}" style="width:100%;margin-bottom:6px;text-align:left" onclick="kvChatI=${i};document.getElementById('kvViewBody').innerHTML=kvChatHtml()" data-kv-label="Conversa ${c.n}">${c.n}</button>`).join('')}
+      <button class="kv-btn" style="width:100%;margin-top:8px" onclick="kvNewChat()" data-kv-label="Nova conversa">+ NOVA CONVERSA</button>
+      <button class="kv-btn" style="width:100%;margin-top:6px" onclick="kvNewChat(1)" data-kv-label="Criar grupo">+ GRUPO / COMUNIDADE</button></div>
+    <div class="kv-card"><div class="flex items-center justify-between mb-2"><b class="kv-t" style="font-size:15px">${ch.n}</b>
+      <div class="flex gap-2">
+      <button class="kv-btn" onclick="kvToast('Chamada de voz iniciada com ${ch.n}.','LIGAÇÃO')" data-kv-label="Ligar">📞 LIGAR</button>
+      <button class="kv-btn" onclick="kvToast('Gravando áudio...','ÁUDIO')" data-kv-label="Áudio">🎙 ÁUDIO</button>
+      <button class="kv-btn" onclick="kvToast('Selecione o arquivo para enviar.','ARQUIVO')" data-kv-label="Enviar arquivo">📎 ARQUIVO</button>
+      <button class="kv-btn" onclick="kvToast('Selecione a foto para enviar.','FOTO')" data-kv-label="Enviar foto">🖼 FOTO</button></div></div>
+      <div style="max-height:340px;overflow:auto;padding:8px 0">${ch.m.map(m=>`<div style="margin-bottom:8px"><b style="font-family:Orbitron;font-size:10px;color:${KV.settings.color}">${m.f}</b> <span class="text-[10px] text-white/40">${m.dt||''}</span><div class="text-sm text-white/85">${m.t}</div></div>`).join('')||'<p class="text-white/50 text-sm">Sem mensagens.</p>'}</div>
+      <div class="flex gap-2 mt-2"><input id="kvMsgIn" class="kv-in" placeholder="Escreva uma mensagem..."><button class="kv-btn solid" onclick="kvSendMsg()" data-kv-label="Enviar mensagem">ENVIAR</button></div></div></div>`;
+}
+function kvNewChat(g){const n=prompt(g?'Nome do grupo/comunidade:':'Nome da conversa:');if(!n)return;KV.chats.push({n:(g?'👥 ':'')+n,m:[]});kvChatI=KV.chats.length-1;kvSave();document.getElementById('kvViewBody').innerHTML=kvChatHtml()}
+function kvSendMsg(){const v=kvVal('kvMsgIn');if(!v)return;KV.chats[kvChatI].m.push({f:kvUser().name||'Você',t:v,dt:kvNow()});kvSave();kvAct('Enviou mensagem em '+KV.chats[kvChatI].n,'mensagem');document.getElementById('kvViewBody').innerHTML=kvChatHtml()}
+
+/* FAVORITOS */
+const KV_FAVABLE=[...KV_FEATURES.map(f=>f[1]),'Bingo','Slots Neon','Roleta Live','Crash','Sports'];
+K('favoritos','FAVORITOS',()=>`
+  <div class="kv-card"><p class="kv-lb mb-2">FIXADOS NO TOPO</p>
+   <div class="flex flex-wrap gap-2">${KV.favs.map(f=>`<span class="kv-tag" style="border-color:${KV.settings.color};color:${KV.settings.color}">★ ${f}</span>`).join('')||'<span class="text-white/50 text-sm">Nada fixado ainda.</span>'}</div></div>
+  <div class="kv-card mt-4"><p class="kv-lb mb-3">SELECIONE SEUS FAVORITOS</p>
+   <div class="kv-grid" style="grid-template-columns:repeat(auto-fill,minmax(190px,1fr))">
+   ${KV_FAVABLE.map(f=>`<button class="kv-btn ${KV.favs.includes(f)?'solid':''}" onclick="kvToggleFav('${f}')" data-kv-label="Favoritar ${f}">${KV.favs.includes(f)?'★':'☆'} ${f.toUpperCase()}</button>`).join('')}</div></div>`);
+function kvToggleFav(f){KV.favs.includes(f)?KV.favs=KV.favs.filter(x=>x!==f):KV.favs.push(f);kvSave();kvRenderFavBar();kvOpen('favoritos')}
+function kvRenderFavBar(){
+  let bar=document.getElementById('kvFavBar');
+  if(!bar){bar=document.createElement('div');bar.id='kvFavBar';bar.style.cssText='position:fixed;top:64px;left:0;right:0;z-index:45;display:flex;gap:8px;overflow-x:auto;padding:6px 14px;background:rgba(0,0,0,.75);backdrop-filter:blur(8px)';document.body.appendChild(bar)}
+  bar.style.display=KV.favs.length?'flex':'none';
+  bar.innerHTML=KV.favs.map(f=>{const k=(KV_FEATURES.find(x=>x[1]===f)||[])[0];return `<button class="kv-btn" onclick="${k?`kvOpen('${k}')`:`openGames&&openGames()`}" data-kv-label="${f}">★ ${f.toUpperCase()}</button>`}).join('');
+}
+
+/* OBJETIVOS */
+K('objetivos','OBJETIVOS & METAS',()=>`
+  <div class="kv-card"><p class="kv-lb mb-2">NOVA META</p>
+    <div class="kv-grid" style="grid-template-columns:2fr 1fr 1fr auto">
+     <input id="kvGt" class="kv-in" placeholder="Ex.: Ganhar R$ 100 esta semana">
+     <input id="kvGv" class="kv-in" type="number" placeholder="Valor alvo">
+     <input id="kvGd" class="kv-in" type="date">
+     <button class="kv-btn solid" onclick="kvAddGoal()" data-kv-label="Criar meta">CRIAR</button></div></div>
+  <div class="kv-grid mt-4" style="grid-template-columns:repeat(auto-fill,minmax(260px,1fr))">
+   ${KV.goals.map((g,i)=>`<div class="kv-card"><b style="font-family:Orbitron;font-size:13px;color:${KV.settings.color}">${g.t}</b>
+     <p class="text-xs text-white/60 mt-1">Alvo ${kvMoney(g.v)} · até ${g.d||'—'} · criado ${g.dt}</p>
+     <div style="height:8px;border-radius:6px;background:#0a2;margin-top:10px;overflow:hidden;background:rgba(255,255,255,.08)"><div style="height:100%;width:${Math.min(100,g.p||0)}%;background:${KV.settings.color}"></div></div>
+     <div class="flex gap-2 mt-3"><button class="kv-btn" onclick="KV.goals[${i}].p=Math.min(100,(KV.goals[${i}].p||0)+25);kvSave();kvOpen('objetivos')" data-kv-label="Avançar meta">+25%</button>
+     <button class="kv-btn" onclick="KV.goals.splice(${i},1);kvSave();kvOpen('objetivos')" data-kv-label="Remover meta">REMOVER</button></div></div>`).join('')||'<p class="text-white/50">Nenhuma meta criada.</p>'}</div>`);
+function kvAddGoal(){const t=kvVal('kvGt');if(!t)return kvToast('Descreva a meta.','ATENÇÃO');KV.goals.push({t,v:+kvVal('kvGv')||0,d:kvVal('kvGd'),p:0,dt:kvNow()});kvSave();kvToast('Meta criada.','OBJETIVOS');kvOpen('objetivos')}
+
+/* PREMIUM */
+K('premium','PREMIUM · ASSINATURAS',()=>`
+  <div class="kv-card"><h3 class="kv-t" style="font-size:22px">PLANOS E CARGOS</h3><p class="text-white/70 mt-2 text-sm">Desbloqueie as categorias exclusivas e os recursos avançados da KAWE.</p></div>
+  <div class="kv-grid mt-4" style="grid-template-columns:repeat(auto-fill,minmax(230px,1fr))">
+   ${Object.entries(KV_CATS).map(([k,c])=>`<div class="kv-card" style="--kv-a:${c.c}66;background:linear-gradient(160deg,${c.c2}22,rgba(0,0,0,.6))">
+     <span class="kv-tag" style="border-color:${c.c};color:${c.c}">CARGO</span>
+     <h4 style="font-family:Orbitron;font-weight:900;font-size:19px;color:${c.c};margin-top:8px">${c.n}</h4>
+     <p style="font-size:22px;font-weight:900;color:#fff;margin-top:4px">${c.price}<span style="font-size:11px;color:#999">/mês</span></p>
+     <ul class="text-xs text-white/70 mt-3 space-y-1"><li>• Sala ${c.n} liberada</li><li>• Cashback e bônus exclusivos</li><li>• Suporte prioritário</li></ul>
+     <button class="kv-btn mt-3" style="border-color:${c.c};color:${c.c}" onclick="kvToast('Assinatura ${c.n} solicitada.','PREMIUM')" data-kv-label="Assinar ${c.n}">ASSINAR</button>
+     <button class="kv-btn mt-2" style="width:100%" onclick="kvOpenCat('${k}')" data-kv-label="Acessar ${c.n}">ACESSAR CATEGORIA</button></div>`).join('')}</div>`);
+
+/* PERFORMANCE */
+K('performance','PERFORMANCE DO SISTEMA',()=>{
+  const nav=performance.getEntriesByType('navigation')[0]||{};
+  const load=Math.round(nav.duration||performance.now());
+  return `<div class="kv-grid" style="grid-template-columns:repeat(auto-fill,minmax(190px,1fr))">
+   ${kvKpi('TEMPO DE CARGA',load+' ms')}${kvKpi('LATÊNCIA','~'+(20+Math.round(Math.random()*40))+' ms')}
+   ${kvKpi('UPTIME','99,98%')}${kvKpi('DELAY DETECTADO',load>2500?'SIM':'NÃO',load>2500?'#ff6b6b':null)}
+   ${kvKpi('MEMÓRIA',(performance.memory?Math.round(performance.memory.usedJSHeapSize/1048576):'—')+' MB')}${kvKpi('CONEXÃO',(navigator.connection&&navigator.connection.effectiveType||'—').toUpperCase())}</div>
+  ${kvChart('kvPf1','LATÊNCIA (ÚLTIMAS 24H)')}
+  <div class="kv-card mt-4"><p class="kv-lb mb-2">STATUS DOS SERVIÇOS</p>
+   ${['API','Banco de Dados','Pagamentos','Jogos ao vivo','Chat','CDN'].map(s=>`<div style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(0,255,102,.1);padding:8px 0"><span>${s}</span><span style="color:${KV.settings.color};font-family:Orbitron;font-size:10px">OPERACIONAL</span></div>`).join('')}</div>`},
+  ()=>kvMakeChart('kvPf1','line',{labels:Array.from({length:24},(_,i)=>i+'h'),datasets:[{label:'ms',data:Array.from({length:24},()=>20+Math.random()*60),borderColor:KV.settings.color,backgroundColor:KV.settings.color+'22',fill:true,tension:.4}]}));
+
+/* SEGURANÇA */
+K('seguranca','SEGURANÇA DA CONTA',()=>`
+  <div class="kv-grid" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr))">
+   <div class="kv-card"><p class="kv-lb mb-2">AUTENTICAÇÃO EM 2 FATORES (2FA)</p>
+     <p class="text-sm text-white/70 mb-3">Status: <b style="color:${KV.sec.f2a?KV.settings.color:'#ff6b6b'}">${KV.sec.f2a?'ATIVADO':'DESATIVADO'}</b></p>
+     <button class="kv-btn solid" onclick="KV.sec.f2a=!KV.sec.f2a;kvSave();kvToast('2FA '+(KV.sec.f2a?'ativado':'desativado')+'.','SEGURANÇA');kvOpen('seguranca')" data-kv-label="Alternar 2FA">${KV.sec.f2a?'DESATIVAR 2FA':'ATIVAR 2FA'}</button></div>
+   <div class="kv-card"><p class="kv-lb mb-2">RECUPERAÇÃO DE ACESSO</p>
+     <label class="kv-lb">E-MAIL DE RECUPERAÇÃO</label><input id="kvSe" class="kv-in mb-2" value="${KV.sec.email}">
+     <label class="kv-lb">TELEFONE DE RECUPERAÇÃO</label><input id="kvSp" class="kv-in mb-3" value="${KV.sec.phone}">
+     <button class="kv-btn solid" onclick="KV.sec.email=kvVal('kvSe');KV.sec.phone=kvVal('kvSp');kvSave();kvToast('Dados de recuperação salvos.','SEGURANÇA')" data-kv-label="Salvar recuperação">SALVAR</button>
+     <button class="kv-btn mt-2" onclick="kvToast('Link de recuperação enviado.','SEGURANÇA')" data-kv-label="Recuperar acesso">RECUPERAR ACESSO</button></div>
+   <div class="kv-card"><p class="kv-lb mb-2">SESSÕES E DISPOSITIVOS</p>
+     <p class="text-sm text-white/70">Sessão atual · ${navigator.platform} · ${kvNow()}</p>
+     <button class="kv-btn mt-3" onclick="kvToast('Todas as outras sessões foram encerradas.','SEGURANÇA')" data-kv-label="Encerrar sessões">ENCERRAR OUTRAS SESSÕES</button></div>
+  </div>`);
+
+/* EVENTOS */
+K('eventos','EVENTOS · PROMOÇÕES · DICAS',()=>`
+  <div class="kv-card" style="--kv-c:#3b82f6;--kv-a:#3b82f680;--kv-g:#3b82f699">
+   <h3 class="kv-t" style="font-size:22px;--kv-c:#3b82f6;--kv-g:#3b82f688">CENTRAL DE EVENTOS</h3>
+   <p class="text-white/70 mt-2 text-sm">Tudo o que acontece na KAWE: torneios, promoções e dicas oficiais.</p></div>
+  <div class="kv-grid mt-4" style="grid-template-columns:repeat(auto-fill,minmax(260px,1fr))">
+   ${KV.events.map(e=>`<div class="kv-card" style="--kv-a:#3b82f655;background:linear-gradient(150deg,rgba(59,130,246,.14),rgba(0,0,0,.6))">
+     <span class="kv-tag" style="border-color:#3b82f6;color:#60a5fa">${(e.k||'evento').toUpperCase()}</span>
+     <h4 style="font-family:Orbitron;font-weight:800;color:#60a5fa;margin-top:8px">${e.t}</h4>
+     <p class="text-sm text-white/75 mt-2">${e.d}</p>
+     <p class="text-[10px] text-white/40 mt-2">${e.dt||''}</p>
+     <button class="kv-btn mt-3" style="border-color:#3b82f6;color:#60a5fa" onclick="kvToast('Você entrou no evento: ${e.t}','EVENTOS')" data-kv-label="Participar ${e.t}">PARTICIPAR</button></div>`).join('')||'<p class="text-white/60">Nenhum evento no momento.</p>'}</div>`);
+
+/* SAIR */
+function kvLogoutAsk(){
+  kvModal(`<div class="w-full max-w-sm rounded-2xl p-6 text-center" style="background:linear-gradient(160deg,rgba(0,60,20,.5),#000);border:2px solid ${KV.settings.color};box-shadow:0 0 40px ${KV.settings.color}55">
+    <div class="mx-auto mb-3 grid h-14 w-14 place-items-center rounded-full" style="background:${KV.settings.color}22;border:1px solid ${KV.settings.color}"><svg width="26" height="26" style="color:${KV.settings.color}"><use href="#i-out"/></svg></div>
+    <h3 class="kv-t" style="font-size:18px">SAIR DA CONTA</h3>
+    <p class="text-sm text-white/80 mt-2">Você quer mesmo sair da sua conta?</p>
+    <div class="flex gap-2 mt-5"><button class="kv-btn" style="flex:1" onclick="kvCloseModal();kvToast('Você continua conectado.','CANCELADO')" data-kv-label="Recusar e cancelar">RECUSAR E CANCELAR</button>
+    <button class="kv-btn solid" style="flex:1" onclick="kvDoLogout()" data-kv-label="Sim sair da conta">SIM, SAIR</button></div></div>`);
+}
+function kvDoLogout(){kvCloseModal();kvAct('Saiu da conta','conta');if(typeof logoutUser==='function')logoutUser();else location.reload()}
+</script>
+<script>
+/* ============ ADMIN V2 · NOVAS FUNÇÕES ============ */
+const KV_ADM_TABS=[
+  ['acts','ATIVIDADE','i-activity'],['fin','FINANÇAS USUÁRIOS','i-money'],['evt','EVENTOS','i-spark'],
+  ['catex','CATEGORIAS EXCLUSIVAS','i-crown'],['cal','CALENDÁRIO','i-cal'],['arq','ARQUIVOS','i-folder'],
+  ['ger','GERENCIAR FUNÇÕES','i-tool'],['int','LOGS · API · INTEGRAÇÕES','i-globe']
+];
+function kvBuildAdmin(){
+  const bar=document.querySelector('#adminPanel header .overflow-x-auto');
+  const main=document.querySelector('#adminPanel main');
+  if(!bar||!main||bar.dataset.kv)return;
+  bar.dataset.kv='1';
+  KV_ADM_TABS.forEach(([k,l,i])=>{
+    bar.insertAdjacentHTML('beforeend',`<button class="admin-tab" data-tab="kv_${k}" onclick="switchTab('kv_${k}');kvAdmRender('${k}')" data-kv-label="${l}"><svg class="ico" width="12" height="12"><use href="#${i}"/></svg> ${l}</button>`);
+    main.insertAdjacentHTML('beforeend',`<div id="tab-kv_${k}" class="admin-tab-panel hidden"><div id="kv-adm-${k}"></div></div>`);
+  });
+}
+function kvAdmRender(k){({acts:kvRenderActs,fin:kvAdmFin,evt:kvAdmEvt,catex:kvAdmCat,cal:kvAdmCal,arq:kvAdmArq,ger:kvAdmGer,int:kvAdmInt}[k]||function(){})()}
+
+/* ATIVIDADE DOS USUÁRIOS */
+function kvRenderActs(){
+  const el=document.getElementById('kv-adm-acts');if(!el)return;
+  el.innerHTML=`<div class="glass rounded-2xl p-5 border border-green-400/20">
+    <div class="flex items-center justify-between mb-3"><h3 class="kv-t" style="font-size:15px">ATIVIDADE DOS USUÁRIOS (${KV.acts.length})</h3>
+    <div class="flex gap-2"><input id="kvActF" class="kv-in" style="width:200px" placeholder="Filtrar..." oninput="kvRenderActsRows(this.value)">
+    <button class="kv-btn" onclick="kvExport(KV.acts,'kawe_atividade')" data-kv-label="Exportar atividade">EXPORTAR</button>
+    <button class="kv-btn" onclick="if(confirm('Limpar todo o histórico de atividade?')){KV.acts=[];kvSave();kvRenderActs()}" data-kv-label="Limpar atividade">LIMPAR</button></div></div>
+    <table class="kv-tb"><thead><tr><th>USUÁRIO</th><th>ID</th><th>AÇÃO</th><th>TIPO</th><th>DATA E HORÁRIO</th></tr></thead><tbody id="kvActsBody"></tbody></table></div>`;
+  kvRenderActsRows('');
+}
+function kvRenderActsRows(f){
+  const b=document.getElementById('kvActsBody');if(!b)return;
+  const q=(f||'').toLowerCase();
+  const rows=KV.acts.filter(a=>!q||(a.u+a.a+a.k+a.dt).toLowerCase().includes(q)).slice(0,400);
+  b.innerHTML=rows.map(a=>`<tr><td>${a.u}</td><td style="font-family:monospace;color:${KV.settings.color}">${a.uid}</td><td>${a.a}</td><td>${a.k}</td><td>${a.dt}</td></tr>`).join('')||'<tr><td colspan="5" style="padding:16px;color:#888">Nenhuma atividade registrada.</td></tr>';
+}
+function kvExport(data,name){
+  const b=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name+'_'+Date.now()+'.json';a.click();
+}
+
+/* FINANÇAS E RECURSOS DOS USUÁRIOS */
+function kvAdmFin(){
+  const el=document.getElementById('kv-adm-fin');if(!el)return;
+  const list=(typeof loadUsersDB==='function'?loadUsersDB():[]);
+  el.innerHTML=`<div class="glass rounded-2xl p-5 border border-green-400/20">
+   <h3 class="kv-t" style="font-size:15px">GERENCIAR FINANÇAS E RECURSOS DOS USUÁRIOS</h3>
+   <p class="text-xs text-white/60 mt-1">Altere dados cadastrais, saldo e recursos de cada conta.</p>
+   ${list.length?list.map((u,i)=>`
+   <div class="glass rounded-xl p-4 border border-green-400/15 mt-3">
+     <div class="flex items-center justify-between mb-2"><b style="font-family:Orbitron;color:${KV.settings.color}">${u.name} · ${u.id}</b>
+       <span class="kv-tag">${u.banned?'BANIDO':'ATIVO'}</span></div>
+     <div class="kv-grid" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr))">
+       <div><label class="kv-lb">NOME</label><input class="kv-in" id="kvU_${i}_name" value="${u.name||''}"></div>
+       <div><label class="kv-lb">CPF</label><input class="kv-in" id="kvU_${i}_cpf" value="${u.cpf||''}"></div>
+       <div><label class="kv-lb">NASCIMENTO</label><input class="kv-in" id="kvU_${i}_dob" value="${u.dob||''}"></div>
+       <div><label class="kv-lb">CARTÃO</label><input class="kv-in" id="kvU_${i}_card" value="${u.card||''}"></div>
+       <div><label class="kv-lb">SALDO (R$)</label><input class="kv-in" type="number" step="0.01" id="kvU_${i}_balance" value="${Number(u.balance||0)}"></div>
+       <div><label class="kv-lb">CATEGORIA</label><select class="kv-in" id="kvU_${i}_cat">${['nenhuma',...Object.keys(KV_CATS)].map(c=>`<option ${u.cat===c?'selected':''}>${c}</option>`).join('')}</select></div>
+     </div>
+     <div class="flex flex-wrap gap-2 mt-3">
+       <button class="kv-btn solid" onclick="kvSaveUser('${u.id}',${i})" data-kv-label="Salvar usuário">SALVAR DADOS</button>
+       <button class="kv-btn" onclick="kvAdjBal('${u.id}',1)" data-kv-label="Creditar saldo">+ CREDITAR</button>
+       <button class="kv-btn" onclick="kvAdjBal('${u.id}',-1)" data-kv-label="Debitar saldo">− DEBITAR</button>
+       <button class="kv-btn" onclick="banUserToggle('${u.id}');kvAdmFin()" data-kv-label="Banir usuário">${u.banned?'DESBANIR':'BANIR'}</button>
+     </div></div>`).join(''):'<p class="text-white/60 mt-3">Nenhum usuário cadastrado.</p>'}</div>`;
+}
+function kvSaveUser(id,i){
+  const list=loadUsersDB();const u=list.find(x=>x.id===id);if(!u)return;
+  ['name','cpf','dob','card','cat'].forEach(f=>{const e=document.getElementById(`kvU_${i}_${f}`);if(e)u[f]=e.value});
+  const b=document.getElementById(`kvU_${i}_balance`);if(b)u.balance=parseFloat(b.value)||0;
+  saveUsersDB(list);kvAct('Admin alterou dados de '+u.name,'admin');kvToast('Dados de '+u.name+' salvos.','ADMIN');kvAdmFin();
+}
+function kvAdjBal(id,s){
+  const v=parseFloat(prompt((s>0?'Creditar':'Debitar')+' quanto (R$)?','50'));if(!v)return;
+  const list=loadUsersDB();const u=list.find(x=>x.id===id);if(!u)return;
+  u.balance=(Number(u.balance)||0)+s*Math.abs(v);saveUsersDB(list);
+  kvAct('Admin '+(s>0?'creditou ':'debitou ')+kvMoney(v)+' em '+u.name,'admin');
+  kvToast((s>0?'Crédito':'Débito')+' de '+kvMoney(v)+' aplicado em '+u.name,'ADMIN');kvAdmFin();
+}
+
+/* GERENCIAR EVENTOS */
+function kvAdmEvt(){
+  const el=document.getElementById('kv-adm-evt');if(!el)return;
+  el.innerHTML=`<div class="glass rounded-2xl p-5 border border-green-400/20">
+   <h3 class="kv-t" style="font-size:15px">GERENCIAR CATEGORIA EVENTOS</h3>
+   <div class="kv-grid mt-3" style="grid-template-columns:1fr 2fr 150px auto">
+     <input id="kvEvT" class="kv-in" placeholder="Título"><input id="kvEvD" class="kv-in" placeholder="Descrição">
+     <select id="kvEvK" class="kv-in"><option>evento</option><option>promocao</option><option>dica</option></select>
+     <button class="kv-btn solid" onclick="kvAddEvt()" data-kv-label="Publicar evento">PUBLICAR</button></div>
+   ${KV.events.map((e,i)=>`<div class="glass rounded-xl p-3 border border-blue-400/25 mt-3">
+     <div class="kv-grid" style="grid-template-columns:1fr 2fr 130px auto">
+       <input class="kv-in" value="${e.t}" oninput="KV.events[${i}].t=this.value">
+       <input class="kv-in" value="${e.d}" oninput="KV.events[${i}].d=this.value">
+       <input class="kv-in" value="${e.k||'evento'}" oninput="KV.events[${i}].k=this.value">
+       <button class="kv-btn" onclick="KV.events.splice(${i},1);kvSave();kvAdmEvt()" data-kv-label="Remover evento">REMOVER</button></div></div>`).join('')}
+   <button class="kv-btn solid mt-3" onclick="kvSave();kvToast('Eventos salvos.','ADMIN')" data-kv-label="Salvar eventos">SALVAR ALTERAÇÕES</button></div>`;
+}
+function kvAddEvt(){const t=kvVal('kvEvT');if(!t)return kvToast('Informe o título.','ATENÇÃO');KV.events.unshift({t,d:kvVal('kvEvD'),k:kvVal('kvEvK'),dt:kvNow()});kvSave();kvToast('Evento publicado.','ADMIN');kvAdmEvt()}
+
+/* GERENCIAR CATEGORIAS EXCLUSIVAS */
+let kvAdmCatK='bronze';
+function kvAdmCat(){
+  const el=document.getElementById('kv-adm-catex');if(!el)return;
+  const c=KV_CATS[kvAdmCatK];
+  el.innerHTML=`<div class="glass rounded-2xl p-5 border border-green-400/20">
+   <h3 class="kv-t" style="font-size:15px">GERENCIAR CATEGORIAS EXCLUSIVAS</h3>
+   <div class="flex flex-wrap gap-2 mt-3">${Object.entries(KV_CATS).map(([k,v])=>`<button class="kv-cat" style="border-color:${v.c};color:${v.c};background:${kvAdmCatK===k?v.c+'22':'transparent'}" onclick="kvAdmCatK='${k}';kvAdmCat()" data-kv-label="Gerenciar ${v.n}">${v.n}</button>`).join('')}</div>
+   <p class="kv-lb mt-4">CONTEÚDO DE ${c.n} · SENHA 2011</p>
+   <div class="kv-grid mt-2" style="grid-template-columns:1fr 2fr auto">
+     <input id="kvCcT" class="kv-in" placeholder="Título do conteúdo"><input id="kvCcD" class="kv-in" placeholder="Descrição">
+     <button class="kv-btn solid" onclick="kvAddCatItem()" data-kv-label="Adicionar conteúdo">ADICIONAR</button></div>
+   ${(KV.cat[kvAdmCatK]||[]).map((it,i)=>`<div class="kv-grid mt-2" style="grid-template-columns:1fr 2fr auto">
+     <input class="kv-in" value="${it.t}" oninput="KV.cat['${kvAdmCatK}'][${i}].t=this.value">
+     <input class="kv-in" value="${it.d}" oninput="KV.cat['${kvAdmCatK}'][${i}].d=this.value">
+     <button class="kv-btn" onclick="KV.cat['${kvAdmCatK}'].splice(${i},1);kvSave();kvAdmCat()" data-kv-label="Remover conteúdo">REMOVER</button></div>`).join('')}
+   <button class="kv-btn solid mt-3" onclick="kvSave();kvToast('Conteúdo de ${c.n} salvo.','ADMIN')" data-kv-label="Salvar categoria">SALVAR</button></div>`;
+}
+function kvAddCatItem(){const t=kvVal('kvCcT');if(!t)return;(KV.cat[kvAdmCatK]=KV.cat[kvAdmCatK]||[]).push({t,d:kvVal('kvCcD')});kvSave();kvAdmCat()}
+
+/* GERENCIAR CALENDÁRIO */
+function kvAdmCal(){
+  const el=document.getElementById('kv-adm-cal');if(!el)return;
+  el.innerHTML=`<div class="glass rounded-2xl p-5 border border-green-400/20">
+   <h3 class="kv-t" style="font-size:15px">GERENCIAR CALENDÁRIO E NOTIFICAR USUÁRIOS</h3>
+   <div class="kv-grid mt-3" style="grid-template-columns:160px 1fr auto auto">
+     <input id="kvCalD" class="kv-in" type="date"><input id="kvCalT" class="kv-in" placeholder="Evento / situação do site">
+     <button class="kv-btn solid" onclick="kvAdmAddCal()" data-kv-label="Adicionar no calendário">ADICIONAR</button>
+     <button class="kv-btn" onclick="kvAdmNotifyAll()" data-kv-label="Notificar usuários">NOTIFICAR TODOS</button></div>
+   <table class="kv-tb mt-3"><tr><th>DATA</th><th>TÍTULO</th><th>CRIADO</th><th></th></tr>
+   ${KV.cal.map((e,i)=>`<tr><td>${e.d}</td><td>${e.t}</td><td>${e.dt||''}</td><td><button class="kv-btn" onclick="KV.cal.splice(${i},1);kvSave();kvAdmCal()" data-kv-label="Remover data">REMOVER</button></td></tr>`).join('')||'<tr><td colspan="4" style="color:#888;padding:12px">Nenhuma data cadastrada.</td></tr>'}</table></div>`;
+}
+function kvAdmAddCal(){const d=kvVal('kvCalD'),t=kvVal('kvCalT');if(!d||!t)return kvToast('Preencha data e título.','ATENÇÃO');KV.cal.push({d,t,dt:kvNow()});kvSave();kvAdmCal();kvToast('Data adicionada ao calendário.','ADMIN')}
+function kvAdmNotifyAll(){const m=prompt('Mensagem para todos os usuários:');if(!m)return;kvToast(m,'AVISO OFICIAL KAWE');kvAct('Admin notificou todos: '+m,'admin')}
+
+/* ARQUIVOS (movido do menu para o admin) */
+function kvAdmArq(){
+  const el=document.getElementById('kv-adm-arq');if(!el)return;
+  el.innerHTML=`<div class="glass rounded-2xl p-5 border border-green-400/20">
+   <h3 class="kv-t" style="font-size:15px">ARQUIVOS DO ADMIN</h3>
+   <p class="text-xs text-white/60 mt-1">Guarde planilhas, relatórios e documentos internos.</p>
+   <input id="kvFileIn" type="file" class="kv-in mt-3" multiple onchange="kvAddFiles(this.files)">
+   <table class="kv-tb mt-3"><tr><th>ARQUIVO</th><th>TIPO</th><th>TAMANHO</th><th>ENVIADO EM</th><th></th></tr>
+   ${KV.files.map((f,i)=>`<tr><td>${f.n}</td><td>${f.t||'—'}</td><td>${(f.s/1024).toFixed(1)} KB</td><td>${f.dt}</td>
+     <td>${f.data?`<a class="kv-btn" href="${f.data}" download="${f.n}" data-kv-label="Baixar arquivo">BAIXAR</a> `:''}<button class="kv-btn" onclick="KV.files.splice(${i},1);kvSave();kvAdmArq()" data-kv-label="Apagar arquivo">APAGAR</button></td></tr>`).join('')||'<tr><td colspan="5" style="color:#888;padding:12px">Nenhum arquivo salvo.</td></tr>'}</table></div>`;
+}
+function kvAddFiles(files){
+  [...files].forEach(f=>{
+    const rec={n:f.name,t:f.type||f.name.split('.').pop(),s:f.size,dt:kvNow()};
+    if(f.size<400000){const r=new FileReader();r.onload=e=>{rec.data=e.target.result;kvSave();kvAdmArq()};r.readAsDataURL(f)}
+    KV.files.unshift(rec);
+  });
+  kvSave();kvToast('Arquivo(s) salvo(s) no painel admin.','ARQUIVOS');kvAdmArq();
+}
+
+/* GERENCIAR CADA FUNÇÃO DO SITE */
+const KV_MANAGE=[...KV_FEATURES,['extrato','Extrato','i-receipt'],['arquivos','Arquivos','i-folder'],['jogos','Jogos','i-game'],['bingo','Bingo','i-ball'],['categorias','Categorias Exclusivas','i-crown'],['calendario','Calendário','i-cal'],['atividade','Atividade','i-activity'],['notificacoes_sys','Sistema de Notificações','i-bell'],['tema','Tema e Cores','i-spark'],['assinaturas','Assinaturas','i-diamond']];
+function kvAdmGer(){
+  const el=document.getElementById('kv-adm-ger');if(!el)return;
+  el.innerHTML=`<div class="glass rounded-2xl p-5 border border-green-400/20">
+   <h3 class="kv-t" style="font-size:15px">GERENCIAR FUNÇÕES DO SITE</h3>
+   <p class="text-xs text-white/60 mt-1">Um botão para cada função — ative, renomeie e defina as predefinições de usuário.</p>
+   <div class="kv-grid mt-4" style="grid-template-columns:repeat(auto-fill,minmax(230px,1fr))">
+   ${KV_MANAGE.map(([k,l,i])=>{const cfg=KV.cfg[k]||{};return `<button class="kv-btn" style="text-align:left;${cfg.off?'opacity:.5':''}" onclick="kvManage('${k}','${l}')" data-kv-label="Gerenciar ${l}">
+     <svg class="ico" width="12" height="12" style="vertical-align:-2px"><use href="#${i}"/></svg> GERENCIAR ${l.toUpperCase()}</button>`}).join('')}</div></div>`;
+}
+function kvManage(k,l){
+  const c=KV.cfg[k]||{};
+  kvModal(`<div class="w-full max-w-lg rounded-2xl p-6" style="background:linear-gradient(160deg,rgba(0,60,20,.4),#000);border:2px solid ${KV.settings.color};box-shadow:0 0 40px ${KV.settings.color}55;max-height:90vh;overflow:auto">
+   <div class="flex items-center justify-between mb-4"><h3 class="kv-t" style="font-size:16px">GERENCIAR ${l.toUpperCase()}</h3>
+   <button class="kv-btn" onclick="kvCloseModal()" data-kv-label="Fechar gerenciador">✕</button></div>
+   <label class="kv-lb">TÍTULO EXIBIDO</label><input id="kvMg_title" class="kv-in mb-2" value="${c.title||l}">
+   <label class="kv-lb">DESCRIÇÃO / AVISO</label><textarea id="kvMg_desc" class="kv-in mb-2">${c.desc||''}</textarea>
+   <label class="kv-lb">ACESSO MÍNIMO (PREDEFINIÇÃO DE USUÁRIO)</label>
+   <select id="kvMg_role" class="kv-in mb-2">${['todos','cadastrado','bronze','prata','platina','ouro','diamante','premium','admin'].map(r=>`<option ${c.role===r?'selected':''}>${r}</option>`).join('')}</select>
+   <label class="kv-lb">LIMITE / VALOR PADRÃO</label><input id="kvMg_limit" class="kv-in mb-2" value="${c.limit||''}">
+   <div class="flex items-center gap-3 my-3">
+     <button class="kv-btn ${c.off?'':'solid'}" onclick="KV.cfg['${k}']=Object.assign(KV.cfg['${k}']||{},{off:!(KV.cfg['${k}']||{}).off});kvSave();kvManage('${k}','${l}')" data-kv-label="Ativar ${l}">${c.off?'DESATIVADO':'ATIVADO'}</button>
+     <button class="kv-btn" onclick="KV.cfg['${k}']=Object.assign(KV.cfg['${k}']||{},{fav:!(KV.cfg['${k}']||{}).fav});kvSave();kvManage('${k}','${l}')" data-kv-label="Destacar ${l}">${c.fav?'EM DESTAQUE':'SEM DESTAQUE'}</button>
+   </div>
+   <div class="flex gap-2"><button class="kv-btn solid" style="flex:1" onclick="kvSaveManage('${k}','${l}')" data-kv-label="Salvar configuração">SALVAR</button>
+   <button class="kv-btn" onclick="delete KV.cfg['${k}'];kvSave();kvCloseModal();kvToast('Configuração de ${l} restaurada.','ADMIN');kvAdmGer()" data-kv-label="Restaurar padrão">RESTAURAR PADRÃO</button></div></div>`);
+}
+function kvSaveManage(k,l){
+  KV.cfg[k]=Object.assign(KV.cfg[k]||{},{title:kvVal('kvMg_title'),desc:kvVal('kvMg_desc'),role:kvVal('kvMg_role'),limit:kvVal('kvMg_limit')});
+  kvSave();kvAct('Admin configurou a função '+l,'admin');kvToast('Configuração de '+l+' salva.','ADMIN');kvCloseModal();kvAdmGer();
+}
+
+/* LOGS · API · INTEGRAÇÕES · EXPORTAR · IMPORTAR (movidos do menu) */
+function kvAdmInt(){
+  const el=document.getElementById('kv-adm-int');if(!el)return;
+  el.innerHTML=`<div class="kv-grid" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr))">
+   <div class="glass rounded-2xl p-5 border border-green-400/20"><h3 class="kv-t" style="font-size:14px">LOGS DO SISTEMA</h3>
+     <pre style="max-height:240px;overflow:auto;font-size:11px;color:#9f9;margin-top:8px">${(typeof LOGS!=='undefined'?LOGS.join('\n'):'')||'Sem eventos.'}</pre></div>
+   <div class="glass rounded-2xl p-5 border border-green-400/20"><h3 class="kv-t" style="font-size:14px">API</h3>
+     <label class="kv-lb">ENDPOINT BASE</label><input class="kv-in mb-2" value="https://api.kawecassino.com/v1">
+     <label class="kv-lb">CHAVE DE API</label><input class="kv-in mb-2" value="kw_live_••••••••••••">
+     <button class="kv-btn solid" onclick="kvToast('Chave de API regenerada.','API')" data-kv-label="Regenerar chave">REGENERAR CHAVE</button></div>
+   <div class="glass rounded-2xl p-5 border border-green-400/20"><h3 class="kv-t" style="font-size:14px">INTEGRAÇÕES</h3>
+     ${['PIX / Banco Central','Stripe','Telegram','WhatsApp','Google Analytics','Webhook próprio'].map(n=>`<div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(0,255,102,.1);padding:8px 0"><span class="text-sm">${n}</span><button class="kv-btn" onclick="kvToast('${n} conectado.','INTEGRAÇÕES')" data-kv-label="Conectar ${n}">CONECTAR</button></div>`).join('')}</div>
+   <div class="glass rounded-2xl p-5 border border-green-400/20"><h3 class="kv-t" style="font-size:14px">EXPORTAR / IMPORTAR</h3>
+     <div class="flex flex-wrap gap-2 mt-3">
+      <button class="kv-btn" onclick="kvExport(KV,'kawe_dados_v2')" data-kv-label="Exportar dados">EXPORTAR TUDO (JSON)</button>
+      <button class="kv-btn" onclick="kvExport(KV.acts,'kawe_atividade')" data-kv-label="Exportar atividade">EXPORTAR ATIVIDADE</button>
+      <button class="kv-btn" onclick="kvExport(typeof loadUsersDB==='function'?loadUsersDB():[],'kawe_usuarios')" data-kv-label="Exportar usuários">EXPORTAR USUÁRIOS</button>
+      <button class="kv-btn" onclick="kvExportCSV()" data-kv-label="Exportar CSV">EXPORTAR CSV</button></div>
+     <label class="kv-lb mt-4" style="display:block">IMPORTAR JSON</label>
+     <input type="file" accept=".json" class="kv-in" onchange="kvImport(this.files[0])"></div></div>`;
+}
+function kvExportCSV(){
+  const rows=[['usuario','id','acao','tipo','data_hora'],...KV.acts.map(a=>[a.u,a.uid,a.a,a.k,a.dt])];
+  const csv=rows.map(r=>r.map(x=>'"'+String(x).replace(/"/g,'""')+'"').join(';')).join('\n');
+  const b=new Blob([csv],{type:'text/csv'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='kawe_atividade.csv';a.click();
+}
+function kvImport(f){
+  if(!f)return;const r=new FileReader();
+  r.onload=e=>{try{KV=Object.assign(KV,JSON.parse(e.target.result));kvSave();kvToast('Dados importados com sucesso.','IMPORTAR')}catch(x){kvToast('Arquivo inválido.','ERRO')}};
+  r.readAsText(f);
+}
+
+/* HOOK openAdmin */
+(function(){
+  const _o=window.openAdmin;
+  window.openAdmin=function(){ if(_o)_o.apply(this,arguments); kvBuildAdmin(); };
+})();
+
+/* ============ HEADER · CATEGORIAS + EVENTOS ============ */
+function kvBuildHeaderCats(){
+  ['kvHeadCats','kvHeadCatsMobile'].forEach(id=>{
+    const host=document.getElementById(id);
+    if(!host)return;
+    if(id==='kvHeadCats')host.style.display=(window.innerWidth>=900?'flex':'none');
+    host.innerHTML=`<button class="kv-cat" style="border-color:#3b82f6;color:#60a5fa;background:rgba(59,130,246,.12)" onclick="kvOpen('eventos',{c:'#3b82f6',c2:'#1d4ed8'})" data-kv-label="Eventos">EVENTOS</button>`+
+      Object.entries(KV_CATS).map(([k,c])=>`<button class="kv-cat" style="border-color:${c.c};color:${c.c};background:${c.c}14" onclick="kvOpenCat('${k}')" data-kv-label="Categoria ${c.n}">${c.n}</button>`).join('');
+  });
+}
+addEventListener('resize',()=>kvBuildHeaderCats());
+setInterval(()=>{const h=document.getElementById('kvHeadCats');if(h&&!h.innerHTML)kvBuildHeaderCats();const n=document.getElementById('side-nav');if(n&&n.innerHTML&&!n.dataset.kv){n.dataset.kv='1';kvBuildSidebarExtras()}},800);
+function kvBuildSidebarExtras(){
+  const nav=document.getElementById('side-nav'); if(!nav)return;
+  const html=`<div style="padding:8px 4px 12px;border-bottom:1px solid rgba(0,255,102,.15);margin-bottom:8px">
+    <p class="kv-lb" style="margin-bottom:8px">EVENTOS & CATEGORIAS</p>
+    <div style="display:flex;flex-wrap:wrap;gap:6px">
+      <button class="kv-cat" style="border-color:#3b82f6;color:#60a5fa;background:rgba(59,130,246,.12)" onclick="toggleSidebar(false);kvOpen('eventos',{c:'#3b82f6',c2:'#1d4ed8'})" data-kv-label="Eventos">EVENTOS</button>
+      ${Object.entries(KV_CATS).map(([k,c])=>`<button class="kv-cat" style="border-color:${c.c};color:${c.c};background:${c.c}14" onclick="toggleSidebar(false);kvOpenCat('${k}')" data-kv-label="Categoria ${c.n}">${c.n}</button>`).join('')}
+    </div></div>`;
+  nav.insertAdjacentHTML('afterbegin',html);
+}
+(function(){
+  const _i=window.initApp;
+  window.initApp=function(){ if(_i)_i.apply(this,arguments); kvBuildSidebarExtras(); kvBuildHeaderCats(); kvRenderFavBar(); };
+})();
+document.addEventListener('DOMContentLoaded',()=>{kvBuildHeaderCats();kvRenderFavBar();setTimeout(kvBuildSidebarExtras,300)});
+</script>
+
+<!-- ============ KAWE · ADDON: SITES ALTERNATIVOS · MEUS SITES · MENU COMPLETO NO CABEÇALHO ============ -->
+<script>
+(function(){
+/* ---------- DADOS ---------- */
+if(!KV.mySites) KV.mySites=[];
+if(!KV.mySiteCats) KV.mySiteCats=['Cassinos','Esportes','Crash & Aviator','Bônus','Poker'];
+kvSave();
+
+const RAW=[
+ ['Bet365','Esportes','Casa global com transmissão ao vivo e cash out.','https://www.bet365.com'],
+ ['Betano','Esportes','Odds altas, missões diárias e super odds.','https://www.betano.com'],
+ ['Betfair','Exchange','Bolsa de apostas com lay e back.','https://www.betfair.com'],
+ ['Sportingbet','Esportes','Tradicional, cobertura completa de futebol.','https://www.sportingbet.com'],
+ ['Pixbet','Esportes','Saque rápido via PIX.','https://www.pixbet.com'],
+ ['Betnacional','Esportes','Foco no mercado brasileiro.','https://betnacional.bet.br'],
+ ['Estrela Bet','Cassino','Cassino ao vivo e slots populares.','https://www.estrelabet.com'],
+ ['Blaze','Crash & Aviator','Crash, Double e originais.','https://blaze.com'],
+ ['Aposta Ganha','Esportes','Bônus recorrentes e cashback.','https://www.apostaganha.bet.br'],
+ ['Esportes da Sorte','Esportes','Patrocinadora de clubes brasileiros.','https://www.esportesdasorte.bet.br'],
+ ['KTO','Cassino','Interface simples e promoções semanais.','https://www.kto.com'],
+ ['Rivalo','Esportes','Odds competitivas em ligas menores.','https://www.rivalo.com'],
+ ['Parimatch','Esportes','Forte em e-sports.','https://parimatch.com'],
+ ['1xBet','Esportes','Milhares de mercados por evento.','https://1xbet.com'],
+ ['Betsson','Cassino','Grupo europeu licenciado.','https://www.betsson.com'],
+ ['Betwinner','Esportes','Cobertura ampla e apostas ao vivo.','https://betwinner.com'],
+ ['Novibet','Esportes','Bet builder e streaming.','https://www.novibet.bet.br'],
+ ['Vbet','Cassino','Cassino + esportes + poker.','https://www.vbet.com'],
+ ['Bet7k','Cassino','Slots e cassino ao vivo.','https://bet7k.com'],
+ ['Cassino Pix','Cassino','Depósito e saque instantâneo.','https://cassino.bet.br'],
+ ['Stake','Cassino','Originais, crash e cripto.','https://stake.com'],
+ ['Roobet','Cassino','Cassino cripto com crash próprio.','https://roobet.com'],
+ ['BC.Game','Cassino','Milhares de slots e jogos originais.','https://bc.game'],
+ ['Rollbit','Cassino','Cassino cripto com alavancagem.','https://rollbit.com'],
+ ['Bitsler','Cassino','Dados, crash e roleta cripto.','https://www.bitsler.com'],
+ ['Duelbits','Cassino','Cassino e e-sports.','https://duelbits.com'],
+ ['Gamdom','Cassino','Rakeback e crash.','https://gamdom.com'],
+ ['Betfury','Cassino','Cassino cripto com dividendos.','https://betfury.io'],
+ ['888 Casino','Cassino','Marca clássica de cassino online.','https://www.888casino.com'],
+ ['LeoVegas','Cassino','Referência em cassino mobile.','https://www.leovegas.com'],
+ ['PokerStars','Poker','Maior sala de poker do mundo.','https://www.pokerstars.com'],
+ ['GGPoker','Poker','Torneios e cash games globais.','https://ggpoker.com'],
+ ['PartyPoker','Poker','Mesas rápidas e satélites.','https://www.partypoker.com'],
+ ['Suprema Poker','Poker','Clubes de poker online do Brasil.','https://supremapoker.net'],
+ ['Aviator (Spribe)','Crash & Aviator','Jogo crash original da Spribe.','https://spribe.co/games/aviator'],
+ ['Jonbet','Crash & Aviator','Crash e cassino ao vivo.','https://jonbet.com'],
+ ['Segurobet','Esportes','Casa nacional com PIX.','https://www.segurobet.com'],
+ ['BetBoom','Esportes','Forte em e-sports e Dota.','https://betboom.com'],
+ ['Betsul','Esportes','Casa brasileira consolidada.','https://www.betsul.com'],
+ ['Bolsa de Aposta','Exchange','Exchange nacional com liquidez.','https://www.bolsadeaposta.com'],
+ ['Betmotion','Cassino','Bingo, cassino e esportes.','https://www.betmotion.com'],
+ ['Vera&John','Cassino','Cassino divertido e licenciado.','https://www.verajohn.com'],
+ ['Casa de Apostas','Esportes','Simples e direta, com PIX.','https://www.casadeapostas.bet.br'],
+ ['Betmais','Esportes','Promoções para novos usuários.','https://betmais.bet.br'],
+ ['Faz1Bet','Cassino','Slots e crash em destaque.','https://faz1bet.com'],
+ ['MMABet','Esportes','Especialista em lutas e MMA.','https://mmabet.com'],
+ ['Superbet','Esportes','Odds turbinadas e app rápido.','https://superbet.bet.br'],
+ ['Br4bet','Cassino','Cassino ao vivo brasileiro.','https://br4bet.com'],
+ ['Multibet','Esportes','Bilhetes múltiplos com boost.','https://multibet.bet.br'],
+ ['Vbet Brasil','Esportes','Versão nacional licenciada.','https://vbet.bet.br'],
+ ['Bateu Bet','Esportes','Casa nacional com foco em futebol.','https://bateubet.bet.br'],
+ ['Reals','Cassino','Cassino e esportes com PIX.','https://reals.bet.br'],
+ ['Lottu','Cassino','Slots, cassino e loterias.','https://lottu.bet.br'],
+ ['Betão','Esportes','Mercados de futebol brasileiro.','https://betao.bet.br'],
+ ['H2Bet','Cassino','Cassino ao vivo e crash.','https://h2bet.bet.br'],
+ ['UxBet','Cassino','Interface moderna e rápida.','https://uxbet.com'],
+ ['Betpix365','Cassino','Depósitos via PIX instantâneos.','https://betpix365.bet.br'],
+ ['Brazino777','Cassino','Cassino com grande catálogo.','https://www.brazino777.com'],
+ ['9F Game','Cassino','Cassino asiático popular no Brasil.','https://9fgame.com'],
+ ['Bingo Online BR','Bingo','Salas de bingo em português.','https://www.bingoonline.com.br'],
+ ['Bet da Sorte','Esportes','Promoções semanais e cashback.','https://betdasorte.bet.br'],
+ ['Apostatudo','Esportes','Mercados alternativos e handicaps.','https://apostatudo.bet.br'],
+ ['Cassino.bet','Cassino','Portal de cassino com bônus.','https://cassino.bet'],
+ ['Vivaro','Esportes','Casa internacional em expansão.','https://vivarobet.com'],
+ ['Betsuper','Esportes','Odds boost diário.','https://betsuper.bet.br'],
+ ['MC Games','Cassino','Slots e mines.','https://mcgames.bet.br'],
+ ['Vupi','Cassino','Cassino nacional com PIX.','https://vupi.bet.br'],
+ ['Onabet','Esportes','Casa nacional licenciada.','https://onabet.bet.br'],
+ ['Seguro Cassino','Cassino','Cassino com verificação reforçada.','https://segurocassino.bet.br'],
+ ['Betcopa','Esportes','Focada em campeonatos de futebol.','https://betcopa.bet.br'],
+ ['Lance de Sorte','Esportes','Casa brasileira de apostas.','https://lancedesorte.bet.br'],
+ ['Jogo de Ouro','Cassino','Slots clássicos e roleta.','https://jogodeouro.bet.br'],
+ ['Tivobet','Esportes','Combinadas com aumento de odds.','https://tivobet.bet.br'],
+ ['Betaki','Cassino','Cassino e crash com PIX.','https://betaki.bet.br'],
+ ['Papi Games','Cassino','Slots populares e ao vivo.','https://papigames.bet.br'],
+ ['P9','Cassino','Cassino com jogos originais.','https://p9.bet.br'],
+ ['Betgorillas','Cassino','Slots e cassino ao vivo.','https://betgorillas.bet.br'],
+ ['Alfa Bet','Esportes','Casa nacional com bônus de entrada.','https://alfa.bet.br'],
+ ['Verabet','Cassino','Cassino online com suporte 24h.','https://verabet.bet.br']
+];
+const KV_ALT_SITES=RAW.map((r,i)=>({id:'S'+i,n:r[0],c:r[1],d:r[2],u:r[3]}));
+window.KV_ALT_SITES=KV_ALT_SITES;
+
+/* ---------- HELPERS ---------- */
+function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function host(u){try{return new URL(u).hostname.replace('www.','')}catch(e){return u}}
+function shot(u){return 'https://www.google.com/s2/favicons?sz=128&domain='+encodeURIComponent(host(u))}
+window.kvGoSite=function(u,n){kvAct('Acessou o site '+n,'sites');kvToast('Abrindo '+n+'…','SITES');window.open(u,'_blank','noopener')};
+
+function siteCard(s,extra){
+  const c=KV.settings.color;
+  const thumb=s.img?`background:url('${esc(s.img)}') center/cover`:`background:linear-gradient(140deg,${c}22,rgba(0,0,0,.7))`;
+  return `<div class="kv-card" style="padding:0;overflow:hidden;display:flex;flex-direction:column">
+    <div style="height:120px;${thumb};position:relative;display:grid;place-items:center">
+      ${s.img?'':`<img src="${shot(s.u)}" alt="${esc(s.n)}" style="width:54px;height:54px;border-radius:12px;background:#000;padding:6px;border:1px solid ${c}55">`}
+      <span class="kv-tag" style="position:absolute;top:8px;left:8px;border-color:${c};color:${c};background:rgba(0,0,0,.6)">${esc(s.c||'Geral')}</span>
+    </div>
+    <div style="padding:12px;display:flex;flex-direction:column;gap:6px;flex:1">
+      <b style="font-family:Orbitron;font-size:13px;color:${c}">${esc(s.n)}</b>
+      <p class="text-xs text-white/65" style="flex:1">${esc(s.d||'')}</p>
+      <span class="text-[10px] text-white/40">${esc(host(s.u))}</span>
+      <div class="flex gap-2 mt-1">
+        <button class="kv-btn solid" style="flex:1" onclick="kvGoSite('${esc(s.u)}','${esc(s.n)}')" data-kv-label="Acessar ${esc(s.n)}">ACESSAR</button>
+        ${extra||''}
+      </div>
+    </div></div>`;
+}
+
+/* ---------- VIEW: SITES ALTERNATIVOS ---------- */
+const CATS=[...new Set(KV_ALT_SITES.map(s=>s.c))];
+KV_VIEWS.sites_alternativos={t:'SITES ALTERNATIVOS',h:()=>`
+  <div class="kv-card">
+    <p class="kv-lb">BIBLIOTECA GIGANTE DE SITES DE APOSTA</p>
+    <p class="text-sm text-white/70 mt-1">${KV_ALT_SITES.length} plataformas catalogadas. Pesquise, filtre por categoria e acesse com um clique.</p>
+    <input id="kvAltQ" class="kv-in mt-3" placeholder="Pesquisar site (nome, categoria ou descrição)…" oninput="kvAltRender()">
+    <div id="kvAltCats" class="flex flex-wrap gap-2 mt-3">
+      ${['Todos',...CATS].map(c=>`<button class="kv-cat" data-c="${c}" onclick="kvAltCat('${c}')" data-kv-label="Filtro ${c}">${c.toUpperCase()}</button>`).join('')}
+    </div>
+  </div>
+  <div id="kvAltGrid" class="kv-grid mt-4" style="grid-template-columns:repeat(auto-fill,minmax(230px,1fr))"></div>`,
+  after:()=>kvAltRender()};
+let ALT_CAT='Todos';
+window.kvAltCat=function(c){ALT_CAT=c;kvAltRender()};
+window.kvAltRender=function(){
+  const g=document.getElementById('kvAltGrid'); if(!g)return;
+  const q=(document.getElementById('kvAltQ')||{value:''}).value.toLowerCase();
+  document.querySelectorAll('#kvAltCats .kv-cat').forEach(b=>{
+    const on=b.dataset.c===ALT_CAT;b.style.background=on?KV.settings.color+'22':'';b.style.borderColor=KV.settings.color;b.style.color=KV.settings.color;b.style.opacity=on?'1':'.6';});
+  const list=KV_ALT_SITES.filter(s=>(ALT_CAT==='Todos'||s.c===ALT_CAT)&&(!q||(s.n+' '+s.c+' '+s.d).toLowerCase().includes(q)));
+  g.innerHTML=list.map(s=>siteCard(s)).join('')||'<p class="text-white/50">Nenhum site encontrado.</p>';
+};
+
+/* ---------- VIEW: MEUS SITES ---------- */
+KV_VIEWS.meus_sites={t:'MEUS SITES',h:()=>{
+  const c=KV.settings.color;
+  if(!KV.mySites.length) return `<div class="kv-card"><p class="kv-lb">MEUS SITES</p>
+    <p class="text-sm text-white/70 mt-2">O administrador ainda não liberou nenhum site para você. Assim que ele cadastrar, os sites aparecerão aqui com thumbnail, descrição e acesso direto.</p></div>`;
+  const cats=[...new Set(KV.mySites.map(s=>s.c||'Geral'))];
+  return `<div class="kv-card"><p class="kv-lb">SITES LIBERADOS PELO ADMINISTRADOR</p>
+    <p class="text-sm text-white/70 mt-1">${KV.mySites.length} site(s) disponíveis para você acessar.</p></div>`+
+    cats.map(cat=>`<div class="mt-4"><h3 class="kv-t" style="font-size:14px;color:${c}">${esc(cat).toUpperCase()}</h3>
+      <div class="kv-grid mt-2" style="grid-template-columns:repeat(auto-fill,minmax(230px,1fr))">
+      ${KV.mySites.filter(s=>(s.c||'Geral')===cat).map(s=>siteCard(s)).join('')}</div></div>`).join('');
+}};
+
+/* ---------- VIEW: GERENCIAR CATEGORIA MEUS SITES ---------- */
+KV_VIEWS.gerenciar_meus_sites={t:'GERENCIAR CATEGORIA MEUS SITES',h:()=>{
+  const c=KV.settings.color;
+  return `<div class="kv-card">
+    <p class="kv-lb">CADASTRAR SITE PARA OS USUÁRIOS</p>
+    <p class="text-xs text-white/60 mt-1">Preencha thumbnail, nome, descrição e link. O site aparecerá na função <b style="color:${c}">MEUS SITES</b> de todos os usuários.</p>
+    <input type="hidden" id="kvMsIdx" value="">
+    <label class="kv-lb mt-3" style="display:block">NOME DO SITE</label><input id="kvMsN" class="kv-in mb-2" placeholder="Ex.: KAWE Parceiro 01">
+    <label class="kv-lb">CATEGORIA</label>
+    <div class="flex gap-2 mb-2"><input id="kvMsC" class="kv-in" list="kvMsCats" placeholder="Ex.: Cassinos">
+      <datalist id="kvMsCats">${KV.mySiteCats.map(x=>`<option value="${esc(x)}">`).join('')}</datalist>
+      <button class="kv-btn" onclick="kvMsAddCat()" data-kv-label="Criar categoria">+ CATEGORIA</button></div>
+    <label class="kv-lb">LINK (URL)</label><input id="kvMsU" class="kv-in mb-2" placeholder="https://…">
+    <label class="kv-lb">THUMBNAIL (URL da imagem)</label><input id="kvMsI" class="kv-in mb-2" placeholder="https://…/imagem.jpg" oninput="kvMsPrev()">
+    <label class="kv-lb">OU ENVIAR IMAGEM DO DISPOSITIVO</label><input type="file" accept="image/*" class="kv-in mb-2" onchange="kvMsFile(this.files[0])">
+    <div id="kvMsPrev" style="height:120px;border-radius:12px;border:1px dashed ${c}55;margin-bottom:10px;background:linear-gradient(140deg,${c}18,rgba(0,0,0,.6));display:grid;place-items:center;color:#8f8;font-size:11px">PRÉVIA DA THUMBNAIL</div>
+    <label class="kv-lb">DESCRIÇÃO</label><textarea id="kvMsD" class="kv-in mb-3" placeholder="Explique o que o usuário encontra nesse site…"></textarea>
+    <div class="flex gap-2"><button class="kv-btn solid" style="flex:1" onclick="kvMsSave()" data-kv-label="Salvar site">SALVAR SITE</button>
+      <button class="kv-btn" onclick="kvMsClear()" data-kv-label="Limpar formulário">LIMPAR</button></div>
+  </div>
+  <div class="kv-card mt-4">
+    <p class="kv-lb">CATEGORIAS CADASTRADAS</p>
+    <div class="flex flex-wrap gap-2 mt-2">${KV.mySiteCats.map((x,i)=>`<span class="kv-tag" style="border-color:${c};color:${c}">${esc(x)} <button onclick="kvMsDelCat(${i})" style="color:#ff6b6b" data-kv-label="Excluir categoria ${esc(x)}">✕</button></span>`).join('')||'<span class="text-white/50 text-sm">Nenhuma categoria.</span>'}</div>
+  </div>
+  <div class="kv-grid mt-4" style="grid-template-columns:repeat(auto-fill,minmax(230px,1fr))">
+    ${KV.mySites.map((s,i)=>siteCard(s,`<button class="kv-btn" onclick="kvMsEdit(${i})" data-kv-label="Editar ${esc(s.n)}">EDITAR</button><button class="kv-btn" style="color:#ff6b6b;border-color:#ff6b6b66" onclick="kvMsDel(${i})" data-kv-label="Excluir ${esc(s.n)}">✕</button>`)).join('')||'<p class="text-white/50">Nenhum site cadastrado ainda.</p>'}
+  </div>`;
+}};
+window.kvMsPrev=function(){const el=document.getElementById('kvMsPrev'),v=kvVal('kvMsI');if(!el)return;el.style.background=v?`url('${v}') center/cover`:`linear-gradient(140deg,${KV.settings.color}18,rgba(0,0,0,.6))`;el.textContent=v?'':'PRÉVIA DA THUMBNAIL'};
+window.kvMsFile=function(f){if(!f)return;const r=new FileReader();r.onload=e=>{document.getElementById('kvMsI').value=e.target.result;kvMsPrev()};r.readAsDataURL(f)};
+window.kvMsClear=function(){['kvMsN','kvMsC','kvMsU','kvMsI','kvMsD','kvMsIdx'].forEach(id=>{const e=document.getElementById(id);if(e)e.value=''});kvMsPrev()};
+window.kvMsSave=function(){
+  const s={n:kvVal('kvMsN').trim(),c:kvVal('kvMsC').trim()||'Geral',u:kvVal('kvMsU').trim(),img:kvVal('kvMsI').trim(),d:kvVal('kvMsD').trim()};
+  if(!s.n||!s.u){kvToast('Informe pelo menos nome e link do site.','ERRO');return}
+  if(!/^https?:\/\//i.test(s.u))s.u='https://'+s.u;
+  const idx=kvVal('kvMsIdx');
+  if(idx!==''){KV.mySites[+idx]=s;kvAct('Admin editou o site '+s.n,'admin')}
+  else{KV.mySites.push(s);kvAct('Admin adicionou o site '+s.n,'admin')}
+  if(!KV.mySiteCats.includes(s.c))KV.mySiteCats.push(s.c);
+  kvSave();kvToast('Site salvo em MEUS SITES.','ADMIN');kvOpen('gerenciar_meus_sites');
+};
+window.kvMsEdit=function(i){const s=KV.mySites[i];kvOpen('gerenciar_meus_sites');setTimeout(()=>{
+  document.getElementById('kvMsIdx').value=i;document.getElementById('kvMsN').value=s.n||'';document.getElementById('kvMsC').value=s.c||'';
+  document.getElementById('kvMsU').value=s.u||'';document.getElementById('kvMsI').value=s.img||'';document.getElementById('kvMsD').value=s.d||'';kvMsPrev();},120)};
+window.kvMsDel=function(i){const s=KV.mySites[i];KV.mySites.splice(i,1);kvSave();kvAct('Admin removeu o site '+(s&&s.n),'admin');kvToast('Site removido.','ADMIN');kvOpen('gerenciar_meus_sites')};
+window.kvMsAddCat=function(){const v=(kvVal('kvMsC')||'').trim();if(!v){kvToast('Digite o nome da categoria no campo.','AVISO');return}
+  if(!KV.mySiteCats.includes(v))KV.mySiteCats.push(v);kvSave();kvToast('Categoria "'+v+'" criada.','ADMIN');kvOpen('gerenciar_meus_sites')};
+window.kvMsDelCat=function(i){const v=KV.mySiteCats[i];KV.mySiteCats.splice(i,1);kvSave();kvToast('Categoria "'+v+'" excluída.','ADMIN');kvOpen('gerenciar_meus_sites')};
+
+/* ---------- NOVOS ITENS NO MENU DE TRÊS BARRAS (sem remover nada) ---------- */
+const NEW_ITEMS=[
+  {l:'Sites Alternativos',i:'i-box',v:'sites_alternativos'},
+  {l:'Meus Sites',i:'i-star',v:'meus_sites'},
+  {l:'Gerenciar Categoria Meus Sites',i:'i-cog',v:'gerenciar_meus_sites'}
+];
+try{ if(typeof SIDE!=='undefined'){ NEW_ITEMS.forEach(n=>{ if(!SIDE.some(s=>s.l===n.l)) SIDE.splice(SIDE.length-1,0,n); }); } }catch(e){}
+
+function sidebarInject(){
+  const nav=document.getElementById('side-nav'); if(!nav||!nav.innerHTML||nav.dataset.kvSites)return;
+  nav.dataset.kvSites='1';
+  const c=KV.settings.color;
+  const html=`<div style="padding:10px 4px;border-top:1px solid rgba(0,255,102,.15);margin-top:8px">
+    <p class="kv-lb" style="margin-bottom:8px">SITES</p>
+    ${NEW_ITEMS.map(n=>`<a href="#" onclick="toggleSidebar(false);kvOpen('${n.v}');return false;" class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-white/80 hover:bg-green-400/10 hover:text-green-400 transition" data-kv-label="${n.l}">
+      <svg class="ico" width="18" height="18" style="color:${c}"><use href="#${n.i}"/></svg><span>${n.l}</span></a>`).join('')}
+  </div>`;
+  if(!nav.innerHTML.includes('Sites Alternativos')) nav.insertAdjacentHTML('beforeend',html);
+}
+
+/* ---------- CABEÇALHO: TODAS AS FUNÇÕES DO MENU ---------- */
+function runItem(s){
+  if(s.admin)return openAdminGate();
+  if(s.game)return openGames();
+  if(s.out)return kvLogoutAsk();
+  if(s.auth==='login')return openLogin();
+  if(s.auth==='signup')return openSignup();
+  if(s.v)return kvOpen(s.v,s.blue?{c:'#3b82f6',c2:'#1d4ed8'}:undefined);
+}
+window.kvHeadRun=function(i){const s=(typeof SIDE!=='undefined'?SIDE:[])[i];if(s){kvHeadMenu(false);runItem(s)}};
+window.kvHeadMenu=function(open){
+  const p=document.getElementById('kvHeadPanel'); if(!p)return;
+  p.style.display=(open===undefined?(p.style.display==='none'?'block':'none'):(open?'block':'none'));
+};
+function headerInject(){
+  const header=document.querySelector('#app header'); if(!header||header.dataset.kvFull)return;
+  const nav=header.querySelector('nav'); if(!nav)return;
+  header.dataset.kvFull='1';
+  const c=KV.settings.color;
+  nav.className='flex items-center gap-1 text-sm';
+  nav.insertAdjacentHTML('beforeend',`
+    <a href="#" onclick="kvOpen('sites_alternativos');return false;" class="px-3 py-2 hidden md:inline-block transition" style="color:${c}" data-kv-label="Sites Alternativos">Sites Alternativos</a>
+    <a href="#" onclick="kvOpen('meus_sites');return false;" class="px-3 py-2 hidden md:inline-block transition" style="color:${c}" data-kv-label="Meus Sites">Meus Sites</a>
+    <a href="#" onclick="kvOpen('gerenciar_meus_sites');return false;" class="px-3 py-2 hidden xl:inline-block text-white/80 hover:text-green-400 transition" data-kv-label="Gerenciar Categoria Meus Sites">Gerenciar Meus Sites</a>
+    <div style="position:relative">
+      <button onclick="kvHeadMenu()" class="ml-1 rounded-lg border px-3 py-2 font-display text-xs tracking-widest" style="border-color:${c}66;color:${c};background:rgba(0,0,0,.4)" data-kv-label="Menu completo">MENU ▾</button>
+      <div id="kvHeadPanel" style="display:none;position:absolute;right:0;top:110%;width:min(92vw,640px);max-height:70vh;overflow:auto;padding:10px;border-radius:14px;border:1px solid ${c}55;background:linear-gradient(160deg,rgba(0,40,15,.96),rgba(0,0,0,.98));box-shadow:0 0 40px ${c}44;z-index:200">
+        <p class="kv-lb" style="padding:4px 6px 8px">TODAS AS FUNÇÕES DO MENU</p>
+        <div id="kvHeadPanelGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:6px"></div>
+      </div>
+    </div>`);
+  renderPanel();
+  document.addEventListener('click',e=>{
+    const p=document.getElementById('kvHeadPanel');
+    if(p&&p.style.display==='block'&&!p.contains(e.target)&&!(e.target.closest&&e.target.closest('button[data-kv-label="Menu completo"]')))p.style.display='none';
+  });
+}
+function renderPanel(){
+  const g=document.getElementById('kvHeadPanelGrid'); if(!g||typeof SIDE==='undefined')return;
+  const c=KV.settings.color;
+  g.innerHTML=SIDE.map((s,i)=>`<button onclick="kvHeadRun(${i})" data-kv-label="${s.l}" style="display:flex;align-items:center;gap:8px;text-align:left;padding:9px 10px;border-radius:10px;border:1px solid ${c}22;background:rgba(255,255,255,.03);color:#dff;font-size:12px">
+    <svg class="ico" width="15" height="15" style="color:${s.blue?'#60a5fa':c}"><use href="#${s.i}"/></svg><span>${s.l}</span></button>`).join('');
+}
+
+setInterval(()=>{sidebarInject();headerInject();},600);
+document.addEventListener('DOMContentLoaded',()=>{sidebarInject();headerInject();});
+sidebarInject();headerInject();
+})();
+</script>
+
 </body>
 </html>
